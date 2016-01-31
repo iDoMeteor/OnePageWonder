@@ -1,0 +1,13 @@
+accounts-password
+accounts-ui
+fortawesome:fontawesome
+iron:router
+less
+meteor-platform
+meteorhacks:fast-render
+meteorhacks:kadira
+meteorhacks:kadira-profiler
+meteorhacks:sikka
+mizzao:jquery-ui
+snapsvg:core
+themeteorchef:jquery-validation
