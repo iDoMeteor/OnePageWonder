@@ -1,0 +1,29 @@
+<template name="opwScrollIndicator">
+
+    {{#if opwShowScrollIndicator}}
+
+        {{#if opwLastDisplayedSectionIsActive}}
+            <div>
+                <a id="opw-scroll-to-top" class="page-scroll">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-o fa-stack-2x"
+                            style="font-weight: 200"></i>
+                        <i class="fa fa-angle-double-up fa-stack-1x"></i>
+                    </span>
+                </a>
+            </div>
+        {{else}}
+            <div>
+                <a id="opw-scroll-to-next" class="page-scroll">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-o fa-stack-2x"
+                            style="font-weight: 200"></i>
+                        <i class="fa fa-angle-double-down fa-stack-1x"></i>
+                    </span>
+                </a>
+            </div>
+        {{/if}}
+
+    {{/if}}
+
+</template>

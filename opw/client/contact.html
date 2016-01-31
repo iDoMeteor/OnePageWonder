@@ -1,0 +1,206 @@
+<template name="opwContactForm">
+
+    <form class="form-inline opw-contact-form">
+
+        <div class="form-group">
+
+            <label 
+                class="sr-only" 
+                for="opw-contact-input">
+                Twitter or Email
+            </label>
+
+            <div class="input-group">
+
+                <div class="input-group-addon">
+                    <i class="fa 
+                        fa-flag-o 
+                        opw-contact-flag 
+                        text-muted"></i>
+                </div>
+
+                <input 
+                    type="text" 
+                    class="form-control opw-contact-input" 
+                    placeholder="@Twitter or e@mail.com required">
+            </div>
+
+        </div>
+
+        <button 
+            type="submit" 
+            class="btn btn-primary opw-contact-submit">
+            {{contactButtonString}}
+        </button>
+
+    </form>
+
+</template>
+
+
+
+<template name="opwContactLog">
+
+    {{!-- TODO: Display this when clicking detailed contact if logged in--}}
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+            <tr>
+                <td>
+                    <strong>Contact</strong>
+                </td>
+                <td>
+                    <strong>Phone</strong>
+                </td>
+                <td>
+                    <strong>Label</strong>
+                </td>
+                <td>
+                    <strong>Date</strong>
+                </td>
+                <td>
+                    <strong>IP</strong>
+                </td>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{#each opwContacts}}
+
+                <tr>
+                    <td>
+                        {{contact}}
+                    </td>
+                    <td>
+                        {{phone}}
+                    </td>
+                    <td>
+                        {{label}}
+                    </td>
+                    <td>
+                        {{date}}
+                    </td>
+                    <td>
+                        {{source}}
+                    </td>
+                </tr>
+                {{#if message}}
+                    <tr>
+                        <td colspan="5">
+                            {{message}}
+                        </td>
+                    </tr>
+                {{/if}}
+
+            {{/each}}
+        </tbody>
+
+    </table>
+
+</template>
+
+
+
+<template name="opwContactModalForm">
+
+    <div class="col-sm-12 block-center">
+        <form>
+
+            <div class="form-group">
+                {{>opwContactModalEmailOrTwitter}}
+                {{>opwContactModalPhone}}
+                {{>opwContactModalMessage}}
+            </div>
+
+        </form>
+    </div>
+
+</template>
+
+
+
+<template name="opwContactModalEmailOrTwitter">
+
+    <label 
+        class="sr-only" 
+        for="opw-contact-tore">
+        Twitter or Email
+    </label>
+    <div class="input-group">
+        <div class="input-group-addon">
+            <i class="fa 
+                fa-flag-o 
+                opw-contact-flag 
+                text-muted"></i>
+        </div>
+        <input 
+            type="text" 
+            id="opw-contact-tore"
+            class="form-control" 
+            placeholder="@Twitter or e@mail.com required">
+    </div>
+
+</template>
+
+
+
+<template name="opwContactModalMessage">
+
+    <label 
+        class="sr-only" 
+        for="opw-contact-message">
+        Message
+    </label>
+    <div class="input-group">
+        <textarea 
+            id="opw-detailed-contact-message"
+            class="form-control" 
+            placeholder="Thanks for your time, enter your message here!">
+        </textarea>
+    </div>
+
+</template>
+
+
+
+<template name="opwContactModalPhone">
+
+
+    <label 
+        class="sr-only" 
+        for="opw-contact-phone">
+        Telephone or VoIP Number
+    </label>
+    <div class="input-group">
+        <div class="input-group-addon">
+        </div>
+        <input 
+            type="text" 
+            id="opw-contact-phone"
+            class="form-control" 
+            placeholder="Phone # if desired">
+    </div>
+
+</template>
+
+
+
+<template name="opwContactNotificationEmail">
+
+    {{!-- TODO --}}
+
+</template>
+
+
+
+<template name="opwContactThankYou">
+
+    <form class="opw-contact-form form-inline">
+        <div class="form-group text-center">
+            <p>
+                {{opwContactThankYouText}}
+            </p>
+        </div>
+    </form>
+
+</template>

@@ -1,0 +1,16 @@
+{
+	"preset": "node-style-guide",
+	"validateIndentation": null,
+	"disallowSpacesInFunction": null,
+	"maximumLineLength": null,
+	"disallowTrailingWhitespace": null,
+	"requireSpaceAfterKeywords": null,
+	"requireCurlyBraces": null,
+	"requireTrailingComma": null,
+	"disallowQuotedKeysInObjects": null,
+	"requireCapitalizedComments": null,
+	"validateQuoteMarks": null,
+	"requireSpaceBeforeBinaryOperators": null,
+	"requireSpaceAfterBinaryOperators": null,
+	"requireCamelCaseOrUpperCaseIdentifiers": null
+}

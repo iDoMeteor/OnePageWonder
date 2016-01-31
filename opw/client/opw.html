@@ -1,0 +1,457 @@
+<!-- #OnePageWonder v1.0.0-RC.2 by @iDoMeteor -->
+<!-- Operational templates                    -->
+
+
+
+<body>
+
+    {{!-- TODO: It would be nice to serve up a cached static
+                version of the site, automatically removing forms
+                and injected in a way that doesn't affect load time --}}
+    <noscript>
+        Our site relies on cutting edge Javascript technology,
+        please enable it now or visit us again using a modern
+        graphical browser.  Thank you for your understanding.
+    </noscript>
+
+</body>
+
+
+
+
+<template name="opw">
+
+    <section
+        id="opw-login-section"
+        class="row block-center opw-lightbox-content">
+        <div
+            class="col-sm-12 col-md-8 col-lg-6 text-center">
+
+            {{!-- TODO --}}
+            <p>OPW Sexy Info Page</p>
+
+        </div>
+    </section>
+
+</template>
+
+
+
+<template name="opwAlert">
+
+    <div
+        class="alert alert-{{type}} alert-dismissible fade in"
+        role="alert">
+
+        <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="{{closeLabel}}">
+            <span
+                aria-hidden="true">
+                ×
+            </span>
+        </button>
+        {{{content}}}
+
+    </div>
+
+</template>
+
+
+
+<template name="opwAuthenticate">
+
+    <section
+        id="opw-login-section"
+        class="row block-center opw-lightbox-content">
+
+        <div class="col-sm-12 col-md-8 col-lg-6 text-center">
+
+            <img
+                src="/opw/images/onepagewonder-logo.png"
+                alt="{{opwSiteTitle}}" />
+            <h3>{{opwAuthHeading}}</h3>
+            <p>{{opwAuthTagline}}</p>
+
+            <form id="opw-auth-email-form">
+
+                <div class="form-group">
+                    <label for="email">{{opwEmailLabel}}</label>
+                    <input
+                        id="opw-auth-email"
+                        type="email"
+                        name="email"
+                        class="form-control"
+                        placeholder="Email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">{{opwPasswordLabel}}</label>
+                    <input
+                        id="opw-auth-password"
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Password">
+                </div>
+
+                <div class="btn-group">
+                    {{#if Template.subscriptionsReady}}
+                        {{#if opwShowLogin}}
+                            <button
+                                id="opw-auth-email-login"
+                                type="button"
+                                class="btn btn-info">
+                                {{opwLoginPrompt}}
+                            </button>
+                        {{else}}
+                            <button
+                                id="opw-auth-email-create"
+                                type="button"
+                                class="btn btn-info">
+                                {{opwCreateAccountPrompt}}
+                            </button>
+                        {{/if}}
+                        <button
+                            id="opw-auth-cancel"
+                            type="button"
+                            class="btn btn-danger">
+                            {{opwCancelPrompt}}
+                        </button>
+                    {{else}}
+                        <button
+                            id="opw-auth-cancel"
+                            type="button"
+                            class="btn btn-danger">
+                            <i class="fa fa-spinner fa-spin"></i>
+                            {{opwLoadingText}}
+                        </button>
+                    {{/if}}
+                </div>
+
+            </form>
+
+            <p>{{opwUserIpLabel}}: {{currentIp}}</p>
+
+        </div>
+    </section>
+
+</template>
+
+
+
+<template name="opwFooter">
+
+    <footer
+        id="opw-{{#if opwFixedFooter}}fixed{{else}}static{{/if}}-footer"
+        class="row bg-primary">
+
+        {{!-- Social icons --}}
+        <div class="col-sm-4 text-center">
+            {{#if opwShowSocialIcons}}
+                {{> opwSocialIcons}}
+            {{/if}}
+        </div>
+
+        <div class="col-sm-4 text-center">
+
+            {{!-- Fixed scroll indicator --}}
+            {{#if opwFixedScrollIndicator}}
+                {{> opwScrollIndicator}}
+            {{/if}}
+
+        </div>
+
+        <div class="col-sm-4 text-center">
+
+            {{!-- One Page Wonder info --}}
+            <a id="opw-site-stats"
+                class="float-right img-rounded">
+                <i class="fa fa-2x fa-bar-graph"></i>
+            </a>
+            <a id="opw-brag"
+                class="float-right img-rounded">
+                <img src="/opw/images/onepagewonder-logo-24-dark.png"
+                    title="One Page Wonder" id="opw-logo"/>
+            </a>
+
+        </div>
+
+    </footer>
+
+</template>
+
+
+
+<template name="opwHelp">
+
+    <section id="opw-help" class="row opw-lightbox-content">
+        {{!-- Separated for use in instantiating home row when necessary --}}
+        {{>opwHelpContent}}
+    </section>
+
+</template>
+
+
+
+<template name="opwHelpContent">
+
+    <div class="col-sm-12">
+        <h1>Thanks for trying #OnePageWonder by @iDoMeteor!</h1>
+        <h2>What you need to know to get going:</h2>
+        <h3>It's not perfect.. yet.</h3>
+    </div>
+
+    <div class="col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-2 col-lg-3 col-lg-offset-3">
+        <dl>
+            <dt>Admin User</dt>
+            <dd>Only one user may be registered and the username is Admin.</dd>
+            <dt>Adding Content (reffered to as 'rows' or 'sections')</dt>
+            <dd>When logged in, press the + button to add new content & type or
+                paste in some BS column wrappers containing your content.</dd>
+            <dt>Editing Rows & Nav Items</dt>
+            <dd>Double click a navigation item while logged in.</dd>
+            <dt>Re-order navigation</dt>
+            <dd>Drag items while logged in.</dd>
+            <dt>Edit Configuration</dt>
+            <dd>Click the gear while logged in.</dd>
+            <dt>Single Field Contact Form</dt>
+            <dd>Add any tag with class="opw-contact" to add the contact field
+                (I recommend span).  If you give it a CSS ID as well, that
+                will be used to categorize it in the reports.</dd>
+            <dt>Removing Rows</dt>
+            <dd>All rows are soft-removed from the editor.</dd>
+            <dt>Content Tips</dt>
+            <dd>The content you input will be wrapped a Bootstrap section with
+                class 'row' and ID will be the sluggified form of the related
+                navigation item.</dd>
+        </dl>
+        <p>The rest is up to you!  I will greatly appreciate any comments, critiques, suggestions or bug reports.</p>
+        <h4 class="text-right">Enjoy, @iDoMeteor</h4>
+    </div>
+
+    <div class="col-sm-5 col-md-4 col-lg-3 ">
+        <h2>For more information (they don't work yet, lol):</h2>
+        <ul>
+            <li><a
+                href="http://onepagewonder.idometeor.com"
+                title="Visit OnePageWonder.iDoMeteor.com">
+                #OnePageWonder Official Site
+            </a>
+            </li>
+            <li><a
+                href="http://github.com/idometeor/onepagewonder"
+                title="Visit OnePageWonder.project page on Github">
+                #OnePageWonder on Github
+            </a>
+            </li>
+            <li><a
+                href="http://youtube.com/idometeor/onepagewonder"
+                title="Watch #OnePageWonder videos on YouTube">
+                #OnePageWonder on YouTube
+            </a>
+            </li>
+            <li><a
+                href="http://twitter.com/idometeor"
+                title="Visit @iDoMeteor on Twitter">
+                @iDoMeteor on Twitter
+            </a>
+            </li>
+            <li><a
+                href="http://idometeor.com"
+                title="Visit iDoMeteor.com">
+                @iDoMeteor Web Site
+            </a>
+            </li>
+            <li><a
+                href="http://meteorpress.org"
+                title="Visit MeteorPress.org">
+                #MeteorPress by @iDoMeteor
+            </a>
+            </li>
+        </ul>
+    </div>
+
+</template>
+
+
+
+
+<template name="opwLayout">
+
+    {{> opwNavigation}}
+
+    <div class="container{{opwIfSectionsAreFluid}}">
+        {{> yield}}
+    </div>
+
+    {{#if opwShowFooter}}
+        <div class="container{{opwIfFooterIsFluid}}">
+            {{> opwFooter}}
+        </div>
+    {{/if}}
+
+</template>
+
+
+
+<template name="opwModal">
+
+    {{!-- Re-factor Editor & others to use this --}}
+    <div
+        class="modal fade"
+        id="{{cssId}}"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="{{cssId}}-label">
+
+        <div
+            class="modal-dialog"
+            role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="{{closeLabel}}">
+                        <span
+                            aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4
+                        class="modal-title"
+                        id="opw-editor-label">
+                        {{label}}
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        {{#if columns}}
+                        <section
+                            id="{{cssId}}-section"
+                            class="row">
+                                {{!-- For consistency w/editor input --}}
+                                {{{columns}}}
+                            </section>
+                        {{/if}}
+                        {{#if template}}
+                            {{!-- w00t! --}}
+                            {{> Template.dynamic template=template}}
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                        {{#if closeText}}
+                            {{closeText}}
+                        {{else}}
+                            {{closeLabel}}
+                        {{/if}}
+                    </button>
+                    {{#if actionText}}
+                        <button
+                            id="{{actionId}}"
+                            type="button"
+                            class="btn btn-primary {{actionClass}}">
+                            {{actionText}}
+                        </button>
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>
+
+
+
+<template name="opwLoading">
+
+    {{!-- TODO: Get some CSS loaders set up already! lol --}}
+    <div id="opw-loading">
+        <p>
+            Loading...
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+        </p>
+    </div>
+
+</template>
+
+
+
+<template name="opwRoot">
+
+    {{#with opwHomeRow}}
+        {{>opwSection}}
+    {{/with}}
+
+    {{#each opwRows}}
+        {{>opwSection}}
+    {{/each}}
+
+</template>
+
+
+
+<template name="opwSection">
+
+    <section
+        id="{{slug}}"
+        class="row{{#unless title}} root-height{{/unless}}">
+        {{!-- TODO: Give each page a full-height toggle --}}
+
+        {{{content}}}
+
+        {{#if opwSectionalScrollIndicator}}
+            {{>opwScrollIndicator}}
+        {{/if}}
+
+    </section>
+
+</template>
+
+
+
+<template name="opwSiteStatistics">
+
+    <section
+        id="opw-site-statistics-section"
+        class="row block-center opw-lightbox-content">
+
+        <div class="col-sm-12 col-md-8 col-lg-6 text-center">
+
+            {{!-- TODO --}}
+
+        </div>
+
+    </section>
+
+</template>
+
+
+
+<template name="opwSocialIcons">
+
+    <div id="opw-social" class="float-right">
+        {{#each opwSocialServices}}
+            <a id="opw-{{service}}"
+                    class="opw-social-icon"
+                    href="{{link}}">
+                <span class="fa fa-2x fa-{{service}}"></span>
+            </a>
+        {{/each}}
+    </div>
+
+</template>

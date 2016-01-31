@@ -1,7 +1,9 @@
 accounts-password
 accounts-ui
+audit-argument-checks
+browser-policy
+email
 fortawesome:fontawesome
-infinitedg:gsap
 iron:router
 less
 meteor-platform
@@ -12,8 +14,6 @@ meteorhacks:kadira-debug
 meteorhacks:kadira-profiler
 meteorhacks:sikka
 mizzao:jquery-ui
-snapsvg:core
-stylus
+rubaxa:sortable
+service-configuration
 themeteorchef:jquery-validation
-audit-argument-checks
-email

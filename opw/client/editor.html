@@ -1,0 +1,141 @@
+<template name="opwEditor">
+
+    {{!-- Menu Navigation Buttons --}}
+        {{!-- Dashboard --}}
+            {{!-- Quick stats overview --}}
+        {{!-- Configuration --}}
+            {{!-- Use jQuery Validation! --}}
+            {{!-- Broken up by root key --}}
+                {{!-- Then auto-detect fields? --}}
+        {{!-- Logs --}}
+            {{!-- Admin Notifications --}}
+            {{!-- Authentication History --}}
+            {{!-- Contact Log --}}
+            {{!-- Log Logs --}}
+        {{!-- New Section --}}
+        {{!-- Section List --}}
+            {{!-- Draggable Page List w/view count badges--}} {{!-- Edit --}} {{!-- Remove --}}
+
+</template>
+
+
+
+<template name="opwEditorConfiguration">
+
+    {{!-- Autoform would be nice here but a lot of extra weight for one convenience --}}
+    {{!-- Use jQuery Validation! --}}
+    {{!-- Broken up by root key --}}
+        {{!-- Then auto-detect fields? --}}
+
+</template>
+
+
+
+<template name="opwEditorContentExample">
+{{!-- TODO: Update this --}}
+<div class="col-lg-12">
+  <h1>New Section</h1>
+  <h2>Tagline for new section</h2>
+  <ul>
+    <li></li>
+  </ul>
+  <p>That's it!</p>
+</div>
+</template>
+
+
+
+<template name="opwEditorDashboard">
+
+    {{!-- Dashboard --}}
+        {{!-- Quick stats overview --}}
+
+</template>
+
+
+
+<template name="opwEditorLogs">
+
+    {{!-- Logs --}}
+        {{!-- Admin Notifications --}}
+        {{!-- Authentication History --}}
+        {{!-- Contact Log --}}
+        {{!-- Log Logs --}}
+
+</template>
+
+
+
+<template name="opwEditorRow">
+
+    <div class="row">
+        {{>opwEditorRowTitle}}
+        {{>opwEditorRowContent}}
+    </div>
+
+</template>
+
+
+
+<template name="opwEditorRowContent">
+
+    <div
+        id="opw-element-bar"
+        class="col-sm-12 text-center">
+        {{>opwWonderBar}}
+    </div>
+    <div
+        id="opw-editor-content"
+        class="col-sm-12 block-center">
+        {{>opwEditorTextarea}}
+    </div>
+
+</template>
+
+
+
+<template name="opwEditorRowList">
+
+  {{!-- Section List --}}
+  {{!-- Draggable Page List w/view count badges--}} {{!-- Edit --}} {{!-- Remove --}}
+
+  <ul id="opw-editor-title-order" class="list-group">
+    {{#each opwRows}}
+      <li class="list-group-item">
+        <i class="fa fa-arrows-v"></i>
+        {{title}}
+        <i class="fa fa-pencil"></i>
+      </li>
+      {{/each}}}}
+  </ul>
+
+</template>
+
+
+
+<template name="opwEditorRowTitle">
+
+    <div
+        id="opw-editor-title"
+        class="col-sm-12 text-center">
+        <input
+            type="text"
+            id="opw-title-editor"
+            class="form-control"
+            maxlength="25"
+            placeholder="{{opwEditorTitlePlaceholder}}"
+            >
+    </div>
+
+</template>
+
+
+
+<template name="opwEditorTextarea">
+{{!-- It must be done, uses opwEditorContentExample (above) --}}
+<textarea id="opw-editor-textarea" class="form-control">{{#if rowContent}}{{{rowContent}}}{{else}}{{>opwEditorContentExample}}{{/if}}</textarea>
+{{!-- Ugh! lol --}}
+</template>
+
+
+

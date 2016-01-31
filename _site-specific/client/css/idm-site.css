@@ -1,0 +1,71 @@
+/* iDoMeteor.com styles */
+
+/* Tags */
+body h2 {
+    margin-bottom: 1em;
+}
+
+section {
+    padding-bottom: 2em;
+}
+
+/* Classes */
+.opw-contact-input {
+    width: 21em; /* Fits my string */
+}
+
+/* IDs */
+#benefits .panel-title,
+#turnkey-solution .panel-title {
+    font-size: 2em;
+}
+
+#turnkey-solution .panel-title i {
+    float: right;
+    font-size: 2em;
+}
+
+#turnkey-solution .panel-body {
+    font-size: 1.3em;
+    text-align: justify;
+}
+
+#services .panel-title {
+    font-size: 1.5em;
+    min-height: 2em;
+}
+
+#services .panel-title i {
+    float: left;
+    font-size: 2em;
+    padding-right: .3em;
+}
+
+#services .panel-title i {
+    float: left;
+    font-size: 2em;
+    padding-right: .3em;
+}
+
+#benefits .panel-title i {
+    float: right;
+    font-size: 1.1em;
+}
+
+#benefits .panel-body,
+#services .panel-body {
+    font-size: 1.1em;
+    text-align: justify;
+}
+
+
+#services,
+#products {
+    background-color: #ddeeee;
+}
+
+#turnkey-solution,
+#benefits,
+#availability {
+    background-color: #eeeedd;
+}
