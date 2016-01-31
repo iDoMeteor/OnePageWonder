@@ -1,7 +1,14 @@
-/* Tags */
+/** #OnePageWonder by @iDoMeteor v1.0.0-RC.2 **/
+/** TODO: Cursor changes **/
+
+/* Generic Tags */
 html, body {
     height: 100%;
     width: 100%;
+}
+
+body {
+    padding-top: 101px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -13,11 +20,44 @@ p::first-letter {
     font-weight: bold;
 }
 
-/* Classes */
+section {
+    clear: both;
+    padding-top: 71px;
+}
+
+section:last-of-type {
+    padding-bottom: 4em;
+}
+
+/* Content Specific Classes */
 .carousel-inner img {
    max-height: 50%;
    max-width: 100%;
    margin: auto;
+}
+
+
+/* Content Specific ID */
+#opw-carousel-home .carousel-control {
+    background-image: none;
+}
+
+.opw-contact-input {
+    width: 21em; /* Fits my string */
+}
+
+
+/* OPW Specific Classes */
+.alert {
+    max-width: 40em;
+    min-width: 15em;
+    opacity: .9;
+    position: fixed;
+    right: 2em;
+    top: 2em;
+    width: 30%;
+    z-index: 1099;
+    /* TODO: CSS animation */
 }
 
 .bg-invalid {
@@ -34,8 +74,7 @@ p::first-letter {
 }
 
 .full-height {
-    height: 95%;
-    padding-top: 110px;
+    min-height: 100%;
 }
 
 .inline {
@@ -46,47 +85,58 @@ p::first-letter {
     padding: .25em;
     padding-right: 1em;
 }
+        // Add first section to the array
+        ids.unshift(first);
+
+.opw-body-less-padding {
+    padding-top: 61px;
+}
+
+.opw-body-more-padding {
+    padding-top: 101px;
+}
 
 .opw-row-editor {
+    color: #222;
     width: 100% !important;
 }
 
+/*
 .opw-row-options {
     float: right;
     opacity: .5;
     position: relative;
     z-index: 10000;
 }
+*/
 
 .opw-row-options i {
     margin-left: .75em;
 }
 
 .root-height {
-    height: 100%;
-    padding-top: 150px;
+    min-height: 100%;
+    padding-top: 0px;
 }
 
-/* IDs */
-#opw-bottom {
-    background-color: black;
-    position: fixed;
+/* OPW Specific IDs */
+#opw-fixed-footer {
     bottom: 0px;
-    right: 0px;
+    height: 4em;
     left: 0px;
-    height: 3em;
+    padding-top: .75em;
+    position: fixed;
+    right: 0px;
+    z-index: 99;
+}
+
+#opw-static-footer {
+    height: 4em;
+    padding-top: .75em;
 }
 
 #opw-brag {
     padding: .25em 1em;
-}
-
-#opw-carousel-home .carousel-control {
-    background-image: none;
-}
-
-#opw-contact-input {
-    width: 21em; /* Fits my string */
 }
 
 #opw-login-section {
@@ -99,6 +149,7 @@ p::first-letter {
     display: inline;
 }
 
+/* TODO: Make this & textarea both much nicer */
 #opw-new-nav {
     display: inline;
     height: 60%;
@@ -125,9 +176,6 @@ p::first-letter {
 
     .navbar {
         padding: 20px 0;
-        -webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
-        -moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
-        transition: background .5s ease-in-out,padding .5s ease-in-out;
     }
 
     .top-nav-collapse {

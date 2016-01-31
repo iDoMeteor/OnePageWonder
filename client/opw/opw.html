@@ -1,102 +1,115 @@
-<head>
+<!-- #OnePageWonder v1.0.0-RC.2 by @iDoMeteor -->
+<!-- Operational templates                    -->
 
-    <!-- <link rel="alternate" type="application/rss+xml" title="" href="" /> -->
-    <link rel="icon" href="/favicon.png" />
-    <link rel="shortcut icon" href="/favicon.png" />
-    <meta http-equiv="Author" content="@iDoMeteor - Marquette, MI" />
-    <meta http-equiv="Content-Language" content="EN" />
-    <meta http-equiv="Content-Script-Type" content="text/javascript" />
-    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-    <meta http-equiv="Copyright" content="The author retains all copyrights to all code, script or graphics which are directly related to the JWSF Content Management System.  Jason White Slim Frame CMS Development Area retains all copyrights to any intellectual property, logos, or graphics created exclusively for Jason White Slim Frame CMS Development Area. Copyright 2009." />
-    <meta http-equiv="Description" content="#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites." />
-    <meta http-equiv="Distribution" content="Global" />
-    <meta http-equiv="Expires" content="" />
-    <meta http-equiv="Keywords" content="meteor, javascript, cms, content management, content management system, open source, wordpress, drupal, joomla" />
-    <meta http-equiv="Last-Modified" content="2015-06-02 00:06:44" />
-    <meta http-equiv="Revisit-After" content="7 Days" />
-    <meta http-equiv="Robots" content="index,follow" />
-    <meta itemprop="description" content="#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.">
-    <meta itemprop="image" content="http://opw.idometeor.com/opw/images/onepagewonder-logo.png">
-    <meta itemprop="name" content="#OnePageWonder by @iDoMeteor">
-    <meta name="DC.title" content="One Page Wonder by I Do Meteor" />
-    <meta name="ICBM" content="46.5, -87.4" />
-    <meta name="geo.placename" content="Marquette" />
-    <meta name="geo.position" content="46.5;-87.4" />
-    <meta name="geo.region" content="US-MI" />
-    <meta name="twitter:creator" content="@iDoMeteor">
-    <meta name="twitter:description" content="#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.">
-    <meta name="twitter:image" content="http://opw.idometeor.com/opw/images/onepagewonder-logo.png">
-    <meta name="twitter:site" content="@iDoMeteor">
-    <meta name="twitter:title" content="#OnePageWonder by @iDoMeteor">
-    <meta property="og:description" content="#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites." />
-    <meta property="og:image" content="http://opw.idometeor.com/opw/images/onepagewonder-logo.png" />
-    <meta property="og:site_name" content="#OnePageWonder by @iDoMeteor" />
-    <meta property="og:title" content="#OnePageWonder by @iDoMeteor" />
-    <meta property="og:type" content="site" />
-    <meta property="og:url" content="http://opw.idometeor.com/" />
-    <title>#OnePageWonder by @iDoMeteor</title>
 
-</head>
+
+<body>
+    {{!-- TODO: It would be nice to serve up a cached static
+                version of the site, automatically removing forms --}}
+    <noscript>
+        Our site relies on cutting edge Javascript technology,
+        please enable it now or visit us again using a modern
+        graphical browser.  Thank you for your understanding.
+    </noscript>
+</body>
+
+
+
+<template name="opwAlert">
+
+    <div 
+        class="alert alert-{{type}} alert-dismissible fade in" 
+        role="alert">
+
+        <button 
+            type="button" 
+            class="close" 
+            data-dismiss="alert" 
+            aria-label="Close">
+            <span 
+                aria-hidden="true">
+                ×
+            </span>
+        </button>
+        {{{content}}}
+
+    </div>
+
+</template>
 
 
 
 <template name="opwAuthenticate">
 
-    <section id="opw-login-section" class="full-height opw-sm">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-lg-12">
+    <section 
+        id="opw-login-section" 
+        class="row block-center opw-lightbox-content">
+        <div 
+            class="col-sm-12 col-md-8 col-lg-6 text-center">
 
-                    <img 
-                        src="/opw/images/onepagewonder-logo.png" 
-                        alt="#OnePageWonder by @iDoMeteor" />
-                    <h3>Authenticate Yourself</h3>
-                    <p>Present your credentials for inspection.</p>
-                    <form id="opw-auth-email-form">
-                        <div class="form-group">
-                            <label for="email">Email Address</label>
-                            <input 
-                                id="opw-auth-email" 
-                                type="email" 
-                                name="email" 
-                                class="form-control" 
-                                placeholder="Email address">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input 
-                                id="opw-auth-password" 
-                                type="password" 
-                                name="password" 
-                                class="form-control" 
-                                placeholder="Password">
-                        </div>
-                        <div class="btn-group">
+            <img 
+                src="/opw/images/onepagewonder-logo.png" 
+                alt="#OnePageWonder by @iDoMeteor" />
+            <h3>Authenticate Yourself</h3>
+            <p>Present your credentials for inspection.</p>
+            <form id="opw-auth-email-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input 
+                        id="opw-auth-email" 
+                        type="email" 
+                        name="email" 
+                        class="form-control" 
+                        placeholder="Email address">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                        id="opw-auth-password" 
+                        type="password" 
+                        name="password" 
+                        class="form-control" 
+                        placeholder="Password">
+                </div>
+                <div class="btn-group">
+                    {{#if Template.subscriptionsReady}}
+                        {{#if showLogin}}
                             <button 
                                 id="opw-auth-email-login" 
                                 type="button" 
-                                class="btn btn-primary">
+                                class="btn btn-info">
                                 Authenticate
                             </button>
+                        {{else}}
                             <button 
                                 id="opw-auth-email-create" 
                                 type="button" 
                                 class="btn btn-info">
                                 Create Account
                             </button>
-                            <button 
-                                id="opw-auth-cancel" 
-                                type="button" 
-                                class="btn btn-danger">
-                                Cancel
-                            </button>
-                        </div>
-                    </form>
-
-                    <h5>Your IP: {{currentUserIp}}</h5>
+                        {{/if}}
+                        <button 
+                            id="opw-auth-cancel" 
+                            type="button" 
+                            class="btn btn-danger">
+                            Cancel
+                        </button>
+                    {{else}}
+                        <button 
+                            id="opw-auth-cancel" 
+                            type="button" 
+                            class="btn btn-danger">
+                            <i class="fa fa-spinner fa-spin"></i>
+                            Loading..
+                        </button>
+                    {{/if}}
 
                 </div>
-            </div>
+            </form>
+
+            {{!-- *cough* --}}
+            <h5>Your IP: {{currentIp}}</h5>
+
         </div>
     </section>
 
@@ -104,77 +117,9 @@
 
 
 
-<template name="opwBootstrapBar">
-
-    <div class="btn-group z1">
-
-        {{!-- Bootstrap Components --}}
-        <button id="opw-bsbar-button" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert a col-sm-12 div"></i>
-        </button>
-        <button id="opw-bsbar-col-12" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert a col-sm-12 div"></i>
-        </button>
-        <button id="opw-bsbar-col-6" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert two col-sm-6 divs"></i>
-        </button>
-        <button id="opw-bsbar-col-4" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert three col-sm-4 divs"></i>
-        </button>
-        <button id="opw-bsbar-col-3" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert four col-sm-3 divs"></i>
-        </button>
-        <button id="opw-bsbar-carousel" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert code for an image slider (carousel)"></i>
-        </button>
-        <button id="opw-bsbar-jumbotron" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert code for a jumbotron"></i>
-        </button>
-        <button id="opw-bsbar-well" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert code for a well"></i>
-        </button>
-        {{!-- Standard HTML --}}
-        <button id="opw-bsbar-header" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-header" title="Insert heading"></i>
-        </button>
-        <button id="opw-bsbar-dl" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-list-dl" title="Insert definition list (my favorite!)"></i>
-        </button>
-        <button id="opw-bsbar-ol" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-list-ol" title="Insert unordered list"></i>
-        </button>
-        <button id="opw-bsbar-ul" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-list-ul" title="Insert unordered list"></i>
-        </button>
-        <button id="opw-bsbar-audio" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-music" title="Insert attached audio object"></i>
-        </button>
-        <button id="opw-bsbar-image" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-image" title="Insert attached image object"></i>
-        </button>
-        <button id="opw-bsbar-video" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-video-camera" title="Insert attached video object"></i>
-        </button>
-        <button id="opw-bsbar-code" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-code" title="Insert code block"></i>
-        </button>
-        <button id="opw-bsbar-all-teh-mana" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert all the bootstrap components!!"></i>
-        </button>
-        {{!-- Help --}}
-        <button id="opw-bsbar-help" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-question" title="Show OPW help section"></i>
-        </button>
-    </div>
-
-</template>
-
-
-
 <template name="opwContactForm">
-{{!-- TODO: Add a button for this to BS Toolbar --}}
 
-    <form id="opw-contact-form" class="form-inline">
+    <form class="form-inline opw-contact-form">
         <div class="form-group">
             <label 
                 class="sr-only" 
@@ -183,20 +128,21 @@
             </label>
             <div class="input-group">
                 <div class="input-group-addon">
-                    <i id="opw-contact-flag" class="fa fa-flag-o text-muted"></i>
+                    <i class="fa 
+                        fa-flag-o 
+                        opw-contact-flag 
+                        text-muted"></i>
                 </div>
                 <input 
                     type="text" 
-                    class="form-control" 
-                    id="opw-contact-input" 
+                    class="form-control opw-contact-input" 
                     placeholder="@Twitter or e@mail.com required">
             </div>
         </div>
         <button 
-            id="opw-contact-submit" 
             type="submit" 
-            class="btn btn-primary">
-            Get Updates!
+            class="btn btn-primary opw-contact-submit">
+            {{contactButtonString}}
         </button>
     </form>
 
@@ -204,15 +150,25 @@
 
 
 
+<template name="opwContactModal">
+
+    <p>TODO</p>
+
+</template>
+
+
+
 <template name="opwContactThankYou">
 
-    <form id="opw-contact-form" class="form-inline">
+    <form class="opw-contact-form form-inline">
         <div class="form-group text-center">
             <label>
-                Thank You!
+                {{contactThankYou1}}
             </label>
             <div class="input-group">
-                <p>We won't abuse your trust! :)</p>
+                <p>
+                    {{contactThankYou2}}
+                </p>
             </div>
         </div>
     </form>
@@ -221,41 +177,123 @@
 
 
 
+<template name="opwEditor">
+
+    <div class="row">
+        <div 
+            id="opw-editor-title" 
+            class="col-sm-12 text-center">
+            <input 
+                type="text" 
+                id="opw-title-editor"
+                class="form-control" 
+                maxlength="25"
+                placeholder="{{opwEditorTitlePlaceholder}}"
+                >
+        </div>
+        <div 
+            id="opw-editor-sort-order" 
+            class="col-sm-12 text-center">
+            <select 
+                type="text" 
+                id="opw-sort-order-editor"
+                class="form-control" 
+                maxlength="25"
+                placeholder="{{opwEditorTitlePlaceholder}}"
+                >
+                {{!-- TODO --}}
+                <option value="alpha">Alphabetical</option>
+                <option value="chron">Chronological</option>
+                <option value="rev">Reverse Chron</option>
+                {{#each opwRowSortRange}}
+                    <option value="XXX">XXX</option>
+                {{/each}}
+            </select>
+        </div>
+        <div 
+            id="opw-element-bar" 
+            class="col-sm-12 text-center">
+            {{>opwWonderBar}}
+        </div>
+        <div 
+            id="opw-editor-content" 
+            class="col-sm-12 block-center">
+            {{>opwEditorTextarea}}
+        </div>
+    </div>
+
+</template>
+
+
+
+<template name="opwEditorContentExample">
+<div class="col-lg-12">
+  <h1>New Section</h1>
+  <h2>Tagline for new section</h2>
+  <ul>
+    <li>To save: Press control + enter</li>
+    <li>Contact form: Cick the toolbar envelope</li>
+    <li>For now, button clicks append to the end of the textarea 
+        and not at cursor position</li>
+  </ul>
+  <p>That's it!</p>
+</div>
+</template>
+
+
+
+<template name="opwEditorTextarea">
+{{!-- It must be done, uses opwEditorContentExample (above) --}}
+<textarea id="opw-editor-textarea" class="form-control">{{#if rowContent}}{{{rowContent}}}{{else}}{{>opwEditorContentExample}}{{/if}}</textarea>
+{{!-- Ugh! lol --}}
+</template>
+
+
+
+<template name="opwFooter">
+
+<footer id="opw-{{#if opwFixedFooter}}fixed{{else}}static{{/if}}-footer" class="row bg-primary">
+
+        {{!-- Social icons --}}
+        <div class="col-sm-4 text-center">
+            {{#if opwShowSocialIcons}}
+                {{> opwSocialIcons}}
+            {{/if}}
+        </div>
+
+        <div class="col-sm-4 text-center">
+
+            {{!-- Fixed scroll indicator --}}
+            {{#if opwFixedScrollIndicator}}
+                {{> opwScrollIndicator}}
+            {{/if}}
+
+        </div>
+
+        <div class="col-sm-4 text-center">
+
+            {{!-- One Page Wonder info --}}
+            <a id="opw-site-stats" 
+                class="float-right img-rounded">
+                <i class="fa fa-2x fa-bar-graph"></i>
+            </a>
+            <a id="opw-brag" 
+                class="float-right img-rounded">
+                <img src="/opw/images/onepagewonder-logo-24-dark.png" 
+                    title="One Page Wonder" id="opw-logo"/>
+            </a>
+
+        </div>
+
+    </footer>
+
+</template>
+
+
+
 <template name="opwHelp">
 
-    {{!-- TODO: This could be a row (treated like top) 
-                ... then we could edit it in place! :D --}}
-
-    <section id="opw-help" class="full-height opw-sm">
-        <div class="container">
-            {{#if currentUser}}
-                <div class="row opw-row-options text-muted">
-                    <div class="col-sm-12">
-                        <h5 
-                            class="opw-toggle-row-editor inline"
-                            title="Edit this row">
-                            <i 
-                                class="fa fa-pencil"
-                                title="Edit this row">
-                            </i>
-                        </h5>
-                        {{#if title}}
-                            <h5 
-                                class="opw-remove-row inline"
-                                title="Edit this row">
-                                <i 
-                                    class="fa fa-trash"
-                                    title="Remove this row">
-                                </i>
-                            </h5>
-                        {{/if}}
-                    </div>
-                </div>
-            {{/if}}
-            <div class="row opw-row-content">
-                {{{content}}}
-            </div>
-        </div>
+    <section id="opw-help" class="row opw-lightbox-content">
     </section>
 
 
@@ -263,8 +301,100 @@
 
 
 
+<template name="opwLayout">
+
+    {{!-- TODO: Use IR better --}}
+    {{> opwNavigation}}
+    {{> yield}}
+    {{#if showFooter}}
+        {{> opwFooter}}
+    {{/if}}
+
+</template>
+
+
+
+<template name="opwLightbox">
+
+    {{!-- Re-factor Editor & others to use this --}}
+    <div 
+        class="modal fade" 
+        id="{{cssId}}" 
+        tabindex="-1" 
+        role="dialog" 
+        aria-labelledby="{{cssId}}-label">
+
+        <div 
+            class="modal-dialog" 
+            role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button 
+                        type="button" 
+                        class="close" 
+                        data-dismiss="modal" 
+                        aria-label="Close">
+                        <span 
+                            aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    <h4 
+                        class="modal-title" 
+                        id="opw-editor-label">
+                        {{label}}
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        {{#if columns}}
+                            <div class="row">
+                                {{!-- For consistency w/editor input --}}
+                                {{{columns}}}
+                            </div>
+                        {{/if}}
+                        {{#if template}}
+                            {{!-- w00t! --}}
+                            {{> Template.dynamic template=template}}
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    {{#if footerButtons}}
+                        {{#if closeText}}
+                            <button 
+                                type="button" 
+                                class="btn btn-default" 
+                                data-dismiss="modal">
+                                {{closeText}}
+                            </button>
+                        {{/if}}
+                        {{#if actionText}}
+                            <button 
+                                id="{{actionId}}"
+                                type="button" 
+                                class="btn btn-primary">
+                                {{actionText}}
+                            </button>
+                        {{/if}}
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</template>
+
+
+
 <template name="opwLoading">
 
+    {{!-- TODO: Get some CSS loaders set up already! lol --}}
     <div id="opw-loading">
         <p>Loading...</p>
     </div>
@@ -273,45 +403,43 @@
 
 
 
-<template name="opwLayout">
-
-    {{> opwNavigation}}
-    {{> yield}}
-    {{#if showScrollToTop}}
-        {{> opwScrollToTop}}
-    {{/if}}
-
-</template>
-
-
-
 <template name="opwNavigation">
 
-{{!-- TODO: Replace with ScrollMenu friendly version
-            and save this one to the elements html 
-            w/label & instructions
---}}
-
+    {{!-- Sometimes.. there is just no pretty way to Bootstrap >:| --}}
     <nav id="opw-primary-nav" class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
+        <div class="container{{opwFluidNavbar}}">
 
             {{>opwNavigationMobile}}
 
-            <div 
-                id="opw-navigation" 
-                class="collapse navbar-collapse">
+            {{!-- TODO: May need to put the classes or div into a helper --}}
+            <div id="opw-navigation" class="{{opwCollapseNavbar}}" >
+                {{!-- This line is very long because Meteor won't compile if
+                        I put the #if on another line :) --}}
 
-                <ul class="nav navbar-nav">
+                <ul class="{{opwNavbarClasses}}">
+
+                    <li>
+                        <a class="page-scroll hide" href="#top">One Page Wonder</a>
+                    </li>
 
                     {{!-- Dynamic rows --}}
                     {{#each opwRows}}
 
-                        {{!-- TODO: Make this a template, assign scroll on rendered, & refresh scrollspy --}}
+                        {{!-- > opwNavigationItem --}}
                         <li>
                             <a class="page-scroll" href="#{{slug}}">{{title}}</a>
                         </li>
 
                     {{/each}}
+
+                    {{!-- Change navigation style --}}
+                    {{#if opwAllowDynamicNavigation}}
+                        <li id="opw-change-navigation">
+                            <a>
+                                <span class="glyphicon glyphicon-magic"></span>
+                            </a>
+                        </li>
+                    {{/if}}
 
                     {{!-- Add row --}}
                     {{#if currentUser}}
@@ -337,7 +465,6 @@
                         </li>
                     {{/if}}
 
-
                 </ul>
             </div>
         </div>
@@ -347,27 +474,10 @@
 
 
 
-<template name="opwNavigationEditor">
-{{!-- TODO: Consolidate this with opwNavigationInput --}}
+<template name="opwNavigationItem">
 
     <li>
-        <input 
-            type="text" 
-            id="opw-title-editor"
-            class="form-control" 
-            maxlength="20">
-    </li>
-
-</template>
-
-
-
-<template name="opwNavigationInput">
-
-    <li class="page-scroll">
-        <input type="text" id="opw-new-nav" 
-            class="form-control" maxlength="20" 
-            href="#opw-new-section" placeholder="Enter or tab to save & close">
+        <a class="page-scroll" href="#{{slug}}">{{title}}</a>
     </li>
 
 </template>
@@ -388,24 +498,9 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand page-scroll opw-root">
-            <img src="/logo.png" title="One Page Wonder" id="opw-logo"/>
-            Page Wonder
+            <img src="{{opwSiteLogo}}" title="{{opwSiteTitle}}" id="opw-logo" />
+            {{opwsiteTitle}}
         </a>
-    </div>
-
-</template>
-
-
-
-<template name="opwNewRowContent">
-
-    <div class="col-lg-12">
-        <h1>New Section</h1>
-        <ul>
-            <li>To save: Press control + enter</li>
-            <li>Contact form: Cick the toolbar envelope</li>
-        </ul>
-        <p>That's it!</p>
     </div>
 
 </template>
@@ -422,42 +517,50 @@
         {{>opwSection}}
     {{/each}}
 
+  {{!--
+   This worked fine, by trying waiting on the home row only
     {{>opwAuthenticate}}
 
-</template>
+    {{#with opwHomeRow}}
+        {{>opwSection}}
+    {{/with}}
 
-
-
-<template name="opwRowEditor">
-
-    <section id="opw-new-section" class="full-height opw-sm">
-        <div class="container">
-            <div id="opw-element-bar" class="row">
-                <div class="col-sm-12 text-center">
-                    {{>opwBootstrapBar}}
-                </div>
-            </div>
-            <div id="opw-row-editor" class="row">
-                <div class="col-sm-12">
-                    {{>opwRowTextarea}}
-                </div>
-            </div>
-        </div>
-    </section>
+    {{#each opwRows}}
+        {{>opwSection}}
+    {{/each}}
+  --}}
 
 </template>
 
 
 
-<template name="opwRowTextarea">
+<template name="opwScrollIndicator">
 
-{{!-- It must be done --}}
-<textarea id="opw-new-row" class="opw-row-editor form-control"><div class="col-lg-12">
-    <h1>New Section</h1>
-    <p>Press control + enter at the same time to save & close this section.</p>
-    <p>Add <span id="opw-contact"></span> to add the contact field!</p>
-</div></textarea>
-{{!-- Ugh! lol --}}
+    {{#if opwShowFixedScrollIndicator}}
+
+        {{#if opwLastDisplayedSectionIsActive}}
+            <div>
+                <a id="opw-scroll-to-top" class="page-scroll">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-o fa-stack-2x"
+                            style="font-weight: 200"></i>
+                        <i class="fa fa-angle-double-up fa-stack-1x"></i>
+                    </span>
+                </a>
+            </div>
+        {{else}}
+            <div>
+                <a id="opw-scroll-to-next" class="page-scroll">
+                    <span class="fa-stack fa-lg">
+                        <i class="fa fa-circle-o fa-stack-2x"
+                            style="font-weight: 200"></i>
+                        <i class="fa fa-angle-double-down fa-stack-1x"></i>
+                    </span>
+                </a>
+            </div>
+        {{/if}}
+
+    {{/if}}
 
 </template>
 
@@ -465,105 +568,207 @@
 
 <template name="opwSection">
 
-    <section id="{{slug}}" class="{{#if title}}full{{else}}root{{/if}}-height opw-sm">
-        <div class="container">
-            {{#if currentUser}}
-                <div class="row opw-row-options text-muted">
-                    <div class="col-sm-12">
-                        <h5 
-                            class="opw-toggle-row-editor inline"
-                            title="Edit this row">
-                            <i 
-                                class="fa fa-pencil"
-                                title="Edit this row">
-                            </i>
-                        </h5>
-                        {{#if title}}
-                            <h5 
-                                class="opw-remove-row inline"
-                                title="Edit this row">
-                                <i 
-                                    class="fa fa-trash"
-                                    title="Remove this row">
-                                </i>
-                            </h5>
-                        {{/if}}
-                    </div>
-                </div>
-            {{/if}}
-            <div class="row opw-row-content">
-                {{{content}}}
+    <section 
+        id="{{slug}}" 
+        class="row{{#unless title}} root-height{{/unless}}">
+
+        {{#if currentUser}}
+            <div class="col-sm-12 opw-row-options text-center text-muted">
+                {{> opwSectionOptions}}
             </div>
-        </div>
+        {{/if}}
+
+        {{{content}}}
+
+        {{#if opwShowSectionalScrollIndicator}}
+            {{>opwScrollIndicator}}
+        {{/if}}
+
     </section>
 
 </template>
 
 
 
-<template name="opwScrollToTop">
-{{!-- TODO: Rename to opwScroller --}}
+<template name="opwSectionOptions">
 
-    <div id="opw-bottom" class="row">
+    <h5 
+        class="opw-toggle-row-editor inline"
+        title="Edit this row">
+        <i 
+            class="fa fa-pencil"
+            title="Edit this row">
+        </i>
+    </h5>
+    {{#if opwSectionRemovable}}
+        <h5 
+            class="opw-remove-row inline"
+            title="Remove this row">
+            <i 
+                class="fa fa-trash"
+                title="Remove this row">
+            </i>
+        </h5>
+    {{/if}}
 
-        {{!-- Social Icons --}}
-        <div class="col-sm-4 text-center">
-            <div id="opw-social" class="float-right">
-                <a id="opw-github" 
-                        class="opw-social-icon" 
-                        href="http://github.com/iDoMeteor/onepagewonder">
-                    <span class="fa fa-2x fa-github"></span>
-                </a>
-                <a id="opw-twitter" 
-                        class="opw-social-icon" 
-                        href="http://twitter.com/iDoMeteor">
-                    <span class="fa fa-2x fa-twitter"></span>
-                </a>
-            </div>
-        </div>
+</template>
 
-        {{!-- Scroll to Top --}}
-        {{!-- TODO: Might be able to eliminate the href .. triple check --}}
-        {{!-- TODO: Cursor change CSS throughout --}}
-        <div class="col-sm-4 text-center">
 
-            {{#if lastDisplayedSectionIsActive}}
-                <div>
-                    <a id="opw-scroll-to-top" class="page-scroll">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle-o fa-stack-2x"
-                                style="font-weight: 200"></i>
-                            <i class="fa fa-angle-double-up fa-stack-1x"></i>
-                        </span>
-                    </a>
-                </div>
-            {{else}}
-                <div>
-                    <a id="opw-scroll-to-next" href="#top" class="page-scroll">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle-o fa-stack-2x"
-                                style="font-weight: 200"></i>
-                            <i class="fa fa-angle-double-down fa-stack-1x"></i>
-                        </span>
-                    </a>
-                </div>
-            {{/if}}
 
-        </div>
+<template name="opwSocialIcons">
 
-        <div class="col-sm-4 text-center">
-
-            {{!-- One Page Wonder info tag - be nice and use it! Or don't! Dick! :) --}}
-                {{!-- TODO: Get rid of rel="external" & do it right! --}}
-            <a id="opw-brag" 
-                class="float-right img-rounded" 
-                href="http://opw.idometeor.com" 
-                target="_blank">
-            <img src="/opw/images/onepagewonder-logo-24-dark.png" 
-                title="One Page Wonder" id="opw-logo"/>
+    <div id="opw-social" class="float-right">
+        {{#each opwSocialServices}}
+            <a id="opw-{{service}}" 
+                    class="opw-social-icon" 
+                    href="{{link}}">
+                <span class="fa fa-2x fa-github"></span>
             </a>
+        {{/each}}
+    </div>
 
+</template>
+
+
+
+<template name="opwWonderBar">
+
+    <div class="btn-group z1">
+
+        {{!-- Bootstrap Components --}}
+        <button id="opw-wonderbar-button" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            Btn
+        </button>
+        <button id="opw-wonderbar-contact" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-envelope" title="Insert code for OPW contact form"></i>
+        </button>
+        <div class="dropdown">
+            {{!-- Columns --}}
+            <button 
+                class="btn btn-primary dropdown-toggle" 
+                type="button" 
+                id="opw-wonderbar-columns" 
+                data-toggle="dropdown" 
+                aria-haspopup="true" 
+                aria-expanded="true">
+                Cols
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="opw-wonderbar-columns">
+                <li>
+                    <button id="opw-wonderbar-col-12" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        Sm12
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-col-6" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        Sm6
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-col-4" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        Sm4
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-col-3" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        Sm3
+                    </button>
+                </li>
+            </ul>
         </div>
+        <button id="opw-wonderbar-carousel" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-toggle-right" title="Insert code for an image slider (carousel)"></i>
+        </button>
+        <button id="opw-wonderbar-jumbotron" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-square" title="Insert code for a jumbotron"></i>
+        </button>
+        <button id="opw-wonderbar-label" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-tag" title="Insert code for a label"></i>
+        </button>
+        <button id="opw-wonderbar-modal" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-external-link-square" title="Insert code for a modal"></i>
+        </button>
+        <button id="opw-wonderbar-panel" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-calendar-o" title="Insert code for a panel"></i>
+        </button>
+        <button id="opw-wonderbar-well" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-square-o" title="Insert code for a well"></i>
+        </button>
+        {{!-- Standard HTML --}}
+        <div class="dropdown">
+            {{!-- Headings --}}
+            <button 
+                class="btn btn-primary dropdown-toggle" 
+                type="button" 
+                id="opw-wonderbar-columns" 
+                data-toggle="dropdown" 
+                aria-haspopup="true" 
+                aria-expanded="true">
+                Cols
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="opw-wonderbar-columns">
+                <li>
+                    <button id="opw-wonderbar-h1" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-h2" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-h3" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-h4" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-h5" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+                <li>
+                    <button id="opw-wonderbar-h6" class="opw-wonderbar-btn btn btn-sm btn-primary">
+                        <i class="fa fa-header" title="Insert heading"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <button id="opw-wonderbar-dl" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            DL
+        </button>
+        <button id="opw-wonderbar-ol" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-list-ol" title="Insert unordered list"></i>
+        </button>
+        <button id="opw-wonderbar-ul" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-list-ul" title="Insert unordered list"></i>
+        </button>
+        <button id="opw-wonderbar-audio" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-music" title="Insert attached audio object"></i>
+        </button>
+        <button id="opw-wonderbar-image" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-image" title="Insert attached image object"></i>
+        </button>
+        <button id="opw-wonderbar-video" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-video-camera" title="Insert attached video object"></i>
+        </button>
+        <button id="opw-wonderbar-code" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-code" title="Insert code block"></i>
+        </button>
+        <button id="opw-wonderbar-collection" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-magic" title="Insert all the bootstrap components!!"></i>
+        </button>
+        {{!-- Help --}}
+        <button id="opw-wonderbar-help" class="opw-wonderbar-btn btn btn-sm btn-primary">
+            <i class="fa fa-question" title="Show OPW help section"></i>
+        </button>
     </div>
 
 </template>

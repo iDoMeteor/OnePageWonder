@@ -1,501 +1,490 @@
-console.log('#OnePageWonder v1.0.0-RC.1 Loading Main Client Environment');
-/***
+console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Main Client Environment');
+/******************************************************************************
  *
- * TODO: Bring docs up to my usual high standards
+ * #OnePageWonder by @iDoMeteor
+ * v1.0.0-RC.2
  *
- */
+ *****************************************************************************/
+
+/******************************************************************************
+ *
+ * OPW Login hook
+ *
+ *****************************************************************************/
 
 Accounts.onLogin(function (user) {
-    Router.go('/');
+    // TODO: Should also log failures
+    OPW.logAuthentication(user);
+    // TODO: idmGA.event(category, action, label, value);
 });
 
-/*
-UI.registerHelper('currentUserIp', function () {
-    console.log(idmCL.getIp(idmCO));
-    return OPW.getUserIp();
-});
-*/
 
-/*
-Template.mpAuthenticate.created(function () {
+/******************************************************************************
+ *
+ * OPW alert rendered handler
+ *
+ *****************************************************************************/
 
-    if (MP.user()) {
-        // Set message
-        // Go back to where you came from
-    }
+Template.opwAlert.onRendered(function () {
 
-});
-*/
-
-/*
-Template.body.events ({
-    'scroll': function (event) {
-
-        var popper      = rows.fetch();
-        var last        = popper.pop().slug;
-        console.log(last);
-        $('#opw-navigation li').each(function () {
-            var href = $(this).find('.page-scroll').attr('href').substr(1);
-            console.log($(this).hasClass('active'));
-            if ($(this).hasClass('active')) {
-                Session.set('opwActiveSection', href);
-            }
+    var duration = this.data.duration || 5000;
+    var target = this.find('.alert');
+    Meteor.setTimeout(function () {
+        $(target).hide('fade', function () {
+            $(target).alert('close');
         });
+    }, duration);
 
-    },
 });
-*/
 
+
+/******************************************************************************
+ *
+ * Authentication form event handlers
+ *
+ *****************************************************************************/
 
 Template.opwAuthenticate.events ({
 
-    // TODO: Password reset? Just Meteor.users.remove({}) from the shell! :)
-
-
+    // Cancel authentication request, clear inputs & hide auth section
     'click #opw-auth-cancel': function (event) {
+        event.preventDefault();
         $('#opw-auth-email').val('');
         $('#opw-auth-password').val('');
-        $('#opw-login-section').hide('drop', {direction: 'down'});
+        $('#opw-authenticate').modal('hide');
     },
 
+    // Create admin user
     'click #opw-auth-email-create': function (event) {
-
         event.preventDefault();
-        
-        // Locals
         var options      = {};
-        options.email    = $('[name=email]').val();
+        options.email    = $('#opw-auth-email').val();
         options.name     = 'Admin';
-        options.password = $('[name=password]').val();
+        options.password = $('#opw-auth-password').val();
         options.username = 'Admin';
-
-        // Create new user
-        Accounts.createUser(options, function (error) {
-            if (error) {
-                // Failure
-                console.log('#OnePageWonder ERROR Failed to create new user: ' + error);
-                console.log('#OnePageWonder ERROR This most likely means the one and only user allowed has already been created.  If you are locked out, issue Meteor.users.remove({}) on the server and then create a new user.');
-                // TODO: Set alert
-
-                return false;
-            } else {
-                // Success
-                $('[name=email]').val(''),
-                $('[name=password]').val(''),
-                $('#opw-login-section').hide('drop', {direction: 'down'}),
-                console.log('#OnePageWonder ERROR Failed to create new user: ' + error);
-                // TODO: Set welcome alert
-
-                // Go home
-                Router.go('/');
-                return true;
-
-            }
-
-        });
-
+        OPW.createUser(options);
     },
 
+    // Primary login feature, hide & clear inputs, go to root
     'click #opw-auth-email-login': function (event) {
-
         event.preventDefault();
-        var email    = $('[name=email]').val();
-        var password = $('[name=password]').val();
-        Meteor.loginWithPassword (email, password, function (error) {
-            return (error) ? (
-                console.log('#OnePageWonder ERROR Cannot login: ' + error, 2),
-                false
-            ) : (
-                $('[name=email]').val(''),
-                $('[name=password]').val(''),
-                $('#opw-login-section').hide('drop', {direction: 'down'}),
-                Router.go('/'), 
-                true
-            )
-        });
+        var email    = $('#opw-auth-email').val();
+        var password = $('#opw-auth-password').val();
+        OPW.loginWithPassword(email, password);
     },
 
+    // Attempts login if return is pressed in password field
     'keypress #opw-auth-password': function (event) {
-
-        var email    = $('[name=email]').val();
+        var email    = $('#opw-auth-email').val();
         var key      = event.which; // TODO: Alter API (notes there)
-        var password = $('[name=password]').val();
-
+        var password = $('#opw-auth-password').val();
         if (!OPW.pressedEnter(event)) {
-            return ;
+            return;
+        }
+        event.preventDefault();
+        OPW.loginWithPassword(email, password);
+
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Authentication helpers
+ *
+ *****************************************************************************/
+
+Template.opwAuthenticate.helpers({
+
+    showLogin: function () {
+        return OPW.countUsers();
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Authentication helpers
+ *
+ *****************************************************************************/
+
+Template.opwAuthenticate.onCreated(function () {
+
+    this.subscribe('opwUsers');
+
+});
+
+
+/******************************************************************************
+ *
+ * Contact form event handlers
+ *
+ *****************************************************************************/
+
+Template.opwContactForm.events({
+
+    // TODO: When checking for dupes, check global helper for IP
+
+    // Validate and potentially submit contact form
+    'click .opw-contact-submit, keyup .opw-contact-input': function (event, template) {
+
+        // Locals
+        var submit  = (
+            (OPW.pressedEnter(event))
+            || ('click' == event.type)
+        ) ? true : false;
+        var val     = $(template.find('.opw-contact-input')).val();
+        val         = val.trim();
+
+        if (submit) event.preventDefault();
+
+        // Reset if empty
+        if (!val.length) {
+            OPW.contactFormReset(template);
+            return;
         }
 
-        Meteor.loginWithPassword (email, password, function (error) {
-            return (error) ? (
-                console.log('#OnePageWonder ERROR Cannot login: ' + error, 2),
-                false
-            ) : (
-                $('[name=email]').val(''),
-                $('[name=password]').val(''),
-                $('#opw-login-section').hide('drop', {direction: 'down'}),
-                Router.go('/'), 
-                true
-            )
-        });
+        // Validate
+        if (OPW.isValidContact(val)) {
+
+            // Set valid flag
+            OPW.contactFormValid(template);
+
+            // Check for enter
+            if (submit) {
+                OPW.insertContact(val, template);
+                return; // Post-processing handled in above
+            }
+            
+        } else {
+
+            // Set invalid flag
+            OPW.contactFormInvalid(template);
+            // Pop alert if they tried to submit anyway
+            if (submit) {
+                OPW.popAlert('You must enter a valid twitter handle or email.',
+                             'danger');
+            }
+
+        }
+
+        return;
+
     },
 
 });
 
-Template.opwAuthenticate.onRendered (function () {
 
-    // Hide authentication form
-    $('#opw-login-section').hide();
+/******************************************************************************
+ *
+ * Contact form helpers
+ *
+ *****************************************************************************/
+
+Template.opwContactForm.helpers({
+
+    contactButtonString: function () {
+        return opw.contact.btnString;
+    },
 
 });
 
-Template.opwBootstrapBar.events ({
 
-    // TODO: These could probably all be methodized..
-    'click #opw-bsbar-button': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementButton)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+/******************************************************************************
+ *
+ * Contact thank you helpers
+ *
+ *****************************************************************************/
+
+Template.opwContactThankYou.helpers({
+
+    contactThankYou1: function () {
+        return opw.contact.thankYou1;
     },
 
-    'click #opw-bsbar-col-12': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementCol12)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+    contactThankYou2: function () {
+        return opw.contact.thankYou2;
     },
 
-    'click #opw-bsbar-col-6': function (event) {
+});
+
+
+/******************************************************************************
+ *
+ * OPW Editor event handlers
+ *
+ *****************************************************************************/
+
+Template.opwEditor.events({
+
+    // Trash can handler, soft deletes a row
+    'click #opw-editor-remove': function (event) {
+
         event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementCol6)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+
+        // TODO: Confirm with user
+
+        OPW.removeRow($(event.target).attr('id'));
+        Router.go('/');
+
     },
 
-    'click #opw-bsbar-col-4': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementCol4)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+    // Save
+    'click #opw-editor-save': function (event) {
+
+        var param           = {};
+
+            // Formulate parameter object
+            param.id           = id;
+            param.content      = content;
+            param.target       = event.target;
+            param.isTop        = isTop;
+
+            if (!isTop) {
+                param.title     = title;
+            }
+
+            // Update
+            OPW.expireRow(param);
+            OPW.insertRow(param);
+            OPW.updateRow(param);
+
     },
 
-    'click #opw-bsbar-col-3': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementCol3)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+});
+
+
+/******************************************************************************
+ *
+ * OPW Editor helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditor.helpers({
+
+    // Set up for the editor's select range
+    opwRowSortRange: function () {
+        return _.range(0,99);
+    }
+
+});
+
+
+/******************************************************************************
+ *
+ * OPW Editor rendered handler
+ *
+ *****************************************************************************/
+
+Template.opwEditor.onRendered(function () {
+
+    $('opw-editor').modal({keyboard: false});
+
+});
+
+
+/******************************************************************************
+ *
+ * Footer helpers
+ *
+ *****************************************************************************/
+
+Template.opwFooter.helpers ({
+
+    opwFixedFooter: function () {
+        return (opw.footer.fixed);
     },
 
-    'click #opw-bsbar-carousel': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementCarousel)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
+    opwFixedScrollIndicator: function () {
+        return (opw.navigation.fixedScrollIndicator);
     },
 
-    'click #opw-bsbar-jumbotron': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementJumbotron)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-well': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementWell)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-header': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementH1)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-dl': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementDL)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-ol': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementOL)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-ul': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementUL)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-audio': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementAudio)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-image': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementImage)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-video': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementVideo)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-code': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwElementPre)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-all-teh-mana': function (event) {
-        event.preventDefault();
-        var append = '\n'
-            + Blaze.toHTML(Template.opwBootstrapComponents)
-            + '\n';
-        var target = $(event.target).closest('.container').find('textarea');
-        var value = target.val() + append;
-        target.val(value);
-    },
-
-    'click #opw-bsbar-help': function (event) {
-        event.preventDefault();
-
-        // TODO: Show lightbox
-
+    opwShowSocialIcons: function () {
+        return (opw.social.enable);
     },
 
 });
     
+
+/******************************************************************************
+ *
+ * Layout event handlers
+ *
+ * Currently just handles the home link and brag link
+ *
+ *****************************************************************************/
+
 Template.opwLayout.events ({
 
-    'click .opw-root': function (event) {
-
+    'click .opw-brag': function (event) {
         event.preventDefault();
+        // Log it
         // Pop informative popover
     },
 
     'click .opw-root': function (event) {
-
         event.preventDefault();
-
-        // Page scroller
-        $('html, body').stop().animate({
-            scrollTop: $('#top').offset().top
-        }, 1500, 'easeInOutExpo');
-        // Change URL after we arrive
-        Meteor.setTimeout( function () {
+        OPW.scrollToHref('#top', function () {
             Router.go('opwRoot');
-        }, 1500);
+        });
     },
 
 });
+
+
+/******************************************************************************
+ *
+ * Layout (seemingly global) helpers
+ *
+ * This currently tells the scroll indicator how to act
+ *
+ *****************************************************************************/
 
 Template.opwLayout.helpers({
 
-    // Whether or not to show the scroll to top link on bottom
-    showScrollToTop: function () {
-        // Should be 1 < but getRows excludes top row
+    fixedScrollIndicator: function () {
+        return (opw.toggles.fixedScrollIndicator) ? true : false;
+    },
+
+    showScrollIndicator: function () {
+        // Would be 1 < but getRows excludes top row
         return (0 < OPW.getRows().length) ? true : false;
+    },
+
+    showFooter: function () {
+        // Would be 1 < but getRows excludes top row
+        return (opw.footer.show);
     },
 
 });
 
+
+/******************************************************************************
+ *
+ * Layout rendered function
+ *
+ *****************************************************************************/
+
 Template.opwLayout.onRendered(function () {
 
-    // Assign Bootstrap scrollspy events
-    $('body').attr('data-spy', 'scroll');
-    $('body').css('position', 'relative');
-    $('body').attr('data-target', '#opw-navigation');
-    $('body').scrollspy({target: '#opw-navigation' });
+    // *poof* Pimp glitter falls all around you.
+    OPW.instantiateNavigation();
 
-    // Instantiate ScrollMenu.js
-    /*
-    OPW.sm();
-    var anchors = [
-        {
-            backgroundColor: "#00f",
-            className: "opw-sm",
-            label: "Test",
-        },
-    ]
-    var template = Blaze.toHTML(Template.opwSM);
-    var options = {
-        anchorSetup: anchors,
-        sectionClass: 'opw-sm',
-    }
-    var opwScrollMenu = ScrollMenu(options);
-    console.log(JSON.stringify(opwScrollMenu, null, 4));
-    */
+});
 
-    // Assign page scroll events
-    $('.page-scroll').bind('click', OPW.scrollToHref);
 
-    // Collapse navbar header when not at top
-    $(window).scroll(function() {
-        if ($(".navbar").offset().top > 50) {
-            $(".navbar-fixed-top").addClass("top-nav-collapse");
-        } else {
-            $(".navbar-fixed-top").removeClass("top-nav-collapse");
-        }
+/******************************************************************************
+ *
+ * OPW Lightbox rendered handler
+ *
+ *****************************************************************************/
+
+Template.opwLightbox.onRendered(function () {
+
+    var target = this.find('.modal');
+    $(target).modal('show');
+    $(target).on('hidden.bs.modal', function () {
+        $(target).remove();
     });
 
 });
 
+
+/******************************************************************************
+ *
+ * Navigation events
+ *
+ *****************************************************************************/
+
 Template.opwNavigation.events({
 
-    'activate.bs.scrollspy .nav li': function (event) {
-        Session.set('opwActiveSection',
-                    $(event.target).find('.page-scroll').attr('href'));
-        Session.set('opwNextSection',
-                    $(event.target).next().find('.page-scroll').attr('href'));
+    // This hooks BSSS and sets session vars for the scroll indicator
+    // One might put other possible activation hooks here
+    'activate.bs.scrollspy .nav li': function () {
+        state = OPW.scrollIndicatorUpdate();
+        Session.set('opwScrollIndicatorState', state);
+    },
+
+    // Switch navigation styles
+    'click #opw-magic': function (event, template) {
+        event.preventDefault();
     },
 
     // Instantiate the new content editor
     'click #opw-add-row': function (event, template) {
-
         event.preventDefault();
-
-        // TODO: Obv this inline HTML crap has to go :D
-        var inputExists     = ($('#opw-new-nav').length) ? true : false;
-        var navInput        = null;
-        var rowEditor       = null;
-        var textareaExists  = ($('#opw-new-row').length) ? true : false;
-        if (inputExists) {
-            console.log ('#OnePageWonder ERROR Input already exists');
-            OPW.invalidTitle();
-            return false;
-        }
-        if (textareaExists) {
-            console.log ('#OnePageWonder ERROR Textarea already exists');
-            OPW.invalidContent();
-            return false;
-        }
-
-        // Insert navbar list item
-        UI.render(Template.opwNavigationInput, template.find('ul'));
-
-        // Hide it for now
-        $('#opw-new-nav').hide();
-
-        // Insert content section
-        UI.render(Template.opwRowEditor, $('body').get(0), $('section').get(0));
-
-        // Hide it for now
-        $('#opw-new-section').hide();
-
-        // Adjust height as appropriate
-        var height = $('#opw-new-section').innerHeight() - 170;
-        $('#opw-new-row').css('height', height + 'px');
-
-        // Assign events
-        $('#opw-new-nav').bind('click', OPW.scrollToHref);
-        $('#opw-new-nav').bind('keyup', OPW.insertNav);
-        $('#opw-new-nav').blur(function (event) {
-            OPW.insertNav(event);
-        });
-        $('#opw-new-section textarea').bind('keydown', OPW.insertRow);
-
-        // Show the newly created inputs
-        $('#opw-new-nav').show('drop', {direction: 'down'}, 1000);
-        $('#opw-new-section').show('drop', {direction: 'down'}, 1000);
-
-        /** 
-         * Caveat: Several ways of doing this, each have pros and cons..
-         *          going this route for now
-         */
-        // Scroll to it
-        OPW.scrollToHref('body', function () {
-            // Focus
-            $('#opw-new-nav').focus();
-        });
-
+        OPW.popEditor();
     },
 
     // Expose authentication section
     'click #opw-login': function (event) {
-
         event.preventDefault();
-        $('#opw-login-section').show('drop', {direction: 'down'}, function () {
-            OPW.scrollToHref('#opw-login-section');
-            $('#opw-login-section').find('input').first().focus();
+        OPW.popLightbox({
+            id:         'opw-authenticate',
+            cssId:      'opw-authenticate',
+            footer:     false,
+            label:      opw.title + ' Login',
+            template:   'opwAuthenticate',
         });
-
     },
 
-    // Logout and go home
+    // Logout
     'click #opw-logout': function (event) {
         event.preventDefault();
         Meteor.logout();
-        // TODO: Pop alert
+        OPW.popAlert('Thank you, please drive through.');
     },
 
 });
 
+
+/******************************************************************************
+ *
+ * Navigation Helpers
+ *
+ * This gets the rows for giving the navigation list, their slug & link title
+ * properties.  It might be theoretically more efficient or proper to use
+ * a more specific query/method such as getNavProperties.. but since
+ * this is ulitmately being pulled from the client side Mini-Mongo, it's
+ * going to be nearly instantaneous regardless. Plus, Meteor & MM are smart
+ * enough to keep repetitive reactive queries all buffered together. :)
+ *
+ * ... And, if it's not, I intend to potentially write some caching functions.
+ *
+ *****************************************************************************/
+
 Template.opwNavigation.helpers({
+
+    opwAllowDynamicNavigation: function () {
+        if (opw && OPW.isObject(opw.navigation)) {
+            return (opw.navigation.allowDynamic);
+        }   
+    },
+
+    opwCollapseNavbar: function () {
+        if (opw && OPW.isObject(opw.navigation) && (opw.navigation.collapse)) {
+            return 'collapse navbar-collapse';
+        }   
+    },
+
+    opwFluidNavbar: function () {
+        if (opw && OPW.isObject(opw.navigation) && (opw.navigation.fluid)) {
+            return '-fluid';
+        }   
+    },
+
+    opwNavbarClasses: function () {
+        var classes = 'nav navbar-nav';
+        if ('MeteorPress' == opw.navigation.style) 
+            classes += ' nav-meteorpress';
+        else if ('Stacked' == opw.navigation.style) 
+            classes += ' nav-stacked';
+        else if ('Scrolling' == opw.navigation.style) 
+            classes += ' nav-scrolling';
+        return classes;
+    },
 
     // Get non-stale, non-removed, non-top-slug-having rows..
     opwRows: function () {
@@ -504,253 +493,133 @@ Template.opwNavigation.helpers({
 
 });
 
+
+/******************************************************************************
+ *
+ * Navigation rendered function
+ *
+ * This sets up the session properties for the scroll indicator, attempts to
+ * reactively re-bind the scroll events when the navigation list content
+ * changes, and tries to correct the scroll indicator session properties 
+ * in the same fashion.
+ *
+ *****************************************************************************/
+
 Template.opwNavigation.onRendered(function () {
 
     // Locals
-    var rows    = opwRows.find({removed: {$not: true}, stale: {$not: true}});
-    var popper  = rows.fetch();
-    var hasRows = (1 < popper.length);
-    var first   = '#top'
-    var next    = '#' + popper.shift().slug;
-    var last    = '#' + popper.pop().slug;
+    var persistentInstance = this;
 
-    Session.set('opwActiveSection',  first);
-    Session.set('opwNextSection', next);
-    Session.set('opwLastSection', last);
+    // TODO: May need to run the autorun stuff one time manually
 
-    // (Re-)bind scroll events, reactively (I think :>)
-    var handle = rows.observeChanges({
-        added: function () {
-            // Bind scroll spy events
-            $('[data-spy="scroll"]').each(function () {
-                var spy = $(this).bind('click', OPW.scrollToHref);
-            });
-            // Track active section
-        },
-        changed: function () {
-            // Refresh scroll spy
-            $('[data-spy="scroll"]').each(function () {
-                var $spy = $(this).bind('click', OPW.scrollToHref);
-                var $spy = $(this).scrollspy('refresh')
-            })
-            // Track active section
-            // TODO: Assign contact events if necessary
-        },
-        removed: function () {
-            // Refresh scroll spy
-            $('[data-spy="scroll"]').each(function () {
-                var $spy = $(this).scrollspy('refresh')
-            })
-            // Track active section
-        },
+    persistentInstance.autorun(function (computation) {
+
+        // Don't hang around if we're not needed
+        if (!OPW.getRows(null, false).count()) {
+            console.log('DEBUG No rows to process for scrolling', 1);
+            computation.stop();
+        }
+
+        Session.set('opwScrollIndicatorState', state);
+
+        // Re-bind scroll events
+        $('[data-spy="scroll"]').each(function () {
+            // This is local to the each, of course
+            // therefore, we can probably remove the variable
+            var $spy = $(this).scrollspy('refresh');
+        });
+
+        // Re-bind scroll events
+        persistentInstance.$('.page-scroll').bind('click', OPW.scrollToHref);
+
     });
 
 });
 
-Template.opwContactForm.events({
 
-    // Validate and potentially submit contact form
-    'click #opw-contact-submit, keyup #opw-contact-input': function (event) {
+/******************************************************************************
+ *
+ * Navigation item event handlers
+ *
+ *****************************************************************************/
 
-        event.preventDefault();
+// Template.opwNavigationItem.events({});
 
-        // Locals
-        var submit  = (
-            (OPW.pressedEnter(event))
-            || ('click' == event.type)
-        ) ? true : false;
-        var val     = $('#opw-contact-input').val();
-        val         = val.trim();
 
-        // Reset if empty
-        if (!val.length) {
-            // Remove valid indicator
-            $('#opw-contact-flag').removeClass('fa-flag-checkered text-success');
-            // Remove invalid indicator
-            $('#opw-contact-flag').removeClass('fa-flag text-danger');
-            // Assign default indicator
-            $('#opw-contact-flag').addClass('fa-flag-o text-muted');
-            return false;
-        }
+/******************************************************************************
+ *
+ * Navigation item destroyed handler
+ *
+ *****************************************************************************/
 
-        // Validate
-        // TODO: These could each be abstracted
-        if (OPW.isValidContact(val)) {
+// Template.opwNavigationItem.onDestroyed({});
 
-            // Remove default indicator
-            $('#opw-contact-flag').removeClass('fa-flag-o text-muted');
-            // Remove invalid indicator
-            $('#opw-contact-flag').removeClass('fa-flag text-danger');
-            // Set valid indicator
-            $('#opw-contact-flag').addClass('fa-flag-checkered text-success');
 
-            // Check for enter
-            // TODO: or submit click
-            if (submit) {
-                // Process
-                OPW.insertContact(val);
-                // Post-processing handled in above
-                return false;
-            }
-            
-        } else {
-            // Remove default indicator
-            $('#opw-contact-flag').removeClass('fa-flag-o text-muted');
-            // Remove valid indicator
-            $('#opw-contact-flag').removeClass('fa-flag-checkered text-success');
-            // Set invalid indicator
-            $('#opw-contact-flag').addClass('fa-flag text-danger');
-        }
+/******************************************************************************
+ *
+ * Navigation item rendered handler
+ *
+ *****************************************************************************/
 
-        return false;
+// Template.opwNavigationItem.onRendered({});
 
+
+/******************************************************************************
+ *
+ * Navigation item event handlers
+ *
+ *****************************************************************************/
+
+Template.opwNavigationMobile.helpers({
+
+    opwSiteLogo: function () {
+        return opw.logoRel;
     },
 
+    opwSiteTitle: function () {
+        return opw.title;
+    },
 
 });
+
+
+/******************************************************************************
+ *
+ * Root (truly global) event handlers
+ *
+ *****************************************************************************/
 
 Template.opwRoot.events({
 
-    'click .opw-remove-row': function (event) {
-
-        event.preventDefault();
-
-        // Locals
-        var selector    = {
-            removed:    {$not: true},
-            slug:       $(event.target).closest('section').attr('id'),
-            stale:      {$not: true},
-        };
-        var id = opwRows.findOne(selector)._id;
-
-        // Do it
-        OPW.removeRow(id);
-        Router.go('/');
-
+    // Global transparent click handler
+    'click': function (event, template) {
+        // Send GA event
+        return;
     },
 
-    // TODO: Methodize & use on click .fa-pencil & floppy
-    'click .opw-toggle-row-editor': function (event, template) {
-
-        event.preventDefault();
-
-        // Locals
-        var id              = null;
-        var isLocked        = (
-            $(event.target).hasClass('fa-pencil')
-            || $(event.target).children('i').hasClass('fa-pencil')
-        ) 
-            ? true : false;
-        var contentParent   = $(event.target).closest('.container');
-        var contentElement  = contentParent.find('.opw-row-content');
-        var content         = (isLocked)
-            ? contentElement.html()
-            : contentParent.find('textarea').val();
-        var height          = contentParent.parent().innerHeight() - 170;
-        var param           = {};
-        var slug            = contentParent.parent().attr('id');
-        var isTop           = false;
-        if ('top' == slug) {
-            isTop = true;
-        } else {
-            var titleElement    = (isLocked)
-                ? $('[href="#' + slug + '"]')
-                : $('#opw-title-editor');
-            var titleParent     = titleElement.parent();
-            var title           = (isLocked)
-                ? titleElement.text()
-                : titleElement.val();
-        }
-
-        // Validate
-        if (!OPW.isValidContent(content)) {
-            console.log('#OnePageWonder WARNING Content should never be empty');
-            // Flash textarea
-            OPW.invalidContent();
-            return false;
-        }
-        if (
-            (!isTop)
-            && (!OPW.isValidTitle(title)) 
-        ) {
-            console.log('#OnePageWonder WARNING Title should always be valid');
-            // Flash input
-            OPW.invalidTitle();
-            return false;
-        }
-
-        // Get ID of row being edited
-        id = OPW.getIdFromSlug(slug);
-
-        // Determine action to take
-        if (isLocked) {
-
-            // Toggle editor icon
-            contentParent.find('.fa-pencil').switchClass('fa-pencil', 'fa-floppy-o');
-
-            /* Convert content to textarea */
-            // TODO: Swap contact form code with span short code
-            //          Remove #opw-contact-form and re-init content value
-            // Drop content
-            contentElement.hide('drop', {direction: 'down'}, function () {
-                // Remove content
-                contentElement.remove();
-                // Insert row editor
-                Blaze.render(Template.opwRowEditor, template.find(contentParent));
-                // Adjust height
-                contentParent.find('textarea').hide();
-                contentParent.find('textarea').css('height', height + 'px');
-                // Assign attributes
-                contentParent.find('textarea').attr('data-id', id);
-                contentParent.find('textarea').attr('id', slug);
-                contentParent.find('textarea').val(content);
-                // Show textarea
-                contentParent.find('textarea').show('drop', {direction: 'down'}, 1000);
-            });
-
-            /* Convert title to input */
-            if (!isTop) {
-                // Drop title
-                titleElement.hide('drop', {direction: 'up'}, function () {
-                    // Remove title
-                    titleElement.remove();
-                    // Insert nav editor
-                    Blaze.render(Template.opwNavigationEditor, $('#opw-navigation ul').get(0));
-                    // Hide input
-                    titleParent.find('input').hide();
-                    // Set attributes
-                    $('#opw-title-editor').attr('href', '#' + slug); 
-                    $('#opw-title-editor').val(title);
-                    // Show input
-                    titleParent.find('input').show('drop', {direction: 'down'});
-                });
-            }
-
-        } else {
-
-            // Formulate parameter object
-            param.id           = id;
-            param.content      = content;
-            param.target       = event.target;;
-            param.isTop        = isTop;
-
-            if (!isTop) {
-                param.title     = title;
-            }
-
-            // Update
-            OPW.updateRow(param);
-
-        }
-
-        return false;
-
+    // Global transparent stroke handler
+    'keypress': function (event, template) {
+        // Send GA event
+        return;
     },
 
 });
 
+
+/******************************************************************************
+ *
+ * Root helpers
+ *
+ * This retrieves the home row (which is special since it must always appear,
+ * must always have #top for the slug and has no title.  It also retrieves
+ * all the other rows, separately, for looping in the content.
+ *
+ *****************************************************************************/
+
 Template.opwRoot.helpers({
 
+    // TODO: It may be faster to move these, or just the home row
+    //          to the router.. 
     opwHomeRow: function () {
         return OPW.getHomeRow();
     },
@@ -761,57 +630,100 @@ Template.opwRoot.helpers({
 
 });
 
+
+/******************************************************************************
+ *
+ * Root rendered function
+ *
+ * TODO: This needs to get the client IP from iDM Site Log.
+ *
+ *****************************************************************************/
+
 Template.opwRoot.onRendered(function () {
 
+    // Remove injected loader div
+    $('#opw-loader').remove();
+
+    // Just a check
     if (OPW.ipIsInContacts(Meteor.userIp)) {
-        console.log('#OnePageWonder INFO User IP is in contact list');
+        console.log('#OnePageWonder DEBUG User IP is in contact list', 1);
     }
 
-});
+    // iDM Connection Log IP Cheat
+    Meteor.setTimeout(function () {
+        // Sometimes root renders before injections finish
+        var ip = $('meta[name=ip]').attr('content');
+        Template.registerHelper('currentIp', function () {
+            return ip;
+        });
+        $('meta[name=ip]').remove();
+    }, 500);
 
-Template.opwSection.events({
-
-});
-
-Template.opwSection.onRendered(function () {
-
-    // Locals
-    var contactFormExists = (this.$('#opw-contact').length)
-
-    // Dynamically load OPW contact form if there is only one
-    if (contactFormExists) {
-        // Load contact template
-        Blaze.render(Template.opwContactForm, this.find('#opw-contact'));
-    }
-
-    return false;
-
-});
-
-Template.opwScrollToTop.helpers({
-
-    lastDisplayedSectionIsActive: function () {
-        var active = Session.get('opwActiveSection');
-        var last   = Session.get('opwLastSection');
-        return (last == active) ? true : false;
-    },
+    // Meteor.setTimeout(function () {
+        // TODO: This is ridiculously slow, try to localize
+        // Moved from route onRun 20150624:1515
+        // Localized 20150626:0230, check speeds on deployment
+        //      and remove this crap if it worked :>
+        // idmGA.pageview('/');
+    // }, 2500);
 
 });
 
-Template.opwScrollToTop.events({
 
-    'click #opw-scroll-to-next': function (event) {
+/******************************************************************************
+ *
+ * Scrolling indicator events
+ *
+ * This processes clicks (& taps) on the scroll indicator, when present. Also,
+ * handles the OPW brag & social indicators, which should probably be in
+ * the layout events.
+ *
+ *****************************************************************************/
+
+Template.opwScrollIndicator.events({
+
+    /*
+     * This is for when I implement a diversified scroll indicator
+    'click #opw-scroll-to-first': function (event) {
+        console.log('trying next');
         event.preventDefault();
         next = Session.get('opwNextSection');
         OPW.scrollToHref(next);
     },
 
-    'click #opw-scroll-to-top': function (event) {
+    'click #opw-scroll-to-last': function (event) {
+        console.log('trying next');
         event.preventDefault();
-        OPW.scrollToHref('#top');
+        next = Session.get('opwNextSection');
+        OPW.scrollToHref(next);
+    },
+
+    'click #opw-scroll-to-prev': function (event) {
+        console.log('trying next');
+        event.preventDefault();
+        next = Session.get('opwNextSection');
+        OPW.scrollToHref(next);
+    },
+    */
+
+    'click #opw-scroll-to-next': function (event) {
+        OPW.log('Trying to scroll to next', 1);
+        event.preventDefault();
+        var state = Session.get('opwScrollState');
+        var next  = '#' + state.next;
+        OPW.scrollToHref(next);
+    },
+
+    'click #opw-scroll-to-top': function (event) {
+        OPW.log('Trying to scroll to top', 1);
+        event.preventDefault();
+        var state = Session.get('opwScrollState');
+        var first = '#' + state.first
+        OPW.scrollToHref(first);
     },
 
     'click #opw-brag': function (event) {
+        OPW.log('Trying to pop OPW brag box', 1);
         event.preventDefault();
         // TODO: Light box
 
@@ -820,30 +732,161 @@ Template.opwScrollToTop.events({
 });
 
 
-Template.opwScrollToTop.onRendered(function () {
+/******************************************************************************
+ *
+ * Scrolling indicator helpers
+ *
+ *****************************************************************************/
 
-    // Assign carousel events
-    $('.carousel').carousel({interval: 6500});
+Template.opwScrollIndicator.helpers({
+
+    opwLastDisplayedSectionIsActive: function () {
+        state = Session.get('opwScrollIndicatorState');
+        return (OPW.isObject(state)) ? (state.active == state.last) : false;
+    },
+        
+    opwShowFixedScrollIndicator: function () {
+        return (opw.navigation.showScrollIndicator && opw.navigation.fixedScrollIndicator);
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Scrolling indicator rendered function
+ *
+ * Since this is theoretically the last to render, it's a pretty good place
+ * to hook up the carousel.  Doing it earlier will either not work (due to
+ * data latency (Meteor is delivering the carousel as data not template code)
+ * so by time this renders all the sections should also be rendered.
+ *
+ *****************************************************************************/
+
+// Template.opwScrollIndicator.onRendered(function () {});
+
+
+/******************************************************************************
+ *
+ * Section (row) event handlers
+ *
+ *****************************************************************************/
+
+Template.opwSection.events({
+
+    // Open the editor
+    'click .opw-editor-open': function (event, template) {
+        event.preventDefault();
+        var id = OPW.getIdFromSlug(contentParent.parent().attr('id'));
+        OPW.popEditor(id);
+    },
+
+});
+
+/******************************************************************************
+ *
+ * Section (row) helpers
+ *
+ *****************************************************************************/
+
+Template.opwSection.helpers({
+
+    opwShowSectionalScrollIndicator: function () {
+        return (opw.navigation.showScrollIndicator && !opw.navigation.fixedScrollIndicator);
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Section rendered function
+ *
+ * This renders the contact form into a string and inserts it into the row
+ * content.
+
+ *****************************************************************************/
+
+Template.opwSection.onRendered(function () {
 
     // Locals
-    var popper  = OPW.getRows();
-    var hasRows = (1 < popper.length);
-    var first   = '#top';
-    var next    = '#' + popper.shift().slug;
-    var last    = '#' + popper.pop().slug;
+    var carouselExists      = (this.$('.carousel').length);
+    var contactFormExists   = (this.$('.opw-contact').length);
+    var tabPanelExists      = (this.$('.tab-panel').length);
 
-    // Instantiate session necessities
-    Session.set('opwActiveSection', first);
-    Session.set('opwNextSection', next);
-    Session.set('opwLastSection', last);
+    /** Bootstrap elements **/
 
-    (hasRows) ? (
-        // Show scroll to next
-        $('#opw-scroll-to-top').hide()
-    ) : (
-        // Don't show either
-        $('#opw-scroll-to-top').hide(),
-        $('#opw-scroll-to-next').hide()
-    );
+    // Assign carousel events
+    if (carouselExists) {
+        $('.carousel').carousel({interval: 6500});
+    }
+
+    // Assign tab panel events
+    if (tabPanelExists) {
+        this.$('.tab-panel a').click(function (event) {
+            event.preventDefault();
+            $(this).tab('show'); // Tab panel click context
+        });
+    }
+
+    /** Contact form **/
+
+    // Make sure just one
+    if (1 < contactFormExists) {
+        console.log('ERROR There may only be one contact form per editable section');
+        return;
+    }
+
+    // Dynamically load OPW contact form
+    if (contactFormExists) {
+        Blaze.render(Template.opwContactForm, this.find('.opw-contact'));
+    }
+
+});
+
+
+/******************************************************************************
+ *
+ * OPW Social icons helpers
+ *
+ *****************************************************************************/
+
+Template.opwSocialIcons.events ({
+
+    opwSocialServices: function () {
+        if (!opw || !OPW.isObject(opw.social) || !opw.social.keys().length) return;
+        var arr = []
+        _.each(opw.social, function (value, key) {
+            if ('enable' != key) {
+                returnArray.push({service: key, link: value});
+            }
+        });
+        return arr;
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * OPW WonderBar event handlers
+ *
+ * This renders component elements from opw-elements.html and
+ * inserts them into the textarea.
+ *
+ *****************************************************************************/
+
+Template.opwWonderBar.events ({
+
+    'click #opw-wonderbar-help': function (event) {
+        event.preventDefault();
+        event.stopImmediatePropogation();
+        OPW.popLightbox({id: 'opw-toolbar-help'});
+    },
+
+    'click .opw-wonderbar-btn': function (event) {
+        event.preventDefault();
+        OPW.insertBootstrapElement($(event.target).attr('id'));
+    },
 
 });
