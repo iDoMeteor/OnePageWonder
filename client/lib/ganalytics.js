@@ -1,4 +1,12 @@
-// REPLACE THIS
+console.log('Loading ganalytics.js :(');
+// REPLACE THIS CRAP
+// Google Analytics Object
+opwGAKeys = {
+    account: 'UA-23671882-11',
+    debug: true,
+    enabled: true,
+}
+
 GAnalytics = {}
 
 GAnalytics.pageview = function(pageLocation) {
@@ -21,19 +29,14 @@ load = function(i,s,o,g,r,a,m) {
     m.parentNode.insertBefore(a,m)
 };
 
-if(
     // Replace this & use singletons
-    Meteor.settings 
-    && Meteor.settings.public !== undefined 
-    && Meteor.settings.public.ga !== undefined 
-    && Meteor.settings.public.ga.account !== undefined
-) {
+if(opwGAKeys && opwGAKeys.enabled) {
 
     // Keep
     load(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     // Modify
-    var gaSettings = Meteor.settings.public.ga,
+    var gaSettings = opwGAKeys,
     gaConfig = {};
 
     // Not sure

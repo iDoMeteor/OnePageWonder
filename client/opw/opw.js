@@ -1,3 +1,4 @@
+console.log('#OnePageWonder v1.0.0-RC.1 Loading Main Client Environment');
 /***
  *
  * TODO: Bring docs up to my usual high standards
@@ -25,6 +26,26 @@ Template.mpAuthenticate.created(function () {
 
 });
 */
+
+/*
+Template.body.events ({
+    'scroll': function (event) {
+
+        var popper      = rows.fetch();
+        var last        = popper.pop().slug;
+        console.log(last);
+        $('#opw-navigation li').each(function () {
+            var href = $(this).find('.page-scroll').attr('href').substr(1);
+            console.log($(this).hasClass('active'));
+            if ($(this).hasClass('active')) {
+                Session.set('opwActiveSection', href);
+            }
+        });
+
+    },
+});
+*/
+
 
 Template.opwAuthenticate.events ({
 
@@ -356,139 +377,18 @@ Template.opwLayout.onRendered(function () {
     OPW.sm();
     var anchors = [
         {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
-        },
-        {
-            backgroundColor: "#dc767d",
-            className: "test",
-            label: "ScrollMenu.js",
-            onscrollToSection: function (event, data) {
-                hoveredOverDOM = this;
-                console.log('SM Callback');
-                console.log(JSON.stringify('event: ' + event, null, 4));
-                console.log(JSON.stringify('data: ' + data, null, 4));
-                console.log(JSON.stringify('this: ' + this, null, 4));
-            },
-            template: '',
+            backgroundColor: "#00f",
+            className: "opw-sm",
+            label: "Test",
         },
     ]
     var template = Blaze.toHTML(Template.opwSM);
     var options = {
         anchorSetup: anchors,
-        menuType: 'vertical',
-        onscrollToSection: function (event, data) {
-            hoveredOverDOM = this;
-            console.log('SM Callback');
-            console.log(JSON.stringify('event: ' + event, null, 4));
-            console.log(JSON.stringify('data: ' + data, null, 4));
-            console.log(JSON.stringify('this: ' + this, null, 4));
-        },
         sectionClass: 'opw-sm',
-        // TODO: This could be a real template & Blaze render it
-        template: '<div class="menu-wrap"><div class="menu"><%= label %></div></div>',
     }
     var opwScrollMenu = ScrollMenu(options);
+    console.log(JSON.stringify(opwScrollMenu, null, 4));
     */
 
     // Assign page scroll events
@@ -506,6 +406,13 @@ Template.opwLayout.onRendered(function () {
 });
 
 Template.opwNavigation.events({
+
+    'activate.bs.scrollspy .nav li': function (event) {
+        Session.set('opwActiveSection',
+                    $(event.target).find('.page-scroll').attr('href'));
+        Session.set('opwNextSection',
+                    $(event.target).next().find('.page-scroll').attr('href'));
+    },
 
     // Instantiate the new content editor
     'click #opw-add-row': function (event, template) {
@@ -568,6 +475,24 @@ Template.opwNavigation.events({
 
     },
 
+    // Expose authentication section
+    'click #opw-login': function (event) {
+
+        event.preventDefault();
+        $('#opw-login-section').show('drop', {direction: 'down'}, function () {
+            OPW.scrollToHref('#opw-login-section');
+            $('#opw-login-section').find('input').first().focus();
+        });
+
+    },
+
+    // Logout and go home
+    'click #opw-logout': function (event) {
+        event.preventDefault();
+        Meteor.logout();
+        // TODO: Pop alert
+    },
+
 });
 
 Template.opwNavigation.helpers({
@@ -581,15 +506,26 @@ Template.opwNavigation.helpers({
 
 Template.opwNavigation.onRendered(function () {
 
-    // (Re-)bind scroll events, reactively
-    var rows   = opwRows.find({removed: {$not: true}, stale: {$not: true}});
+    // Locals
+    var rows    = opwRows.find({removed: {$not: true}, stale: {$not: true}});
+    var popper  = rows.fetch();
+    var hasRows = (1 < popper.length);
+    var first   = '#top'
+    var next    = '#' + popper.shift().slug;
+    var last    = '#' + popper.pop().slug;
+
+    Session.set('opwActiveSection',  first);
+    Session.set('opwNextSection', next);
+    Session.set('opwLastSection', last);
+
+    // (Re-)bind scroll events, reactively (I think :>)
     var handle = rows.observeChanges({
         added: function () {
-            // Refresh scroll spy
+            // Bind scroll spy events
             $('[data-spy="scroll"]').each(function () {
-                var $spy = $(this).bind('click', OPW.scrollToHref);
-            })
-            // TODO: Assign contact events if necessary
+                var spy = $(this).bind('click', OPW.scrollToHref);
+            });
+            // Track active section
         },
         changed: function () {
             // Refresh scroll spy
@@ -597,6 +533,7 @@ Template.opwNavigation.onRendered(function () {
                 var $spy = $(this).bind('click', OPW.scrollToHref);
                 var $spy = $(this).scrollspy('refresh')
             })
+            // Track active section
             // TODO: Assign contact events if necessary
         },
         removed: function () {
@@ -604,6 +541,7 @@ Template.opwNavigation.onRendered(function () {
             $('[data-spy="scroll"]').each(function () {
                 var $spy = $(this).scrollspy('refresh')
             })
+            // Track active section
         },
     });
 
@@ -850,37 +788,37 @@ Template.opwSection.onRendered(function () {
 
 });
 
+Template.opwScrollToTop.helpers({
+
+    lastDisplayedSectionIsActive: function () {
+        var active = Session.get('opwActiveSection');
+        var last   = Session.get('opwLastSection');
+        return (last == active) ? true : false;
+    },
+
+});
+
 Template.opwScrollToTop.events({
 
-    'click .opw-scroll-to-next': function (event) {
+    'click #opw-scroll-to-next': function (event) {
         event.preventDefault();
-        OPW.scrollToHref('#' + $(event.target).closest('section').next().attr('id'));
+        next = Session.get('opwNextSection');
+        OPW.scrollToHref(next);
+    },
+
+    'click #opw-scroll-to-top': function (event) {
+        event.preventDefault();
+        OPW.scrollToHref('#top');
     },
 
     'click #opw-brag': function (event) {
         event.preventDefault();
+        // TODO: Light box
 
-    },
-
-    // Expose authentication section
-    'click #opw-login': function (event) {
-
-        event.preventDefault();
-        $('#opw-login-section').show('drop', {direction: 'down'}, function () {
-            OPW.scrollToHref('#opw-login-section');
-            $('#opw-login-section').find('input').first().focus();
-        });
-
-    },
-
-    // Logout and go home
-    'click #opw-logout': function (event) {
-        event.preventDefault();
-        Meteor.logout();
-        // TODO: Pop alert
     },
 
 });
+
 
 Template.opwScrollToTop.onRendered(function () {
 
@@ -888,16 +826,24 @@ Template.opwScrollToTop.onRendered(function () {
     $('.carousel').carousel({interval: 6500});
 
     // Locals
-    var hasRows         = ($('sections').length) ? true : false;
+    var popper  = OPW.getRows();
+    var hasRows = (1 < popper.length);
+    var first   = '#top';
+    var next    = '#' + popper.shift().slug;
+    var last    = '#' + popper.pop().slug;
+
+    // Instantiate session necessities
+    Session.set('opwActiveSection', first);
+    Session.set('opwNextSection', next);
+    Session.set('opwLastSection', last);
 
     (hasRows) ? (
-        // Show scroll to top
+        // Show scroll to next
         $('#opw-scroll-to-top').hide()
     ) : (
-        // Hide scroll to next
+        // Don't show either
+        $('#opw-scroll-to-top').hide(),
         $('#opw-scroll-to-next').hide()
     );
-
-    // TODO: SM state when reaching bottom should toggle bla blah
 
 });

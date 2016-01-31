@@ -4,7 +4,9 @@ console.log ('#OnePageWonder v1.0.0-beta.1 Loading Main Server Environment');
  * DOXXXXXXXXXXXXXXXXX
  *
  */
-Kadira.connect('cLJbrzqc6CXF36snk', '176ab09f-bdc6-4b8e-9844-82b672d0bc2a')
+if (opwKadiraKeys && opwKadiraKeys.enabled) {
+    Kadira.connect(opwKadiraKeys.key, opwKadiraKeys.secret)
+}
 
 /**************************************************************************
  *

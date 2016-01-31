@@ -42,63 +42,63 @@
 
 <template name="opwAuthenticate">
 
-        <section id="opw-login-section" class="full-height opw-sm">
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col-lg-12">
+    <section id="opw-login-section" class="full-height opw-sm">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-12">
 
-                        <img 
-                            src="/opw/images/onepagewonder-logo.png" 
-                            alt="#OnePageWonder by @iDoMeteor" />
-                        <h3>Authenticate Yourself</h3>
-                        <p>Present your credentials for inspection.</p>
-                        <form id="opw-auth-email-form">
-                            <div class="form-group">
-                                <label for="email">Email Address</label>
-                                <input 
-                                    id="opw-auth-email" 
-                                    type="email" 
-                                    name="email" 
-                                    class="form-control" 
-                                    placeholder="Email address">
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input 
-                                    id="opw-auth-password" 
-                                    type="password" 
-                                    name="password" 
-                                    class="form-control" 
-                                    placeholder="Password">
-                            </div>
-                            <div class="btn-group">
-                                <button 
-                                    id="opw-auth-email-login" 
-                                    type="button" 
-                                    class="btn btn-primary">
-                                    Authenticate
-                                </button>
-                                <button 
-                                    id="opw-auth-email-create" 
-                                    type="button" 
-                                    class="btn btn-info">
-                                    Create Account
-                                </button>
-                                <button 
-                                    id="opw-auth-cancel" 
-                                    type="button" 
-                                    class="btn btn-danger">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
+                    <img 
+                        src="/opw/images/onepagewonder-logo.png" 
+                        alt="#OnePageWonder by @iDoMeteor" />
+                    <h3>Authenticate Yourself</h3>
+                    <p>Present your credentials for inspection.</p>
+                    <form id="opw-auth-email-form">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input 
+                                id="opw-auth-email" 
+                                type="email" 
+                                name="email" 
+                                class="form-control" 
+                                placeholder="Email address">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input 
+                                id="opw-auth-password" 
+                                type="password" 
+                                name="password" 
+                                class="form-control" 
+                                placeholder="Password">
+                        </div>
+                        <div class="btn-group">
+                            <button 
+                                id="opw-auth-email-login" 
+                                type="button" 
+                                class="btn btn-primary">
+                                Authenticate
+                            </button>
+                            <button 
+                                id="opw-auth-email-create" 
+                                type="button" 
+                                class="btn btn-info">
+                                Create Account
+                            </button>
+                            <button 
+                                id="opw-auth-cancel" 
+                                type="button" 
+                                class="btn btn-danger">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
 
-                        <h5>Your IP: {{currentUserIp}}</h5>
+                    <h5>Your IP: {{currentUserIp}}</h5>
 
-                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
 </template>
 
@@ -110,7 +110,7 @@
 
         {{!-- Bootstrap Components --}}
         <button id="opw-bsbar-button" class="opw-bsbar-btn btn btn-sm btn-primary">
-            <i class="fa fa-magic" title="Insert a button"></i>
+            <i class="fa fa-magic" title="Insert a col-sm-12 div"></i>
         </button>
         <button id="opw-bsbar-col-12" class="opw-bsbar-btn btn btn-sm btn-primary">
             <i class="fa fa-magic" title="Insert a col-sm-12 div"></i>
@@ -227,36 +227,36 @@
                 ... then we could edit it in place! :D --}}
 
     <section id="opw-help" class="full-height opw-sm">
-            <div class="container">
-                {{#if currentUser}}
-                    <div class="row opw-row-options text-muted">
-                        <div class="col-sm-12">
+        <div class="container">
+            {{#if currentUser}}
+                <div class="row opw-row-options text-muted">
+                    <div class="col-sm-12">
+                        <h5 
+                            class="opw-toggle-row-editor inline"
+                            title="Edit this row">
+                            <i 
+                                class="fa fa-pencil"
+                                title="Edit this row">
+                            </i>
+                        </h5>
+                        {{#if title}}
                             <h5 
-                                class="opw-toggle-row-editor inline"
+                                class="opw-remove-row inline"
                                 title="Edit this row">
                                 <i 
-                                    class="fa fa-pencil"
-                                    title="Edit this row">
+                                    class="fa fa-trash"
+                                    title="Remove this row">
                                 </i>
                             </h5>
-                            {{#if title}}
-                                <h5 
-                                    class="opw-remove-row inline"
-                                    title="Edit this row">
-                                    <i 
-                                        class="fa fa-trash"
-                                        title="Remove this row">
-                                    </i>
-                                </h5>
-                            {{/if}}
-                        </div>
+                        {{/if}}
                     </div>
-                {{/if}}
-                <div class="row opw-row-content">
-                    {{{content}}}
                 </div>
+            {{/if}}
+            <div class="row opw-row-content">
+                {{{content}}}
             </div>
-        </section>
+        </div>
+    </section>
 
 
 </template>
@@ -321,6 +321,22 @@
                             </a>
                         </li>
                     {{/if}}
+
+                    {{!-- Authentication --}}
+                    {{#if currentUser}}
+                        <li id="opw-logout">
+                            <a class="opw-auth-icon float-right">
+                                <span class="fa fa-sign-out text-danger"></span>
+                            </a>
+                        </li>
+                    {{else}}
+                        <li id="opw-login">
+                            <a class="opw-auth-icon float-right">
+                                <span class="fa fa-sign-in"></span>
+                            </a>
+                        </li>
+                    {{/if}}
+
 
                 </ul>
             </div>
@@ -450,36 +466,36 @@
 <template name="opwSection">
 
     <section id="{{slug}}" class="{{#if title}}full{{else}}root{{/if}}-height opw-sm">
-            <div class="container">
-                {{#if currentUser}}
-                    <div class="row opw-row-options text-muted">
-                        <div class="col-sm-12">
+        <div class="container">
+            {{#if currentUser}}
+                <div class="row opw-row-options text-muted">
+                    <div class="col-sm-12">
+                        <h5 
+                            class="opw-toggle-row-editor inline"
+                            title="Edit this row">
+                            <i 
+                                class="fa fa-pencil"
+                                title="Edit this row">
+                            </i>
+                        </h5>
+                        {{#if title}}
                             <h5 
-                                class="opw-toggle-row-editor inline"
+                                class="opw-remove-row inline"
                                 title="Edit this row">
                                 <i 
-                                    class="fa fa-pencil"
-                                    title="Edit this row">
+                                    class="fa fa-trash"
+                                    title="Remove this row">
                                 </i>
                             </h5>
-                            {{#if title}}
-                                <h5 
-                                    class="opw-remove-row inline"
-                                    title="Edit this row">
-                                    <i 
-                                        class="fa fa-trash"
-                                        title="Remove this row">
-                                    </i>
-                                </h5>
-                            {{/if}}
-                        </div>
+                        {{/if}}
                     </div>
-                {{/if}}
-                <div class="row opw-row-content">
-                    {{{content}}}
                 </div>
+            {{/if}}
+            <div class="row opw-row-content">
+                {{{content}}}
             </div>
-        </section>
+        </div>
+    </section>
 
 </template>
 
@@ -492,68 +508,50 @@
 
         {{!-- Social Icons --}}
         <div class="col-sm-4 text-center">
-
             <div id="opw-social" class="float-right">
-                <a id="opw-github" class="opw-social-icon">
+                <a id="opw-github" 
+                        class="opw-social-icon" 
+                        href="http://github.com/iDoMeteor/onepagewonder">
                     <span class="fa fa-2x fa-github"></span>
                 </a>
-                {{!--
-                <a id="opw-meteor" class="opw-social-icon">
-                    <span class="fa fa-meteor"></span>
-                </a>
-                <a id="opw-so" class="opw-social-icon">
-                    <span class="fa fa-stackoverflow"></span>
-                </a>
-                --}}
-                <a id="opw-twitter" class="opw-social-icon">
+                <a id="opw-twitter" 
+                        class="opw-social-icon" 
+                        href="http://twitter.com/iDoMeteor">
                     <span class="fa fa-2x fa-twitter"></span>
                 </a>
             </div>
-
         </div>
 
         {{!-- Scroll to Top --}}
         {{!-- TODO: Might be able to eliminate the href .. triple check --}}
-        <div 
-            id="opw-scroll-to-top" 
-            href="#top" 
-            class="page-scroll col-sm-4 text-center">
+        {{!-- TODO: Cursor change CSS throughout --}}
+        <div class="col-sm-4 text-center">
 
-            <div id="opw-scroll-to-next" href="#top" class="page-scroll">
-                <a>
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-circle-o fa-stack-2x"
-                            style="font-weight: 200"></i>
-                        <i class="fa fa-angle-double-up fa-stack-1x"></i>
-                    </span>
-                </a>
-            </div>
-
-            <div id="opw-scroll-to-next">
-                <a>
-                    <span class="fa-stack fa-lg">
-                        <i class="fa fa-circle-o fa-stack-2x"
-                            style="font-weight: 200"></i>
-                        <i class="fa fa-angle-double-down fa-stack-1x"></i>
-                    </span>
-                </a>
-            </div>
+            {{#if lastDisplayedSectionIsActive}}
+                <div>
+                    <a id="opw-scroll-to-top" class="page-scroll">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-o fa-stack-2x"
+                                style="font-weight: 200"></i>
+                            <i class="fa fa-angle-double-up fa-stack-1x"></i>
+                        </span>
+                    </a>
+                </div>
+            {{else}}
+                <div>
+                    <a id="opw-scroll-to-next" href="#top" class="page-scroll">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle-o fa-stack-2x"
+                                style="font-weight: 200"></i>
+                            <i class="fa fa-angle-double-down fa-stack-1x"></i>
+                        </span>
+                    </a>
+                </div>
+            {{/if}}
 
         </div>
 
-        {{!-- Authentication --}}
         <div class="col-sm-4 text-center">
-
-            {{!-- Which authentication icon to show --}}
-            {{#if currentUser}}
-                <a id="opw-logout" class="opw-auth-icon float-right">
-                    <span class="fa fa-sign-out"></span>
-                </a>
-            {{else}}
-                <a id="opw-login" class="opw-auth-icon float-right">
-                    <span class="fa fa-sign-in"></span>
-                </a>
-            {{/if}}
 
             {{!-- One Page Wonder info tag - be nice and use it! Or don't! Dick! :) --}}
                 {{!-- TODO: Get rid of rel="external" & do it right! --}}
@@ -565,18 +563,6 @@
                 title="One Page Wonder" id="opw-logo"/>
             </a>
 
-        </div>
-    </div>
-
-</template>
-
-
-
-<template name="opwSM">
-
-    <div class="menu-wrap">
-        <div class="menu">
-            LABEL
         </div>
     </div>
 

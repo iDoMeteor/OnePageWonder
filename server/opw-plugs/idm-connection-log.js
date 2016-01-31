@@ -5,8 +5,6 @@ console.log('@iDoMeteor Site Logger Initializing');
  * @iDoMeteor #MeteorJS Connections Log
  * v1.0.0-beta.2
  *
- * DOXXXXXXXXXXXXXXXXX
- *
  *
  *****************************************************************************/
 

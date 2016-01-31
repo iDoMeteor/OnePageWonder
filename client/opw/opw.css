@@ -1,0 +1,175 @@
+/* Tags */
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+}
+
+p::first-letter {
+    font-size: 110%;
+    font-weight: bold;
+}
+
+/* Classes */
+.carousel-inner img {
+   max-height: 50%;
+   max-width: 100%;
+   margin: auto;
+}
+
+.bg-invalid {
+    background-color: #fee !important;
+}
+
+.bg-valid {
+    background-color: #efe !important;
+}
+
+.float-right {
+    float: right;
+    position: relative;
+}
+
+.full-height {
+    height: 95%;
+    padding-top: 110px;
+}
+
+.inline {
+    display: inline;
+}
+
+.opw-auth-icon {
+    padding: .25em;
+    padding-right: 1em;
+}
+
+.opw-row-editor {
+    width: 100% !important;
+}
+
+.opw-row-options {
+    float: right;
+    opacity: .5;
+    position: relative;
+    z-index: 10000;
+}
+
+.opw-row-options i {
+    margin-left: .75em;
+}
+
+.root-height {
+    height: 100%;
+    padding-top: 150px;
+}
+
+/* IDs */
+#opw-bottom {
+    background-color: black;
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    height: 3em;
+}
+
+#opw-brag {
+    padding: .25em 1em;
+}
+
+#opw-carousel-home .carousel-control {
+    background-image: none;
+}
+
+#opw-contact-input {
+    width: 21em; /* Fits my string */
+}
+
+#opw-login-section {
+    background-color: #000;
+    height: 100%;
+}
+
+#opw-logo {
+    border: 1px solid #333;
+    display: inline;
+}
+
+#opw-new-nav {
+    display: inline;
+    height: 60%;
+    position: relative;
+    top: 8px;
+}
+
+#opw-new-section {
+    /* I have nothing to put here for now :)
+     * But, this is the row editor <section>
+     */
+}
+
+#opw-social {
+    float: left;
+    padding: .25em 1em;
+}
+
+#opw-scroll-to-next {
+    text-align: center;
+}
+
+@media(min-width:767px) {
+
+    .navbar {
+        padding: 20px 0;
+        -webkit-transition: background .5s ease-in-out,padding .5s ease-in-out;
+        -moz-transition: background .5s ease-in-out,padding .5s ease-in-out;
+        transition: background .5s ease-in-out,padding .5s ease-in-out;
+    }
+
+    .top-nav-collapse {
+        padding: 0;
+    }
+}
+
+/*
+ * These were used for testing different BG colors on test
+ * pages, leaving as example
+#new-page {
+    background-color: white;
+}
+
+#w00t- {
+    background-color: darkred;
+}
+
+#subscribe {
+    background-color: black;
+    text-align: center;
+}
+
+#subscribe .container {
+    background-color: #000;
+    position: relative;
+    top: 30%;
+}
+
+body::after {
+    content: "";
+    background-image: url('/opw/images/onepagewonder-logo-1200.png');
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: 40%;
+    opacity: 0.1;
+    top: 50px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: fixed;
+    z-index: -1;   
+}
+*/
+
