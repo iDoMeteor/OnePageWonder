@@ -1,18 +1,12 @@
 # Synopsis
 ## I'm not perfect, but I try.
 
-Firstly.  #MeteorPress and #OnePageWonder are here to stay, and they wish
-to be your friend and help you make money, faster.  I worked on my own,
-closed source PHP content management systems exclusively for over a decade.
-I will pursue of both my new babies with the same fervor and commitment,
-but free to the world, forever.
-
-These guidelines are intended for those interested in contributing to them
-or for those interested in learning how others do things and maybe learning
-a little something along the way.
+These guidelines are intended for those interested in contributing code
+to my projects or learning how and why I do things.
 
 I printed out the 6th edition ECMA spec, but I have not yet had time to read
-it.  #OnePageWonder must be 1.0.0'd first! :>
+it.  I am not opposed to it (or scared of it), I just haven't tuned for it
+yet.
 
 # Intro
 
@@ -35,8 +29,9 @@ adapt to any style, but the code in these repos are *my* babies.
 
 So, please, if you wish to judge .. judge away.  But do not be pedantic
 over trivial semantics in my syntax just because you've read 1,001 tutorials
-but never actually spent hundreds of hours writing original code.  However,
-if you have, please enlighten me - I'll appreciate it, I promise!
+that all used (!!valueToNotInvert).  However, if you have more esoteric
+knowledge on a particular subject or a better way to do something.. by all
+meansplease enlighten me - I'll appreciate it, I promise!
 
 If you wish to contribute code to my repositories, then please at least try
 to come close to my style.. JSCS & I will do the rest if we have to.
@@ -49,57 +44,30 @@ all means, write in whichever manner brings you the most joy!
 
 ## Package VS Source VS Tarball
 
-I am just getting into package creation, my analytics and DDP logging code
-will be up on Atmosphere soon, but it may take a while until I can put OPW
-& MP up.  They are large, complex and it would require a lot of testing that
-I do not currently have time for.
+I am not super huge on package creation, but my analytics and DDP logging code
+are up on Atmosphere.  I do intend to take out some of the more universally
+useful code from OPW and possibly MP and turn them into stand alone
+components.
 
-*But* if you want to help, I will work with you!
+As opposed to the 'every-feature-as-a-module" methodology, I would rather
+work with source and tarballs.  That way I can hack away at little bits
+of whatever it is here and there, rather than having to dig way deep
+into some package for a one-time hack.
+
+I am hoping that ES6 will provide me with the elegant solution I am really
+looking for, but until then I like my 'drop-in' methodology.  Bits of Meteor
+code that I can just copy in to a project when I need it without having
+to go through the pain of managing it as a package.
 
 
 ## Considerations
 
-\#OnePageWonder is the most stylistically current and expresses a pretty
-thorough presentation of my style.  I am still striving to achieve
-"true Meteoriness," but... they are not 1.0.0 yet (and neither am I?)! :D
+I am still striving to achieve "true Meteoriness" in all things, but I have
+many years of habit to break.
 
-As such, they are fairly noisy, in opposition to what a 'production' CMS
-should be.  There are several settings to control this, however, the
-separation of client only messages is still in progress.
-
-I intend to run two concurrent versions of both #MeteorPress and
-\#OnePageWonder.  Each will be offered as a proper package, but
-each will also offer a curl installer that pulls one of several
-varieties (Github clone, tarball-vanilla, and tarball-example-\*).
-
-It is my intention to provide people just coming to Meteor a stable, fun
-and profitable platform from which they can "ease in" to Meteor.  Not
-that I have done the research (I'm not a forum/blog cruiser really),
-but I imagine that many people build a really cool, simple app only to
-have it fall apart on them just before or right after finishing because
-they have 87 packages installed.
-
-It's built on a ish ton of packages in varying states of maintenance.
-Things start breaking, their hopes are dashed and pockets getting slim.
-What is left but to move on?
-
-By using one of my content / application management systems, they can
-actually have a stable platform that hopefully will allow them to keep
-their interest and be able to really commit to the platform.
-
-It may be an optimistic goal for an independent code artist with no reason
-to set such a lofty agenda.... but I adopted PHP early because I believed
-in it.  I did amazing things with it for 12 years.
-
-The next decade belongs to Meteor.
-
-My biggest regret, perhaps my only regret, is that I did not contribute to
-PHP itself or release any of my content management systems.  I learn from
-my mistakes, and now you can, too!
-
-Lastly, much like Material Design (and Meteor), I am opinionated and for
-good reasons.  However, much like ECMA Script (and Meteor), I am also
-open minded and  flexible. :)
+Much like Material Design (and Meteor), I am deeply opinionated and for good
+reason... lots of experience.  However, much like ECMA Script (and Meteor), I
+am also open minded and  flexible.
 
 
 ## Continuation Passing Style
@@ -120,10 +88,10 @@ open minded and  flexible. :)
 
      The re-write of my PHP CMS from PHP 4 to 5 taught me a few major
      lessons, one being the value of clarity, code separation and comments.
-     Therefore, since then, even though I only code alone, I have done my
-     best to make my code clear, beautiful and thoroughly commented.
+     Since then, even though I only code alone, I have done my best to make
+     my code clear, beautiful and thoroughly commented.
 
-     I feel this is especially important in software I intend to release,
+     I feel this is especially important in software that I intend to release,
      one should never make assumptions about others' abilities.  Not only
      does roughing out code blocks with inline comments enable clarity of
      thought, it should also prove valuable for those who are seeking
@@ -133,9 +101,10 @@ open minded and  flexible. :)
 
      Secondly, I only write code in vim.  I prefer to consolidate
      the primary code in as few files as possible because file
-     & directory management in vim is easy but not exactly point
-     & click.  Plus, under heavy alpha/beta development, adding & removing
-     files every couple hours or so can be a PIA.  I like writing code.
+     & directory management in vim is not exactly difficult, but it's not
+     exactly point & click either.  Plus, under heavy alpha/beta development,
+     adding & removing files every couple hours or so can be a PIA.  I like
+     writing code.
 
      I start with a lot of shuffling around & renaming, then settle into
      a few major files and work out my betas there.  I then break the
@@ -289,71 +258,36 @@ open minded and  flexible. :)
 
 ## Git / Github
 
-     I haven't used them in a couple years.  I am completely dependent on
-     Vim's persistent undo and session manager.
+     I haven't used them in a couple years.  I have been completely dependent
+     on Vim's persistent undo and session manager.
 
      However, from this point forward I will (attempt to) strictly follow
      the git-flow model.
 
 
-## Schemas, Autoforms, Roles, and etc.
-
-     A huge time consumer in #MeteorPress is making the admin area w/o
-     relying on autoforms.  Betas 1 & 2 were fully functional, but relied
-     on autoforms completely.
-
-     I had been toying with writing my own schema/collection2/autoform
-     type of thing to replace them.  I hate relying so much on a collection
-     of packages by different authors all tied together, it makes me feel
-     like my code will be more likely to break (ie; Iron Router 5 upgrade
-         breakages took my friend out of Meteor development for 6 months).
-
-     However, I recently found a more consolidated one that I may use.
-
-     Allan Lanning's Roles package is good, but #MeteorPress needs more.
-     So that is another huge time consumer, I spent 10 straight days writing
-     that system.  But, it will only take me a couple hours to integrate
-     into #OnePageWonder eventually.
-
-     So, the packages may be hanging around..but do not rely on anything
-     but the most standard and awesome packages, like accounts-* forever
-     over a 3rd party set, iron-router, anything by @arunoda, etc..
-
 ## Animations, rollovers, event feedback
 
-     Current mindset is "do they work?" and until the major code tasks
-     are complete, will be fairly lack-luster.  That's your job!
-
-     However, after I get MP & OPW both 1.0.0'd, GSAP & SVG mastering
-     is top on my priority list!
+     Everything should provide smooth & animated feedback - while interacting
+     with it, while it is working and while displaying the result.  GSAP is
+     the best way to do that.
 
 ## UI Frameworks
 
-     I've been focused on perfecting the presentation and customization
-     of Bootstrap for both MP & OPW.  Their goal is to provide industry
-     standard awesomeness, not the latest in soon to be failed CSS
-     micro-frameworks.
-
-     When it comes to design, once upon a time I did amazing interfaces
-     all day & night.  However, I am a programmer first.  So until the
-     program is done, aesthetics are a bonus (wanna chip in? :D).
-
-     That being said, I intend to provide configuration toggles that
-     will automatically change MP or OPW to other frameworks I believe
-     in (Materialize, Polymer, React).
-
-     *BUT* I am still brainstorming how to most elegantly do this as
-     well as dynamic themes/colors.  Dynamic, user-selectable themes
-     are the very first feature of the very first CMS I ever wrote
-     (circa 1999-2000) and primary feature of every one after.
-
-     However, Meteor's file loading, template system and deep magic
-     make this quite a bit more complex than it was in PHP.
-
-     Eventually.
+     I like things that are going to be stable and have longevity.  Therefore,
+     Bootstrap and jQuery UI/Mobile are prefered.  But, I am open to using
+     others where appropriate.
 
 
-## Linting
+### My API Globals
+
+  aaXyyZyy vars are globals that are mostly going to evaporate
+  AA.xyyZyy are the APIs provided for hooking into from your add-ons.
+  Since they are global, it can be used in it's own methods'
+  callbacks, but don't use MP for storing state.  It will
+  be doomed to an implosion.. somewhere.. eventually.  Pass
+  around your state in a parameter named 'context'.
+  This clashes w/Meteor Style Guide..sorta.  But it is context specific
+  to my usage, and not part of Meteor core. :)
 
 ### Bootstrap
      Doing it.
@@ -367,20 +301,8 @@ open minded and  flexible. :)
 ### JSCS
      Yep.
 
-### ESLint
-     Yep.
-
-### Meteor
-     Integrated.
-
-     ~~Working on tuning the linters just right in the following priorities:~~
-     ~~MDG Actual packages code of most critical packages~~
-     ~~MDG Actual working & provided examples code~~
-     ~~MDG Style guide~~
-     ~~Node rules~~
-     ~~My preferences~~
-     Eliminating irrelavent overkill in actual practice - in progress
-
+## Linting
+    Check my .eslintrc file and eslint-config-meteor on NPM.
 
 ### Strict Mode
      Is for machines.
@@ -416,24 +338,10 @@ Client, Server or both (explicitly, not the word both)
 ## For Contributors
 
 
-### MP & OPW Plugins/Extensions
-
-  Much more complex to do in Meteor to do what I wish to do than it
-  was in PHP.  I'm working it out in my head very well before I attempt
-  it in practice. Honestly, I have plenty of other base functionality to
-  work on still.
-
-  Eventually, I will build them both point/click/search/browse repos
-  for themes & extensions, like every other softwarez in the world. :)
-
-
 ### DOs
 
   * DO do whatever you want in your separate, modularized & distinct
   plugin or theme code. :D
-  That being said, I will hold curated plugins and themes hosted
-  on official repos & subdomains must be pretty close to these
-  or judged to be of high quality by myself or the community
   * Do feel free to make sexy ternary magic, but try to
   figure out and follow my patterns
   * Do hoist your variables as far to the top as logical,
@@ -442,7 +350,7 @@ Client, Server or both (explicitly, not the word both)
   within a nested code block (unless they are local to a
       callback function of course) or off screen of the function
   declaration.. and please align their assignment operators
-* Do name your anonymous functions & callbacks.. even if I am not (see @exceptions)
+  * Do name your anonymous functions & callbacks.. even if I am not (see @exceptions)
   * Do make frequent and proper use of the logging functions
   provided by the APIs, they will get better
   ... there's other logging stuff I'll detail later
@@ -455,11 +363,6 @@ Client, Server or both (explicitly, not the word both)
   * Do name object parameters coming in from clients 'submission' to
   clearly mark it as needing careful validation
   * Do please test your code locally using meteor shell & logs
-  I will not accept code that throws nasty messages, junk,
-  is crashy, does not handle improperly formed requests,
-  clashes with MP naming conventions or if I feel that they
-  are generic and therefore probably not very well thought
-  out and probably going to cause others problems.
   * Do put code with code and comments with comments
   * Do talk with me if you intend to submit pull requests with
   any kind of major structural changes, there is a lot
@@ -477,8 +380,6 @@ Client, Server or both (explicitly, not the word both)
 
 ### DON'Ts
 
-  * Thou shalt not add packages of any kind to the base without a thorough
-  discussion.  The less, the better.
   * Thou shalt not use @TODO, just use todo, todo: or // todo[:]
   ... but in CAPS!  All caps todo highlights nicely for me,
   and @TODO is removed from JSDocs and I prefer that they
@@ -492,16 +393,3 @@ Client, Server or both (explicitly, not the word both)
 ### Exceptions
 
   I either make them or approve them, please and thank you. :)
-
-
-### My API Globals
-
-  aaXyyZyy vars are globals that are mostly going to evaporate
-  AA.xyyZyy are the APIs provided for hooking into from your add-ons.
-  Since they are global, it can be used in it's own methods'
-  callbacks, but don't use MP for storing state.  It will
-  be doomed to an implosion.. somewhere.. eventually.  Pass
-  around your state in a parameter named 'context'.
-  This clashes w/Meteor Style Guide..sorta.  But it is context specific
-  to my usage, and not part of Meteor core. :)
-

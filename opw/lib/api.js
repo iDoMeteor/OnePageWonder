@@ -142,12 +142,40 @@ OPW = {
 
   contactFormInvalid: function(template) {
     // Remove default indicator
-    $(template.find('.opw-contact-flag')).removeClass('fa-flag-o text-muted');
+    $(template.find('.opw-contact-flag'))
+      .removeClass('fa-flag-o text-muted');
     // Remove valid indicator
     $(template.find('.opw-contact-flag'))
-            .removeClass('fa-flag-checkered bg-success');
+      .removeClass('fa-flag-checkered bg-success');
     // Set invalid indicator
-    $(template.find('.opw-contact-flag')).addClass('fa-flag bg-danger');
+    $(template.find('.opw-contact-flag'))
+      .addClass('fa-flag bg-danger');
+  },
+
+
+  contactFormInvalidMessage: function(template) {
+    // Remove default indicator
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag-o text-muted');
+    // Remove valid indicator
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag-checkered bg-success');
+    // Set invalid indicator
+    $(template.find('.opw-contact-message-flag'))
+      .addClass('fa-flag bg-danger');
+  },
+
+
+  contactFormInvalidSubject: function(template) {
+    // Remove default indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag-o text-muted');
+    // Remove valid indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag-checkered bg-success');
+    // Set invalid indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .addClass('fa-flag bg-danger');
   },
 
 
@@ -193,12 +221,79 @@ OPW = {
   // Contact valid
   contactFormValid: function(template) {
     // Remove default indicator
-    $(template.find('.opw-contact-flag')).removeClass('fa-flag-o text-muted');
+    $(template.find('.opw-contact-flag'))
+      .removeClass('fa-flag-o text-muted');
     // Remove invalid indicator
-    $(template.find('.opw-contact-flag')).removeClass('fa-flag bg-danger');
+    $(template.find('.opw-contact-flag'))
+      .removeClass('fa-flag bg-danger');
     // Set valid indicator
     $(template.find('.opw-contact-flag'))
-            .addClass('fa-flag-checkered bg-success');
+      .addClass('fa-flag-checkered bg-success');
+  },
+
+
+  contactFormValidMessage: function(template) {
+    // Remove default indicator
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag-o text-muted');
+    // Remove invalid indicator
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag bg-danger');
+    // Set valid indicator
+    $(template.find('.opw-contact-message-flag'))
+      .addClass('fa-flag-checkered bg-success');
+  },
+
+
+  contactFormValidSubject: function(template) {
+    // Remove default indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag-o text-muted');
+    // Remove invalid indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag bg-danger');
+    // Set valid indicator
+    $(template.find('.opw-contact-subject-flag'))
+      .addClass('fa-flag-checkered bg-success');
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Resets the contact form to initial state
+   * @Method          contactModalFormReset
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      Removes valid & invalid flags and sets the open flag
+   *
+   * ************************************************************************/
+
+  contactModalFormReset: function(template) {
+    // Remove valid indicators
+    $(template.find('.opw-contact-flag'))
+      .removeClass('fa-flag-checkered bg-success');
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag-checkered bg-success');
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag-checkered bg-success');
+    // Remove invalid indicators
+    $(template.find('.opw-contact-flag'))
+      .removeClass('fa-flag bg-danger');
+    $(template.find('.opw-contact-message-flag'))
+      .removeClass('fa-flag bg-danger');
+    $(template.find('.opw-contact-subject-flag'))
+      .removeClass('fa-flag bg-danger');
+    // Assign default indicators
+    $(template.find('.opw-contact-flag'))
+      .addClass('fa-flag-o text-muted');
+    $(template.find('.opw-contact-message-flag'))
+      .addClass('fa-flag-o text-muted');
+    $(template.find('.opw-contact-subject-flag'))
+      .addClass('fa-flag-o text-muted');
   },
 
 
@@ -263,6 +358,23 @@ OPW = {
       }
 
     });
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Callback a function with result or return the result
+   * @Method          curry
+   * @Param           n/a
+   * @Returns         Result of callback or passed in result
+   * @Location        Client, Server
+   *
+   * ************************************************************************/
+
+  curry: function (fx, result) {
+
+      return (OPW.isFunction(fx)) ? fx(result) : result;
 
   },
 
@@ -771,7 +883,6 @@ OPW = {
    *
    * ************************************************************************/
 
-
   insertContact: function(string, template, callback) {
 
     // Validate
@@ -854,6 +965,110 @@ OPW = {
 
       // Send it home
       return (OPW.isFunction(callback)) ? callback(result) : false;
+
+    });
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Inserts a validated detailed contact into the database
+   * @Method          insertContactDetailed
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  insertContactDetailed: function(object, template, callback) {
+
+    // Validate
+    if (
+        !OPW.isObject(object)
+        || !OPW.isString(object.tOrE)
+        || !OPW.isString(object.pOrS)
+        || !OPW.isString(object.message)
+       ) {
+      OPW.log('ERROR Invalid parameter encountered trying to insert contact',
+              2);
+      return OPW.curry(callback, false);
+    }
+    if (!OPW.isTemplateInstance(template)) {
+      OPW.log('ERROR Invalid template while trying to insert contact', 2);
+      return OPW.curry(callback, false);
+    }
+
+    // Locals
+    var contact         = object.tOrE;
+    var context         = template;
+    var message         = object.message;
+    var label           = object.pOrS;
+    var source          = Blaze._globalHelpers.currentIp();
+    var stamp           = new Date();
+    var target          = $(template.find('form')
+                            .closest('.opw-detailed-contact-request'));
+
+    // Debug
+    OPW.log('Source IP requesting contact: ' + source, 1);
+
+    // Check for dupes
+    if (Meteor.call('opwDetailedContactExists', contact, source)) {
+      OPW.log('ERROR You have already registered for this request');
+      // Set invalid flag
+      OPW.contactModalFormInvalid(template);
+      // Set error alert
+      OPW.popAlert('You or someone with your IP has already requested '
+                   + 'this type of contact', 'danger');
+      $(template.find('.opw-contact-input')).focus();
+      return (OPW.isFunction(callback)) ? callback(false) : false;
+    }
+
+    // Formulate insert object
+    var obj = {
+      label: label,
+      message: message,
+      stamp: new Date(),
+      source: source,
+    }
+    if (OPW.isValidTweeter(contact))  {
+      obj.twitter = contact;
+    } else {
+      obj.email = contact;
+    }
+
+    // Do eet
+    opwContacts.insert(obj, function opwContactDetailInsertCallback(error, id) {
+
+      var result = (id) ? (
+          // Reset modal fields
+          OPW.contactModalFormReset(),
+          // Close modal
+          OPW.contactModalFormClose(),
+          // Provide temporal confirmation
+          OPW.popAlert(opw.contact.thankYouAlert, 'success'),
+          // Notify admin
+          OPW.notifyAdmin(JSON.stringify(obj, null, 4)),
+          // Set return value
+          true
+      ) : (
+          // Failure
+          OPW.log('ERROR Performing insertion of detailed contact failed: '
+                 + error, 2),
+          // Set error alert
+          OPW.popAlert('We were unable to process your request, '
+              + 'please try again in a moment.', 'danger'),
+          // Focus input
+          $(context.find('#opw-detailed-contact-message')).focus(),
+          // Set return value
+          false
+      );
+
+      // Send it home
+      return OPW.curry(callback, false);
 
     });
   },
@@ -1547,6 +1762,27 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         Checks if parameter is a valid email or Twitter address
+   * @Method          isNotDuplicateContact
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * XXX
+   *
+   * ************************************************************************/
+
+  isNotDuplicateContact: function(obj) {
+
+    return;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Checks if parameter is a valid email or Twitter address
    * @Method          isValidContact
    * @Param           n/a
    * @Returns         undefined
@@ -1554,17 +1790,14 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   * Tests a subject (contact submission) to ensure it is either
+   * a valid Twitter handle or email address (intranets supported)
+   * and if so, returns true if the client's IP is not already
+   * in the contact log or false otherwise.
    *
    * ************************************************************************/
 
-  // Tests a subject (contact submission) to ensure it is either
-  // a valid Twitter handle or email address (intranets supported)
-  // and if so, returns true if the client's IP is not already
-  // in the contact log or false otherwise.
   isValidContact: function(value) {
-
-    // TODO: Check for dupes by ip and address
 
     // Validate type
     if (!OPW.isString(value)) return;
@@ -1600,6 +1833,7 @@ OPW = {
     ]
 
     if (!OPW.isObject(obj)) return false;
+
     if (_.omit(obj, whitelist).length) {
       return false;
     }

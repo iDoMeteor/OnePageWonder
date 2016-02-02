@@ -102,6 +102,10 @@ section:last-of-type {
     padding: .25em 1em;
 }
 
+#opw-contact-modal textarea {
+  width: 100%;
+}
+
 #opw-login-section {
     background-color: #000;
     height: 100%;
@@ -174,7 +178,7 @@ body::after {
     bottom: 0;
     right: 0;
     position: fixed;
-    z-index: -1;   
+    z-index: -1;
 }
 */
 
