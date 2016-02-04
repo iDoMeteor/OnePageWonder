@@ -11,7 +11,7 @@ Meteor.methods({
      * @Summary         Check for duplicate contact request
      * @Method          contactExists
      * @Param           n/a
-     * @Returns         {boolean}   Returns true upon failure as well
+     * @Returns         {object}   Returns true upon failure as well
      * @Location        Client, Server
      *
      * @Description
@@ -21,87 +21,71 @@ Meteor.methods({
      *
      *      TODO:
      *            Abstract the queries
+     *            Call insertContact if dupes = false
      *
      * ************************************************************************/
 
-    opwContactExists: function (string, ip) {
+    opwContactExists: function (contact) {
+
+        // TODO: Upgrade to new logger
 
         // Check.. I hate it. :D
-        check (string, String);
-        check (ip, String);
+        check (contact, Object);
+
+        // If message is set, dupe must have message
+        if (contact.message && OPW.isString(contact.message)) {
+          if (
+            (opwContacts.find({
+              message: {$exists: true},
+              source: contact.source
+            }).count())
+            || (opwContacts.find({
+              message: {$exists: true},
+              user: contact.user
+            }).count())
+          ) {
+            return {
+              isDuplicate: true,
+              message: 'A message request already exists for this user.',
+            };
+          }
+        }
 
         // Validate IP & check for dupe
-        if (OPW.isValidIp(ip)) {
-            OPW.log('Checking for duplicate source IP', 1);
-            if (opwContacts.find({source: ip}).count()) {
-                OPW.log('ERROR This source already exists in contact log', 2);
-                return true;
+        if (OPW.isValidIp(contact.source)) {
+            if (opwContacts.find({source: contact.source}).count()) {
+              return {
+                isDuplicate: true,
+                message: 'A contact request of this type from this IP'
+                + ' already exists.',
+              };
             }
         } else {
-            OPW.log('ERROR Invalid IP when checking for duplicates', 2);
-            return true;
+              return {
+                error: true,
+                message: 'Invalid IP when checking for contact duplicates.',
+              };
         }
 
         // Validate string & check for dupe
-        if (OPW.isValidEmail(string)) {
-            OPW.log('Checking for duplicate email', 1);
-            return (opwContacts.find({email: string}).count());
-        } else if (OPW.isValidTweeter(string)) {
-            OPW.log('Checking for duplicate twitter handle', 1);
-            return (opwContacts.find({twitter: string}).count());
-        } else {
-            OPW.log('ERROR Invalid contact when checking for duplicates', 2);
-            return true;
-        }
-
-    },
-
-    /**************************************************************************
-     *
-     * @Summary         Check for duplicate contact request
-     * @Method          contactDetailedExists
-     * @Param           n/a
-     * @Returns         {boolean}   Returns true upon failure as well
-     * @Location        Client, Server
-     *
-     * @Description
-     *
-     *      Checks for an existing contact request by a user's email or Twitter
-     *      handle, as well as their IP.
-     *
-     *      TODO:
-     *
-     * ************************************************************************/
-
-    opwContactDetailedExists: function (object, ip) {
-
-        // Check.. I hate it. :D
-        check (object, Object);
-        check (ip, String);
-
-        // Validate IP & check for dupe
-        if (OPW.isValidIp(ip)) {
-            OPW.log('Checking for duplicate source IP', 1);
-            if (opwContacts.find({source: ip}).count()) {
-                OPW.log('ERROR This source already exists in contact log', 2);
-                return true;
+        if (OPW.isValidEmailOrTwitter(contact.user)) {
+            if (opwContacts.find({user: contact.user}).count()) {
+              return {
+                isDuplicate: true,
+                message: 'A contact request of this user already exists.',
+              };
             }
         } else {
-            OPW.log('ERROR Invalid IP when checking for duplicates', 2);
-            return true;
+            return {
+              error: true,
+              message: 'Invalid contact when checking for duplicates',
+            };
         }
 
-        // Validate string & check for dupe
-        if (OPW.isValidEmail(string)) {
-            OPW.log('Checking for duplicate email', 1);
-            return (opwContacts.find({email: string}).count());
-        } else if (OPW.isValidTweeter(string)) {
-            OPW.log('Checking for duplicate twitter handle', 1);
-            return (opwContacts.find({twitter: string}).count());
-        } else {
-            OPW.log('ERROR Invalid contact when checking for duplicates', 2);
-            return true;
-        }
+        // Similar contact request does not exist
+        return {
+          isDuplicate: false,
+        };
 
     },
 

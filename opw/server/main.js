@@ -5,13 +5,15 @@ console.log ('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Main Server En
  *
  * ****************************************************************************/
 
-if (OPW.kadiraEnabled) {
+/*
+if (OPW.kadiraEnabled()) {
     console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Kadira.io');
     Kadira.connect(
         OPW.getNestedConfig('kadira', 'key'),
         OPW.getNestedConfig('kadira', 'secret')
     );
 }
+*/
 
 
 /*******************************************************************************

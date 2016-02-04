@@ -124,142 +124,6 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Updates DOM to alert user to invalid contact request
-   * @Method          contactFormInvalid
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      Removes non-invalid flag classes and adds invalid class
-   *
-   *      TODO:
-   *              Pop alert
-   *              GSAP
-   *
-   * ************************************************************************/
-
-  contactFormInvalid: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove valid indicator
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    // Set invalid indicator
-    $(template.find('.opw-contact-flag'))
-      .addClass('fa-flag bg-danger');
-  },
-
-
-  contactFormInvalidMessage: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove valid indicator
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    // Set invalid indicator
-    $(template.find('.opw-contact-message-flag'))
-      .addClass('fa-flag bg-danger');
-  },
-
-
-  contactFormInvalidSubject: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove valid indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    // Set invalid indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .addClass('fa-flag bg-danger');
-  },
-
-
-  /***************************************************************************
-   *
-   * @Summary         Resets the contact form to initial state
-   * @Method          contactFormReset
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      Removes valid & invalid flags and sets the open flag
-   *
-   * ************************************************************************/
-
-  contactFormReset: function(template) {
-    // Remove valid indicator
-    $(template.find('.opw-contact-flag'))
-            .removeClass('fa-flag-checkered bg-success');
-    // Remove invalid indicator
-    $(template.find('.opw-contact-flag')).removeClass('fa-flag bg-danger');
-    // Assign default indicator
-    $(template.find('.opw-contact-flag')).addClass('fa-flag-o text-muted');
-  },
-
-
-  /***************************************************************************
-   *
-   * @Summary         Sets the valid flag on the contact form
-   * @Method          contactFormValid
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      Removes the default and invalid flags and sets the valid flag
-   *
-   * ************************************************************************/
-
-  // Contact valid
-  contactFormValid: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove invalid indicator
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag bg-danger');
-    // Set valid indicator
-    $(template.find('.opw-contact-flag'))
-      .addClass('fa-flag-checkered bg-success');
-  },
-
-
-  contactFormValidMessage: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove invalid indicator
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag bg-danger');
-    // Set valid indicator
-    $(template.find('.opw-contact-message-flag'))
-      .addClass('fa-flag-checkered bg-success');
-  },
-
-
-  contactFormValidSubject: function(template) {
-    // Remove default indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag-o text-muted');
-    // Remove invalid indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag bg-danger');
-    // Set valid indicator
-    $(template.find('.opw-contact-subject-flag'))
-      .addClass('fa-flag-checkered bg-success');
-  },
-
-
-  /***************************************************************************
-   *
    * @Summary         Resets the contact form to initial state
    * @Method          contactModalFormReset
    * @Param           n/a
@@ -273,27 +137,9 @@ OPW = {
    * ************************************************************************/
 
   contactModalFormReset: function(template) {
-    // Remove valid indicators
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag-checkered bg-success');
-    // Remove invalid indicators
-    $(template.find('.opw-contact-flag'))
-      .removeClass('fa-flag bg-danger');
-    $(template.find('.opw-contact-message-flag'))
-      .removeClass('fa-flag bg-danger');
-    $(template.find('.opw-contact-subject-flag'))
-      .removeClass('fa-flag bg-danger');
-    // Assign default indicators
-    $(template.find('.opw-contact-flag'))
-      .addClass('fa-flag-o text-muted');
-    $(template.find('.opw-contact-message-flag'))
-      .addClass('fa-flag-o text-muted');
-    $(template.find('.opw-contact-subject-flag'))
-      .addClass('fa-flag-o text-muted');
+    OPW.flagReset(template, '.opw-contact-flag');
+    OPW.flagReset(template, '#opw-contact-message-flag');
+    OPW.flagReset(template, '#opw-contact-subject-flag');
   },
 
 
@@ -372,9 +218,9 @@ OPW = {
    *
    * ************************************************************************/
 
-  curry: function (fx, result) {
+  curry: function (fx, error, result) {
 
-      return (OPW.isFunction(fx)) ? fx(result) : result;
+      return (OPW.isFunction(fx)) ? fx(error, result) : result;
 
   },
 
@@ -389,6 +235,108 @@ OPW = {
         && OPW.getNestedConfig('google', 'enable')
         && OPW.getNestedConfig('google', 'account')
     ) ? true : false;
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Changes a flag to invalid status
+   * @Method          flagInvalid
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      Removes non-invalid flag classes and adds invalid class
+   *
+   * ************************************************************************/
+
+  flagInvalid: function(template, identifier) {
+    if (
+      !OPW.isTemplateInstance(template)
+      || !OPW.isString(identifier)
+    ) {
+      OPW.log('ERROR Invalid attempt to set invalid flag', 2);
+      return;
+    }
+    // Remove default indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag-o text-muted');
+    // Remove valid indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag-checkered bg-success');
+    // Set invalid indicator
+    $(template.find(identifier))
+      .addClass('fa-flag bg-danger');
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Resets a FA flag to initial state
+   * @Method          contactFormReset
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      Removes valid & invalid flags and sets the open flag
+   *
+   * ************************************************************************/
+
+  flagReset: function(template, identifier) {
+    if (
+      !OPW.isTemplateInstance(template)
+      || !OPW.isString(identifier)
+    ) {
+      OPW.log('ERROR Invalid attempt to reset flag', 2);
+      return;
+    }
+    // Remove valid indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag-checkered bg-success');
+    // Remove invalid indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag bg-danger');
+    // Assign default indicator
+    $(template.find(identifier))
+      .addClass('fa-flag-o text-muted');
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Changes a flag to valid status
+   * @Method          flagValid
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      Removes non-valid flag classes and adds valid class
+   *
+   * ************************************************************************/
+
+  flagValid: function(template, identifier) {
+    if (
+      !OPW.isTemplateInstance(template)
+      || !OPW.isString(identifier)
+    ) {
+      OPW.log('ERROR Invalid attempt to set valid flag', 2);
+      return;
+    }
+    // Remove default indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag-o text-muted');
+    // Remove invalid indicator
+    $(template.find(identifier))
+      .removeClass('fa-flag bg-danger');
+    // Set valid indicator
+    $(template.find(identifier))
+      .addClass('fa-flag-checkered bg-success');
   },
 
 
@@ -514,7 +462,7 @@ OPW = {
 
     // Validate
     if (!OPW.isString(key)) {
-      OPW.log('ERROR Attempting to get invalid string', 2);
+      OPW.log('ERROR Attempting to get invalid configuration value', 2);
       return '';
     }
 
@@ -735,18 +683,19 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *  This gets the currently active rows for display
+   *    (not any of: home, stale, removed)
    *
+   *  TODO:  Integrate sortables / sort order
+   *         Replace 8 with config item maxRows or some such
    * ************************************************************************/
 
-  // This gets the currently active rows for display
-  //      (not any of: home, stale, removed)
-  // TODO:
-  //      Sort order
   getRows: function(limit, fetch) {
 
     // Locals
     limit           = limit || 8;
+    limit           = (OPW.isNumber(limit))
+                      ? limit : 8;
     fetch           = ('boolean' == typeof (fetch))
                       ? fetch : true;
     var selector    = {
@@ -770,15 +719,13 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Gets current site title
+   * @Summary         Gets current site title from config
    * @Method          getSiteTitle
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
    * @Description
-   *
-   *      XXX
    *
    *      TODO:       Check for database config first
    *
@@ -789,7 +736,22 @@ OPW = {
   },
 
 
-  // TODO: Doc this
+  /***************************************************************************
+   *
+   * @Summary         Gets value of string from config
+   * @Method          getSiteTitle
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * TODO:
+   *      Should probably use getNestedConfig, otherwise it would probably
+   *      not grab values dynamically
+   *
+   * ************************************************************************/
+
   getString: function(key) {
 
     // Validate
@@ -823,9 +785,8 @@ OPW = {
    *
    * ************************************************************************/
 
-  // TODO: Get user IP from iDM Site Log
   getUserIp: function() {
-    return;
+    return UI._globalHelpers.currentIp();
   },
 
 
@@ -839,12 +800,19 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   * Initialize the database with instructional home row any time there
+   * are no active (neither removed or stale set) home rows in the database
+   * collection.
+   *
+   * TODO:
+   *      Value of content should become a blaze render function that
+   *        returns the contents of the help template
+   *      May want to refactor this into initHomeRow and also process
+   *        the configuration defaults here, if there are no configuration
+   *        singletons.
    *
    * ************************************************************************/
 
-  // Initialize the database with instructional home row
-  // (runs when no rows exist)
   init: function() {
 
     var selector = {
@@ -861,8 +829,8 @@ OPW = {
         },
       }, function(error, id) {
         (id)
-            ? OPW.log('INFO Loaded default home row')
-            : OPW.log('ERROR Could not load default home row');
+            ? OPW.log('INFO Initialized default home row')
+            : OPW.log('ERROR Could not initialize default home row');
       });
     }
 
@@ -879,198 +847,135 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *      While it might seem appropriate to provide a callback parameter
+   *      for this method, we are going to pass the contextual state through
+   *      the template instance.  User feedback and related DOM handling are
+   *      handled intelligently below, allowing for some flexibility.
    *
    * ************************************************************************/
 
-  insertContact: function(string, template, callback) {
+  insertContact: function(submission, template) {
 
     // Validate
-    if (!OPW.isValidContact(string)) {
-      OPW.log('ERROR Invalid value encountered trying to insert contact', 2);
-      return (OPW.isFunction(callback)) ? callback(false) : false;
-    }
     if (!OPW.isTemplateInstance(template)) {
       OPW.log('ERROR Invalid template while trying to insert contact', 2);
-      return (OPW.isFunction(callback)) ? callback(false) : false;
+      return false;
+    }
+    if (!OPW.isValidContactSubmission(submission)) {
+      OPW.log('ERROR Invalid submission encountered trying to insert contact', 2);
+      return false;
     }
 
     // Locals
     var context         = template;
-    var contact         = string;
-    var target          = $(template.find('form').closest('.opw-contact'));
-    var stamp           = new Date();
-    var source          = Blaze._globalHelpers.currentIp();
-    var label           = $(template.find('form'))
-                            .closest('.opw-contact')
-                            .attr('id')
-                        || 'opw-contact-request';
+    var contact         = submission;
+    var target          = $(context.find('form').closest('.opw-contact'));
+
+    // Additions
+    contact.stamp   = new Date();
+    contact.source  = OPW.getUserIp();
 
     // Debug
-    OPW.log('Source IP requesting contact: ' + source, 1);
+    OPW.log('Source IP requesting contact: ' + contact.source, 1);
 
     // Check for dupes
-    if (Meteor.call('opwContactExists', contact, source)) {
-      OPW.log('ERROR You have already registered for this request');
-      // Set invalid flag
-      OPW.contactFormInvalid(template);
-      // Set error alert
-      OPW.popAlert('You or someone with your IP has already requested '
-                   + 'this type of contact', 'danger');
-      $(template.find('.opw-contact-input')).focus();
-      return (OPW.isFunction(callback)) ? callback(false) : false;
-    }
+    // This has to run on the server since we don't publish the contact
+    // log to the client unless the admin is logged in.
+    Meteor.call('opwContactExists', contact,
+                function opwContactExistsCallback (error, result) {
 
-    // Formulate insert object
-    var obj = {
-      label: label,
-      stamp: new Date(),
-      source: source,
-    }
-    if (OPW.isValidTweeter(contact))  {
-      obj.twitter = contact;
-    } else {
-      obj.email = contact;
-    }
+      // Result is an object with three possible keys:
+      //  error: true if an error occurred during queries
+      //  isDuplicate: boolean, whether or not the contact passed unique test
+      //  message: message for logger / feedback
 
-    // Do eet
-    opwContacts.insert(obj, function opwContactInsertCallback(error, id) {
+      if (error || result.error) {
+        OPW.log({
+          message: (result.message)
+            ? result.message
+            : 'Error checking for duplicate requests, please try again.',
+          type: 'error',
+          sendEvent: true,
+          notifyUser: true,
+        });
+        return;
+      }
 
-      var result = (id) ? (
-          // Remove contact form
-          target.children().remove(),
-          // Render thank you
-          UI.render(Template.opwContactThankYou,
-                    target.get(0)),
-          // Provide temporal confirmation
-          OPW.popAlert(opw.contact.thankYouAlert, 'success'),
-          // Notify admin
-          OPW.notifyAdmin(JSON.stringify(obj, null, 4)),
-          // Set return value
-          true
-      ) : (
-          // Failure
-          OPW.log('ERROR Performing insertion of new contact failed: '
-                 + error, 2),
-          // Set invalid flag
-          OPW.contactFormInvalid(context),
-          // Set error alert
-          OPW.popAlert('We were unable to process your request, '
-              + 'please try again in a moment.', 'danger'),
-          // Focus input
-          $(context.find('.opw-contact-input')).focus(),
-          // Set return value
-          false
-      );
+      if (result.isDuplicate) {
 
-      // Send it home
-      return (OPW.isFunction(callback)) ? callback(result) : false;
+        // Contact is a duplicate request
 
-    });
-  },
+        // Notify user
+        OPW.log({
+          message: result.message,
+          type: 'danger',
+          sendEvent: true,
+          notifyUser: true,
+        });
 
+        // Update UI
+        if (contact.message) {
+          // Process modal based contact form
+          $('#opw-detailed-contact-modal').modal('hide');
+        } else {
+          // Process row based contact form
+          $(context.find('.opw-contact-input')).focus();
+        }
 
-  /***************************************************************************
-   *
-   * @Summary         Inserts a validated detailed contact into the database
-   * @Method          insertContactDetailed
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   * ************************************************************************/
+      } else {
 
-  insertContactDetailed: function(object, template, callback) {
+        // Contact is unique, attempt to insert
+        opwContacts.insert(contact, function opwInsertContactCallback(error, id) {
 
-    // Validate
-    if (
-        !OPW.isObject(object)
-        || !OPW.isString(object.tOrE)
-        || !OPW.isString(object.pOrS)
-        || !OPW.isString(object.message)
-       ) {
-      OPW.log('ERROR Invalid parameter encountered trying to insert contact',
-              2);
-      return OPW.curry(callback, false);
-    }
-    if (!OPW.isTemplateInstance(template)) {
-      OPW.log('ERROR Invalid template while trying to insert contact', 2);
-      return OPW.curry(callback, false);
-    }
+          if (id) {
 
-    // Locals
-    var contact         = object.tOrE;
-    var context         = template;
-    var message         = object.message;
-    var label           = object.pOrS;
-    var source          = Blaze._globalHelpers.currentIp();
-    var stamp           = new Date();
-    var target          = $(template.find('form')
-                            .closest('.opw-detailed-contact-request'));
+            // Success
+            if (contact.message) {
+              $('#opw-detailed-contact-modal').modal('hide');
+            } else {
+              // Remove contact form
+              target.children().remove(),
+              // Render thank you
+              UI.render(Template.opwContactThankYou,
+                        target.get(0)),
+            }
 
-    // Debug
-    OPW.log('Source IP requesting contact: ' + source, 1);
+            // Provide feedback & log
+            OPW.log({
+              message: OPW.getNestedConfig('contact', 'thankYouAlert'),
+              type: 'success',
+              sendEvent: true,
+              notifyAdmin: true,
+              notifyUser: true,
+              data: contact
+            });
 
-    // Check for dupes
-    if (Meteor.call('opwDetailedContactExists', contact, source)) {
-      OPW.log('ERROR You have already registered for this request');
-      // Set invalid flag
-      OPW.contactModalFormInvalid(template);
-      // Set error alert
-      OPW.popAlert('You or someone with your IP has already requested '
-                   + 'this type of contact', 'danger');
-      $(template.find('.opw-contact-input')).focus();
-      return (OPW.isFunction(callback)) ? callback(false) : false;
-    }
+          } else {
 
-    // Formulate insert object
-    var obj = {
-      label: label,
-      message: message,
-      stamp: new Date(),
-      source: source,
-    }
-    if (OPW.isValidTweeter(contact))  {
-      obj.twitter = contact;
-    } else {
-      obj.email = contact;
-    }
+            // Technical failure
+            OPW.log({
+              message: 'Could not insert your request, please try again.',
+              type: 'error',
+              sendEvent: true,
+              notifyAdmin: true,
+              notifyUser: true,
+              data: contact
+            });
 
-    // Do eet
-    opwContacts.insert(obj, function opwContactDetailInsertCallback(error, id) {
+          }
 
-      var result = (id) ? (
-          // Reset modal fields
-          OPW.contactModalFormReset(),
-          // Close modal
-          OPW.contactModalFormClose(),
-          // Provide temporal confirmation
-          OPW.popAlert(opw.contact.thankYouAlert, 'success'),
-          // Notify admin
-          OPW.notifyAdmin(JSON.stringify(obj, null, 4)),
-          // Set return value
-          true
-      ) : (
-          // Failure
-          OPW.log('ERROR Performing insertion of detailed contact failed: '
-                 + error, 2),
-          // Set error alert
-          OPW.popAlert('We were unable to process your request, '
-              + 'please try again in a moment.', 'danger'),
-          // Focus input
-          $(context.find('#opw-detailed-contact-message')).focus(),
-          // Set return value
-          false
-      );
+          return;
 
-      // Send it home
-      return OPW.curry(callback, false);
+        }); // End opwInsertContactCallback
+
+      }
+
+      return; // End opwContactExistsCallback
 
     });
+
+    return; // End opwInsertContact
+
   },
 
 
@@ -1782,34 +1687,6 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Checks if parameter is a valid email or Twitter address
-   * @Method          isValidContact
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   * Tests a subject (contact submission) to ensure it is either
-   * a valid Twitter handle or email address (intranets supported)
-   * and if so, returns true if the client's IP is not already
-   * in the contact log or false otherwise.
-   *
-   * ************************************************************************/
-
-  isValidContact: function(value) {
-
-    // Validate type
-    if (!OPW.isString(value)) return;
-    // Validate Twitter nick or email
-    return (OPW.isValidTweeter(value) || OPW.isValidEmail(value))
-        ? true : false;
-
-  },
-
-
-  /***************************************************************************
-   *
    * @Summary         Checks if parameter is a valid document for insertion
    * @Method          isValidContactDocument
    * @Param           n/a
@@ -1825,11 +1702,11 @@ OPW = {
   isValidContactDocument: function(obj) {
 
     var whitelist = [
-        'email',
         'label',
+        'message',
         'source',
         'stamp',
-        'twitter',
+        'user',
     ]
 
     if (!OPW.isObject(obj)) return false;
@@ -1849,8 +1726,50 @@ OPW = {
 
     // Contact
     if (
-        (OPW.isValidEmail(obj.email))
-        || (OPW.isValidTweeter(obj.twitter))
+        (OPW.isValidEmail(obj.user))
+        || (OPW.isValidTweeter(obj.user))
+    ) return true;
+
+    return false;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Checks if parameter is a valid document for insertion
+   * @Method          isValidContactSubmission
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  isValidContactSubmission: function(submission) {
+
+    var whitelist = [
+        'label',
+        'message',
+        'user',
+    ]
+
+    if (!OPW.isObject(submission)) return false;
+
+    if (_.omit(submission, whitelist).length) {
+      return false;
+    }
+
+    // Label
+    if (!OPW.isString(submission.label)) return false;
+
+    // Contact
+    if (
+        (OPW.isValidEmail(submission.user))
+        || (OPW.isValidTweeter(submission.user))
     ) return true;
 
     return false;
@@ -1904,6 +1823,34 @@ OPW = {
     return (/^.{1,255}\@[\w-.]{1,255}$/.test(value))
         ? true
         : false;
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Checks if parameter is a valid email or Twitter address
+   * @Method          isValidEmailOrTwitter
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * Tests a subject (contact submission) to ensure it is either
+   * a valid Twitter handle or email address (intranets supported)
+   * and if so, returns true if the client's IP is not already
+   * in the contact log or false otherwise.
+   *
+   * ************************************************************************/
+
+  isValidEmailOrTwitter: function(value) {
+
+    // Validate type
+    if (!OPW.isString(value)) return;
+    // Validate Twitter nick or email
+    return (OPW.isValidTweeter(value) || OPW.isValidEmail(value))
+        ? true : false;
+
   },
 
 
@@ -2228,11 +2175,16 @@ OPW = {
         OPW.getNestedConfig('astronomer', 'enable')
         && OPW.getNestedConfig('astronomer', 'sendLogEvents')
     ) ? true : false;
+    var useGAEvent = false;
+    /*
+    * This is currently broken because the false value returned
+    * in the enable key breaks the trixter ternary in getNestedConfig
     var useGAEvent    = (
         OPW.getNestedConfig('google', 'enable')
         && OPW.getNestedConfig('google', 'sendLogEvents')
     ) ? true : false;
-    var useGAEvent    = (
+    */
+    var useRollbarEvent    = (
         OPW.getNestedConfig('rollbar', 'enable')
         && OPW.getNestedConfig('rollbar', 'sendLogEvents')
     ) ? true : false;
@@ -2285,7 +2237,7 @@ OPW = {
       // Astronomer
       // if (useAstro)
       // Google Analytics
-      if (useGAEvent && OPW.gaEnabled) idmGA.event('Log', log.type, null, null, log);
+      if (useGAEvent) idmGA.event('Log', log.type, null, null, log);
       // Rollbar
       // if (useRollbar)
 

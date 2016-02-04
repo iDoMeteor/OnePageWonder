@@ -89,6 +89,7 @@ if (Meteor.isServer) {
         },
 
     });
+    /*
     opwContacts.deny({
 
         // Anyone can insert if properly formatted and unique
@@ -173,6 +174,7 @@ if (Meteor.isServer) {
         },
 
     });
+    */
     opwLog.deny({
         // Anyone can insert if properly formatted and unique
         insert: function (uid, doc) {

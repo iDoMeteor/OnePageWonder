@@ -113,7 +113,7 @@ opw = {
         },
         debug: true,
         debugTrace: false, // Very verbose
-        enable: true,
+        enable: false,
         sendLogEvents: true,
         trackInPage: true,
         trackInterests: true,

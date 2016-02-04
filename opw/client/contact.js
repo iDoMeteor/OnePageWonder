@@ -10,44 +10,54 @@ Template.opwContactForm.events({
     'click .opw-contact-submit, keyup .opw-contact-input': function (event, template) {
 
         // Locals
+
+
+        var label = $(template.find('form'))
+                      .closest('.opw-contact')
+                      .attr('id')
+                    || 'opw-contact-request';
+        var submission  = {};
         var submit  = (
             (OPW.pressedEnter(event))
             || ('click' == event.type)
         ) ? true : false;
-        var val     = $(template.find('.opw-contact-input')).val();
-        val         = val.trim();
+        var user     = $(template.find('.opw-contact-input')).val();
+        user         = user.trim();
 
         if (submit) event.preventDefault();
 
         // Reset if empty
-        if (!val.length) {
-            OPW.contactFormReset(template);
+        if (!user.length) {
+            OPW.flagReset(template, '.opw-contact-flag');
             return;
         }
 
         // Validate
-        if (OPW.isValidContact(val)) {
+        if (OPW.isValidEmailOrTwitter(user)) {
 
             // Set valid flag
-            OPW.contactFormValid(template);
+            OPW.flagValid(template, '.opw-contact-flag');
 
             // Check for enter
             if (submit) {
-                OPW.insertContact(val, template);
-                idmGA.event('Contact Request', 'Submitted', val);
-                return; // Post-processing handled in above
+              // Formulate object
+              submission.label = label;
+              submission.user = user;
+              // Post processing handled in API
+              OPW.insertContact(submission, template);
+              return;
             }
 
         } else {
 
             // Set invalid flag
-            OPW.contactFormInvalid(template);
+            OPW.flagInvalid(template, '.opw-contact-flag');
 
             // Pop alert if they tried to submit anyway
             if (submit) {
                 OPW.popAlert('You must enter a valid twitter handle or email.',
                              'danger');
-                idmGA.event('Contact Request', 'Invalid Submission', val);
+                idmGA.event('Contact Request', 'Invalid Submission', user);
             }
 
         }
@@ -88,19 +98,14 @@ Template.opwContactLog.helpers({
 
         _.each(contacts, function(contact) {
             normalized.push({
-                contact: (contact.email)
-                    ? contact.email
-                    : (contact.twitter)
-                        ? contact.twitter
-                        : 'N/A',
+                user: (contact.user)
+                    ? contact.user
+                    : 'N/A',
                 date: (contact.stamp)
                     ? contact.stamp
                     : 'N/A',
                 label: (contact.label)
                     ? contact.label
-                    : 'N/A',
-                phone: (contact.phone)
-                    ? contact.phone
                     : 'N/A',
                 message: (contact.message)
                     ? contact.message
@@ -112,7 +117,7 @@ Template.opwContactLog.helpers({
         });
 
         if (!normalized.length) {
-            normalized[0] = {contact: 'No contacts yet! Get tweeting!'};
+            normalized[0] = {contact: 'No contacts yet, get tweeting!'};
         }
 
         return normalized;
@@ -124,11 +129,11 @@ Template.opwContactLog.helpers({
 
 /******************************************************************************
  *
- * Contact form event handlers
+ * Modal form event handler to submit contact modal
  *
  *****************************************************************************/
 
-Template.opwContactModalForm.events({
+Template.opwModal.events({
 
     // Validate and potentially submit detailed contact form
     'click #opw-detailed-contact-submit': function (event, template) {
@@ -136,68 +141,70 @@ Template.opwContactModalForm.events({
         event.preventDefault();
 
         // Locals
-        var message = $(template.find('#opw-contact-tore')).val();
+        // #opw-contact-modal
+        var label   = $('#opw-contact-modal').find('#opw-contact-label').val();
+        var message = $('#opw-contact-modal').find('#opw-contact-message').val();
         var obj     = {};
-        var phone   = $(template.find('#opw-contact-pors')).val();
-        var tOrE    = $(template.find('#opw-contact-message')).val();
+        var user    = $('#opw-contact-modal').find('#opw-contact-user').val();
         var valid   = false;
-        tOrE        = tOrE.trim();
-        pOrS        = phone.trim();
-        message     = message.trim();
 
         // Formulate
-        obj.tore    = tOrE;
-        obj.pOrS    = pOrS ;
-        obj.message = message;
+        obj.label   = label.trim();
+        obj.message = message.trim();
+        obj.user    = user.trim();
 
-        // TODO
         // Validate
-        if (OPW.isValidContactDetailed(obj)) {
-            OPW.contactDetailedFormValid(template);
-            valid = true;
+        if (OPW.isValidContactSubmission(obj)) {
+          // Post processing handled in API
+          OPW.insertContact(obj, template)
         } else {
-            OPW.contactDetailedFormInvalid(template);
+          // Pop alert
+          OPW.log({
+            message: OPW.getNestedConfig('contact',
+                                         'detailedFormInvalidSubmission'),
+                                         type: 'danger',
+                                         notifyUser: true,
+                                         sendEvent: true,
+          });
         }
-
-        // Post processing handled in API
-        (valid)
-            // Pop alert
-            ? OPW.insertContactDetailed(obj, template)
-            : OPW.log({
-                    message: OPW.getNestedConfig('contact',
-                                              'detailedFormInvalidSubmission'),
-                    type: 'danger',
-                    notifyUser: true,
-                    sendEvent: true,
-                });
 
         return;
 
     },
 
-    // Validate contact field as they type
-    'keyup .opw-contact-input': function (event, template) {
+});
+
+/******************************************************************************
+ *
+ * Contact form event handlers
+ *
+ *****************************************************************************/
+
+Template.opwContactModalForm.events({
+
+    // Validate email/twitter field as they type
+    'keyup #opw-contact-user': function (event, template) {
 
         // Locals
-        var val     = $(template.find('.opw-contact-input')).val();
+        var val     = $(template.find('#opw-contact-user')).val();
         val         = val.trim();
 
         // Reset if empty
         if (!val.length) {
-            OPW.contactFormReset(template);
+            OPW.flagReset(template, '.opw-contact-flag');
             return;
         }
 
         // Validate
-        if (OPW.isValidContact(val)) {
+        if (OPW.isValidEmailOrTwitter(val)) {
 
             // Set valid flag
-            OPW.contactFormValid(template);
+            OPW.flagValid(template, '.opw-contact-flag');
 
         } else {
 
             // Set invalid flag
-            OPW.contactFormInvalid(template);
+            OPW.flagInvalid(template, '.opw-contact-flag');
 
         }
 
@@ -206,29 +213,19 @@ Template.opwContactModalForm.events({
     },
 
     // Validate message field as they type
-    'keyup #opw-detailed-contact-message': function (event, template) {
+    'keyup #opw-contact-message': function (event, template) {
 
         // Locals
-        var val     = $(template.find('#opw-detailed-contact-message')).val();
+        var val     = $(template.find('#opw-contact-message')).val();
         val         = val.trim();
 
         // Reset if empty
         if (!val.length) {
-            OPW.contactFormMessageReset(template);
-            return;
-        }
-
-        // Validate
-        if (OPW.isValidContactMessage(val)) {
-
-            // Set valid flag
-            OPW.contactFormValidMessage(template);
-
-        } else {
-
             // Set invalid flag
-            OPW.contactFormInvalidMessage(template);
-
+            OPW.flagInvalid(template, '.opw-contact-message-flag');
+        } else {
+            // Set valid flag
+            OPW.flagValid(template, '.opw-contact-message-flag');
         }
 
         return;
@@ -236,29 +233,19 @@ Template.opwContactModalForm.events({
     },
 
     // Validate phone or subject field as they type
-    'keyup .opw-contact-pors': function (event, template) {
+    'keyup #opw-contact-label': function (event, template) {
 
         // Locals
-        var val     = $(template.find('.opw-contact-pors')).val();
+        var val     = $(template.find('#opw-contact-label')).val();
         val         = val.trim();
 
-        // Reset if empty
-        if (!val.length) {
-            OPW.contactFormSubjectReset(template);
-            return;
-        }
-
-        // Validate
-        if (OPW.isValidContactSubject(val)) {
-
-            // Set valid flag
-            OPW.contactFormValidSubject(template);
-
-        } else {
-
+        // Reset if empty or more than 40 characters in length
+        if (!val.length || (40 < val.length)) {
             // Set invalid flag
-            OPW.contactFormInvalidSubject(template);
-
+            OPW.flagInvalid(template, '.opw-contact-subject-flag');
+        } else {
+            // Set valid flag
+            OPW.flagValid(template, '.opw-contact-subject-flag');
         }
 
         return;

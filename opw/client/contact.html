@@ -46,15 +46,12 @@
             </tr>
         </thead>
 
-        <tbody>
-            {{#each opwContacts}}
+        {{#each opwContacts}}
 
+            <tbody>
                 <tr>
                     <td>
-                        {{contact}}
-                    </td>
-                    <td>
-                        {{phone}}
+                        {{user}}
                     </td>
                     <td>
                         {{label}}
@@ -68,14 +65,14 @@
                 </tr>
                 {{#if message}}
                     <tr>
-                        <td colspan="5">
+                        <td colspan="4">
                             {{message}}
                         </td>
                     </tr>
                 {{/if}}
+            </tbody>
 
-            {{/each}}
-        </tbody>
+        {{/each}}
 
     </table>
 
@@ -105,7 +102,7 @@
 
     <label
         class="sr-only"
-        for="opw-contact-tore">
+        for="opw-contact-user">
         Twitter or Email
     </label>
     <div class="input-group">
@@ -117,8 +114,8 @@
         </div>
         <input
             type="text"
-            id="opw-contact-tore"
-            class="form-control"
+            id="opw-contact-user"
+            class="form-control opw-contact-input"
             placeholder="@Twitter or e@mail.com required">
     </div>
 
@@ -141,7 +138,7 @@
                 text-muted"></i>
         </div>
         <textarea
-            id="opw-detailed-contact-message"
+            id="opw-contact-message"
             class="form-control"
             placeholder="Thanks for your time, enter your message here!"
             ></textarea>
@@ -156,7 +153,7 @@
 
     <label
         class="sr-only"
-        for="opw-contact-pors">
+        for="opw-contact-label">
         Subject, Telephone or VoIP Number
     </label>
     <div class="input-group">
@@ -168,7 +165,7 @@
         </div>
         <input
             type="text"
-            id="opw-contact-pors"
+            id="opw-contact-label"
             class="form-control"
             placeholder="Phone # or subject if desired">
     </div>

@@ -475,7 +475,7 @@ Template.opwRoot.onRendered(function () {
 
  ******************************************************************************/
 
-Template.opwSection.onRendered({
+Template.opwSection.helpers({
 
     opwSectionalIndicator: function () {
         return (!opw.footer.fixedScrollIndicator);
@@ -517,8 +517,7 @@ Template.opwSection.onRendered(function () {
 
     /** Contact form **/
 
-    // Make sure just one
-    // **** This should go away, I think I fixed it :|
+    // Make sure just one per section
     if (1 < contactFormExists) {
         console.log('ERROR There may only be one contact form per editable section');
         return;
