@@ -934,10 +934,10 @@ OPW = {
               $('#opw-detailed-contact-modal').modal('hide');
             } else {
               // Remove contact form
-              target.children().remove(),
+              target.children().remove();
               // Render thank you
               UI.render(Template.opwContactThankYou,
-                        target.get(0)),
+                        target.get(0));
             }
 
             // Provide feedback & log
