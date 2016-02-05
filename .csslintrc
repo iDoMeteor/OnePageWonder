@@ -1,0 +1,2 @@
+--exclude-list=.meteor/,packages/,private/,drop-ins/,.git/,node_modules/,public/,drop-ins/,notes/
+
