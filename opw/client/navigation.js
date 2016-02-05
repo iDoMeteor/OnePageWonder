@@ -62,12 +62,6 @@ Template.opwNavigation.events({
     'click #opw-editor-open': function (event, template) {
         event.preventDefault();
         var id = OPW.getIdFromSlug(contentParent.parent().attr('id'));
-        // Send event to analytics
-        // TODO: Convert to logger
-        OPW.log({
-          message: '#OPW editor click',
-          type: 'event',
-        });
         OPW.popEditor(id);
     },
 

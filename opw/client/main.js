@@ -214,11 +214,6 @@ Template.opwFooter.events ({
 
     'click #opw-brag': function (event) {
         event.preventDefault();
-        // Send event to analytics
-        OPW.log({
-          message: '#OPW brag click',
-          type: 'event',
-        });
         // Show info
         OPW.popModal({
             id:         'opw-brag-box',
@@ -231,11 +226,6 @@ Template.opwFooter.events ({
 
     'click .opw-site-stats': function (event) {
         event.preventDefault();
-        // Send event to analytics
-        OPW.log({
-          message: '#OPW site statistics click',
-          type: 'event',
-        });
         // Show info
         OPW.popModal({
             id:         'opw-site-stats',
@@ -289,11 +279,6 @@ Template.opwHelp.events ({
 
     'click a': function (event) {
         event.preventDefault();
-        // Send event to analytics
-        OPW.log({
-          message: '#OPW help button click',
-          type: 'event',
-        });
     },
 
 });
@@ -309,11 +294,6 @@ Template.opwLayout.events ({
 
     'click .opw-root': function (event) {
         event.preventDefault();
-        // Send event to analytics
-        OPW.log({
-          message: '#OPW root link click',
-          type: 'event',
-        });
         // Go home
         OPW.scrollToHref('#top', function () {
             Router.go('opwRoot');
@@ -407,29 +387,6 @@ Template.opwModal.onRendered(function () {
 
 /*******************************************************************************
  *
- * Root (truly global) event handlers
- *
- * TODO:
- *    Don't think this works ;>
- *
- ******************************************************************************/
-
-Template.opwRoot.events({
-
-    // Global transparent click handler
-    'click': function (event, template) {
-      // Send event to analytics
-      OPW.log({
-        message: '#OPW generic click',
-        type: 'event',
-      });
-    },
-
-});
-
-
-/*******************************************************************************
- *
  * Root helpers
  *
  * This retrieves the home row (which is special since it must always appear,
@@ -465,12 +422,6 @@ Template.opwRoot.onRendered(function () {
 
     // Remove injected loader div
     $('#opw-loader').remove();
-
-    // Send event to analytics
-    OPW.log({
-      message: '/',
-      type: 'pageview',
-    });
 
 });
 
@@ -539,23 +490,6 @@ Template.opwSection.onRendered(function () {
 
 /*******************************************************************************
  *
- * Social icon event handlers
- *
- ******************************************************************************/
-
-Template.opwSocialIcons.events({
-
-    'click .opw-social-icon': function (event) {
-        OPW.log({
-          message: '#OPW social icon click',
-          type: 'event',
-        });
-    },
-
-});
-
-/*******************************************************************************
- *
  * OPW Social icons helpers
  *
  ******************************************************************************/
@@ -592,7 +526,7 @@ Template.opwSocialIcons.helpers ({
 
 // Hook into Astronomer global, added just for me! :D
 if (OPW.getNestedConfig('astronomer', 'enable')) {
-    AstronomerConfig = OPW.getConfig('astronomer');
+    window.AstronomerConfig = OPW.getConfig('astronomer');
 }
 
 // iDM Connection Log IP Cheat

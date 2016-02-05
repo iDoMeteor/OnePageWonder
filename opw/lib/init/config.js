@@ -33,8 +33,8 @@ opw = {
 
     // Astronomer
     astronomer: {
-        key:            '',
-        enable:         false,
+        key:            'vd8pnoqTEkWzt6bnh',
+        enable:         true,
         secret:         '',
         sendLogEvents:  true,
     },
