@@ -14,7 +14,6 @@ Template.opwNavigation.events({
             && OPW.getRows().length
         ) {
             state = OPW.scrollIndicatorUpdate();
-            Session.set('opwScrollIndicatorState', state);
         }
     },
 
@@ -209,7 +208,6 @@ Template.opwNavigation.onRendered(function () {
 
         if (OPW.getNestedConfig('navigation', 'showScrollIndicator')) {
             state = OPW.scrollIndicatorUpdate();
-            Session.set('opwScrollIndicatorState', state);
         }
 
         // Re-bind scroll events

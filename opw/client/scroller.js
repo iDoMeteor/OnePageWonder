@@ -40,7 +40,8 @@ Template.opwScrollIndicator.events({
     'click #opw-scroll-to-next': function (event) {
         OPW.log({message: 'Scrolling to next', type: 'debug'});
         event.preventDefault();
-        var state = Session.get('opwScrollState');
+        var state = Session.get('opwScrollState')
+                  || OPW.scrollIndicatorUpdate();
         var next  = '#' + state.next;
         OPW.scrollToHref(next);
     },
@@ -48,7 +49,8 @@ Template.opwScrollIndicator.events({
     'click #opw-scroll-to-top': function (event) {
         OPW.log({message: 'Scrolling to top', type: 'debug'});
         event.preventDefault();
-        var state = Session.get('opwScrollState');
+        var state = Session.get('opwScrollState')
+                  || OPW.scrollIndicatorUpdate();
         var first = '#' + state.first
         OPW.scrollToHref(first);
     },
@@ -65,7 +67,7 @@ Template.opwScrollIndicator.events({
 Template.opwScrollIndicator.helpers({
 
     opwLastDisplayedSectionIsActive: function () {
-        state = Session.get('opwScrollIndicatorState');
+        state = Session.get('opwScrollState');
         return (OPW.isObject(state)) ? (state.active == state.last) : false;
     },
 
