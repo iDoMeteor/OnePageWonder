@@ -936,8 +936,7 @@ OPW = {
               // Remove contact form
               target.children().remove();
               // Render thank you
-              UI.render(Template.opwContactThankYou,
-                        target.get(0));
+              UI.render(Template.opwContactThankYou, target.get(0));
             }
 
             // Provide feedback & log
@@ -2051,6 +2050,7 @@ OPW = {
    *                      critical
    *                      danger
    *                      error
+   *                      event
    *                      failure
    *                      info
    *                      security
@@ -2064,6 +2064,7 @@ OPW = {
    *  TODO:
    *          Not all messages need to be stringified,
    *          fix when putting in data object check
+   *          Doc what each type does
    *
    * ************************************************************************/
 
@@ -2107,9 +2108,11 @@ OPW = {
       },
 
       deployed: function(obj) {
-        console.log('OPW DANGER: '
-                    + JSON.stringify(obj, null, 4)
-                   );
+        if (OPW.getConfig('debug')) {
+          console.log('OPW DANGER: '
+                      + JSON.stringify(obj, null, 4)
+                     );
+        }
         // TODO: Send rollbar deployment
         obj.alertType   = 'danger';
         obj.sendEvent   = true;
@@ -2122,6 +2125,18 @@ OPW = {
                    );
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
+        obj.sendEvent   = true;
+        return obj;
+      },
+
+      event: function(obj) {
+        // TODO: Probably should give event specific options
+        if (OPW.getConfig('debug')) {
+          console.log('OPW EVENT: '
+                      + JSON.stringify(obj, null, 4)
+                     );
+        }
+        obj.alertType   = 'info';
         obj.sendEvent   = true;
         return obj;
       },
@@ -2141,6 +2156,18 @@ OPW = {
                     + JSON.stringify(obj, null, 4)
                    );
         obj.alertType   = obj.type;
+        return obj;
+      },
+
+      pageview: function(obj) {
+        // TODO: Probably should give event specific options
+        if (OPW.getConfig('debug')) {
+          console.log('OPW PAGEVIEW: '
+                      + JSON.stringify(obj, null, 4)
+                     );
+        }
+        obj.alertType   = 'info';
+        obj.sendEvent   = true;
         return obj;
       },
 
@@ -2544,7 +2571,7 @@ OPW = {
    * @Method          popModal
    * @Param           n/a
    * @Returns         undefined
-   * @Location        Client, Server
+   * @Location        Client
    *
    * @Description
    *
@@ -2556,6 +2583,12 @@ OPW = {
    * ************************************************************************/
 
   popModal: function(options) {
+
+    // This should only run on the client
+    if (Meteor.isServer) {
+      OPW.log('WARNING Attempting to pop modal from server');
+      return;
+    }
 
     // Validate TODO: Better
     if (!OPW.isObject(options)) {
@@ -2576,19 +2609,14 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks event to see if control-enter-like key was pressed
    * @Method          pressedControlEnter
-   * @Param           n/a
-   * @Returns         undefined
+   * @Param           event The full event passed as passed into Meteor event
+   * @Returns         {boolean}
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
-  // Checks event to see if control-enter-like key was pressed
   pressedControlEnter: function(event) {
 
     if (
@@ -2610,19 +2638,14 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks event to see if enter-like key was pressed
    * @Method          pressedEnter
    * @Param           n/a
    * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
+   * @Location        Client
    *
    * ************************************************************************/
 
-  // Checks event or number (TODO) to see if enter-like key was pressed
   pressedEnter: function(event) {
 
     var key = (event && event.which) ? event.which : event;
@@ -2640,7 +2663,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks event or number to see if tab has been pressed
    * @Method          pressedTab
    * @Param           n/a
    * @Returns         undefined
@@ -2652,7 +2675,6 @@ OPW = {
    *
    * ************************************************************************/
 
-  // Checks event or number (TODO) to see if tab has been pressed
   pressedTab: function(event) {
 
     var key = (event && event.which) ? event.which : event;
@@ -2667,19 +2689,14 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Removes a row by ID, checks for authenticated user
    * @Method          removeRow
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Removes a row by ID, checks for authenticated user
   removeRow: function(id) {
 
     // Check perms
@@ -2766,6 +2783,7 @@ OPW = {
    *      TODO: Change to scroll to top if *close* to bottom
    *            May as well let them scroll upward anytime
    *            & to top when @ bottom
+   *            Make this an alias to a function in scroller.js
    *
    * ************************************************************************/
 
@@ -2915,7 +2933,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Makes URL friendly slugs from a string (ie; nav title)
    * @Method          stringToSlug
    * @Param           n/a
    * @Returns         undefined
@@ -2923,19 +2941,17 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *      TODO: Change to Node transliterate in Meteor 1.3
    *
    * ************************************************************************/
 
-  // This makes URL/href friendly slugs from a string (ie; nav title)
   stringToSlug: function(string) {
 
+    // Validate
     if (!OPW.isString(string)) {
       return false;
     }
     var slug = string.toLowerCase().trim();
-
-    // TODO: Node transliterate
 
     // Convert non-alpha chars to - cuz I hate typing _
     slug = slug.replace(/[\W]/g, '-');
@@ -2949,7 +2965,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Updates row content, must be valid & logged in
    * @Method          updateRow
    * @Param           n/a
    * @Returns         undefined
@@ -2957,13 +2973,12 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   * TODO:
+   *     Post processing should probably be out-sourced
    *
    * ************************************************************************/
 
-  // Updates row content, must be valid & logged in
-  // TODO:
-  //      Post processing should probably be out-sourced
+
   updateRow: function(obj) {
 
     // Permissions check

@@ -215,9 +215,10 @@ Template.opwFooter.events ({
     'click #opw-brag': function (event) {
         event.preventDefault();
         // Send event to analytics
-        if (OPW.gaEnabled) {
-            idmGA.event('#OnePageWonder', 'Brag', 'Clicked');
-        }
+        OPW.log({
+          message: '#OPW brag click',
+          type: 'event',
+        });
         // Show info
         OPW.popModal({
             id:         'opw-brag-box',
@@ -231,9 +232,10 @@ Template.opwFooter.events ({
     'click .opw-site-stats': function (event) {
         event.preventDefault();
         // Send event to analytics
-        if (OPW.gaEnabled) {
-            idmGA.event('#OnePageWonder', 'Site Statistics', 'Clicked');
-        }
+        OPW.log({
+          message: '#OPW site statistics click',
+          type: 'event',
+        });
         // Show info
         OPW.popModal({
             id:         'opw-site-stats',
@@ -288,9 +290,10 @@ Template.opwHelp.events ({
     'click a': function (event) {
         event.preventDefault();
         // Send event to analytics
-        if (OPW.gaEnabled) {
-            idmGA.event('Help Link', $(event.target).attr('href'), 'Clicked');
-        }
+        OPW.log({
+          message: '#OPW help button click',
+          type: 'event',
+        });
     },
 
 });
@@ -307,9 +310,10 @@ Template.opwLayout.events ({
     'click .opw-root': function (event) {
         event.preventDefault();
         // Send event to analytics
-        if (OPW.gaEnabled) {
-            idmGA.event('Navigation', 'Root', 'Clicked');
-        }
+        OPW.log({
+          message: '#OPW root link click',
+          type: 'event',
+        });
         // Go home
         OPW.scrollToHref('#top', function () {
             Router.go('opwRoot');
@@ -414,10 +418,11 @@ Template.opwRoot.events({
 
     // Global transparent click handler
     'click': function (event, template) {
-        // Send event to analytics
-        if (OPW.gaEnabled) {
-            idmGA.event('Global', 'Click',  $(event.target));
-        }
+      // Send event to analytics
+      OPW.log({
+        message: '#OPW generic click',
+        type: 'event',
+      });
     },
 
 });
@@ -462,9 +467,10 @@ Template.opwRoot.onRendered(function () {
     $('#opw-loader').remove();
 
     // Send event to analytics
-    if (OPW.gaEnabled) {
-        idmGA.pageview('/');
-    }
+    OPW.log({
+      message: '/',
+      type: 'pageview',
+    });
 
 });
 
@@ -540,7 +546,10 @@ Template.opwSection.onRendered(function () {
 Template.opwSocialIcons.events({
 
     'click .opw-social-icon': function (event) {
-        idmGA.event('Social Icon', $(event.currentTarget).attr('href'), 'Clicked');
+        OPW.log({
+          message: '#OPW social icon click',
+          type: 'event',
+        });
     },
 
 });

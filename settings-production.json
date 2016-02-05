@@ -1,0 +1,10 @@
+{
+  "public": {
+    "astronomer": {
+      "appId": "jWeGd7CzEWS8PJwrC",
+      "disableUserTracking": false,
+      "disableRouteTracking": false,
+      "disableMethodTracking": false
+    }
+  }
+}

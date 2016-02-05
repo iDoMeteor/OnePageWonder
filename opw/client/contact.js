@@ -57,7 +57,6 @@ Template.opwContactForm.events({
             if (submit) {
                 OPW.popAlert('You must enter a valid twitter handle or email.',
                              'danger');
-                idmGA.event('Contact Request', 'Invalid Submission', user);
             }
 
         }

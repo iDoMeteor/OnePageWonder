@@ -64,9 +64,10 @@ Template.opwNavigation.events({
         var id = OPW.getIdFromSlug(contentParent.parent().attr('id'));
         // Send event to analytics
         // TODO: Convert to logger
-        if (OPW.gaEnabled) {
-            idmGA.event('Editor', 'Clicked');
-        }
+        OPW.log({
+          message: '#OPW editor click',
+          type: 'event',
+        });
         OPW.popEditor(id);
     },
 
