@@ -9,6 +9,8 @@ console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Browser Policy'
  * ****************************************************************************/
 
 var trusted = [
+  'http://*.astronomer.io',
+  'https://*.astronomer.io',
   'http://*.google-analytics.com',
   'https://*.google-analytics.com',
   '*.idometeor.com',
@@ -22,6 +24,7 @@ var trusted = [
   'wss://*.meteor.com',
 ];
 var trustedSockets = [
+  '*.astronomer.io',
   '*.idometeor.com',
   '*.meteor.com',
   'localhost:*',

@@ -33,10 +33,11 @@ opw = {
 
     // Astronomer
     astronomer: {
-        key:            'vd8pnoqTEkWzt6bnh',
-        enable:         true,
-        secret:         '',
-        sendLogEvents:  true,
+        appId:                  'vd8pnoqTEkWzt6bnh',
+        disableMethodTracking:  false,
+        disableRouteTracking:   false,
+        disableUserTracking:    false,
+        enable:                 true,
     },
 
     // Bootstrap config
@@ -102,7 +103,7 @@ opw = {
 
     // Google Analytics
     google: {
-        account: '',
+        account: 'UA-23671882-12', // Dev keys for localhost:31308
         cookie: {
             // If you want to customize your cookie,
             // disable auto & set the rest
@@ -113,7 +114,7 @@ opw = {
         },
         debug: true,
         debugTrace: false, // Very verbose
-        enable: false,
+        enable: true,
         sendLogEvents: true,
         trackInPage: true,
         trackInterests: true,
