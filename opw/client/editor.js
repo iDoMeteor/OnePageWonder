@@ -492,22 +492,44 @@ Template.opwEditorSections.onRendered(function () {
   var sortable = Sortable.create(list, {
     animation: 150,
     handle: '.sortable-handle',
+
     onUpdate: function (event) {
       /**
        * Update & save affected records
        * .. while making sure home row is always 0
        */
+      var filter    = {
+        removed:    {$ne: true},
+        slug:       {$ne: 'top'},
+        stale:      {$ne: true},
+      }
       var newIndex  = event.newIndex;
       var oldIndex  = event.oldIndex;
+      var rowId = $(event.item).attr('data-id');
+
+      // Debug
       OPW.log({
         data: {
           newIndex: newIndex,
-          oldIndex: oldIndex
+          oldIndex: oldIndex,
+          rowId: rowId,
         },
         message: 'Sortable updating:',
         type: 'debug',
       });
+
+      if (newIndex < oldIndex) {
+        // Element moved up in the list.
+        // The dropped element has a next sibling for sure.
+        OPW.adjustRowOrder(rowId, newIndex, oldIndex, filter);
+      } else if (newIndex > oldIndex) {
+        // Element moved down in the list.
+        // The dropped element has a previous sibling for sure.
+        OPW.adjustRowOrder(rowId, newIndex, oldIndex, filter);
+      }
+
     },
+
   });
 
 });

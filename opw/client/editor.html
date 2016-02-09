@@ -181,7 +181,7 @@
     {{#each log}}
 
       <tbody>
-        <tr>
+        <tr title="{{_id}}">
           <td>
             {{type}}
           </td>
@@ -223,7 +223,7 @@
     {{#each log}}
 
       <tbody>
-        <tr>
+        <tr title="{{_id}}">
           <td>
             {{type}}
           </td>
@@ -273,7 +273,7 @@
         {{#each log}}
 
             <tbody>
-                <tr>
+              <tr title="{{_id}}">
                     <td>
                         {{user}}
                     </td>
@@ -325,7 +325,7 @@
     {{#each log}}
 
       <tbody>
-        <tr>
+        <tr title="{{_id}}">
           <td>
             {{type}}
           </td>
@@ -367,7 +367,7 @@
     {{#each log}}
 
       <tbody>
-        <tr>
+        <tr title="{{_id}}">
           <td>
             {{type}}
           </td>
@@ -593,7 +593,7 @@
       id="opw-edit-{{slug}}"
         type="button"
         class="btn btn-info width-20em opw-edit-row">
-      <span class="badge" title="42 section views">42</span>
+      <span class="badge">42</span>
       <i class="fa fa-pencil float-left"></i>
       {{title}}
     </button>
