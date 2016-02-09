@@ -1,8 +1,8 @@
 console.log ('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Collections');
 opwAdminNotificationLog = new Meteor.Collection(opw.prefix + '-admin-notification-log');
 opwContacts             = new Meteor.Collection(opw.prefix + '-contacts');
-opwRows                 = new Meteor.Collection(opw.prefix + '-rows');
 opwLog                  = new Meteor.Collection(opw.prefix + '-log');
+opwRows                 = new Meteor.Collection(opw.prefix + '-rows');
 opwSingletons           = new Meteor.Collection(opw.prefix + '-singletons');
 
 if (Meteor.isServer) {
@@ -11,6 +11,14 @@ if (Meteor.isServer) {
     Meteor.publish ('opwAdminNotificationLog', function () {
         if (this.userId) {
             return OPW.getAdminNotificationLog(false);
+        } else {
+            this.ready();
+        }
+    });
+
+    Meteor.publish ('opwAuthenticationHistory', function () {
+        if (this.userId) {
+            return OPW.getAuthenticationHistory(false);
         } else {
             this.ready();
         }
@@ -28,8 +36,24 @@ if (Meteor.isServer) {
         return OPW.getHomeRow(false);
     });
 
+    Meteor.publish ('opwRawLog', function () {
+        if (this.userId) {
+            return OPW.getRawLog(false);
+        } else {
+            this.ready();
+        }
+    });
+
     Meteor.publish ('opwRows', function () {
         return OPW.getRows(null, false);
+    });
+
+    Meteor.publish ('opwSecurityLog', function () {
+        if (this.userId) {
+            return OPW.getSecurityLog(false);
+        } else {
+            this.ready();
+        }
     });
 
     Meteor.publish ('opwUsers', function () {
@@ -76,8 +100,7 @@ if (Meteor.isServer) {
     opwAdminNotificationLog.deny({
         // Anyone can insert if properly formatted and unique
         insert: function (uid, doc) {
-            // TODO: This is not going to work :)
-            return (!OPW.isValidMailObject(doc));
+          return (!OPW.isValidLogObject(doc));
         },
         // No one can remove!
         remove: function () {
@@ -89,20 +112,17 @@ if (Meteor.isServer) {
         },
 
     });
-    /*
     opwContacts.deny({
 
         // Anyone can insert if properly formatted and unique
         insert: function (userId, doc) {
 
             var whitelist = [
-                'email',
                 'label',
                 'message',
-                'phone',
                 'source',
                 'stamp',
-                'twitter',
+                'user',
             ]
 
             // Make sure we're only getting what we expect
@@ -119,12 +139,6 @@ if (Meteor.isServer) {
             }
 
             // Message
-            if ('string' != typeof(doc.phone)) {
-                console.log('OPW DENIAL Invalid phone');
-                return true;
-            }
-
-            // Phone
             if ('string' != typeof(doc.message)) {
                 console.log('OPW DENIAL Invalid message');
                 return true;
@@ -134,9 +148,6 @@ if (Meteor.isServer) {
             if (false == /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(doc.source)) {
                 console.log('OPW DENIAL Invalid source');
                 return true;
-            } else if (opwContacts.find({source: doc.source}).count()) {
-                console.log('OPW DENIAL Duplicate source');
-                return true;
             }
 
             // Stamp
@@ -145,23 +156,13 @@ if (Meteor.isServer) {
                 return true;
             }
 
-            // Contact
-            if (/^.{1,255}\@[\w-.]{1,255}$/.test(doc.email)) {
-                if (opwContacts.find({email: doc.email}).count()) {
-                    console.log('OPW DENIAL Duplicate email request');
-                    return true;
-                }
-                return false;
-            } else if (/^@\w{1,15}$/.test(doc.twitter)) {
-                if (opwContacts.find({twitter: doc.twitter}).count()) {
-                    console.log('OPW DENIAL Duplicate twitter request');
-                    return true;
-                }
-                return false;
+            // User
+            if ('string' != typeof(doc.user)) {
+                console.log('OPW DENIAL Invalid message');
+                return true;
             }
 
-            console.log('OPW DENIAL No valid contact supplied');
-            return true;
+            return false;
 
         },
         // No one can remove!
@@ -174,12 +175,10 @@ if (Meteor.isServer) {
         },
 
     });
-    */
     opwLog.deny({
         // Anyone can insert if properly formatted and unique
         insert: function (uid, doc) {
-            // TODO: Validate & add uid
-            return false;
+          return (!OPW.isValidLogObject(doc));
         },
         // No one can remove!
         remove: function () {

@@ -1,8 +1,8 @@
 <template name="opwNavigation">
 
-    {{!-- Sometimes.. there is just no pretty way to Bootstrap >:| --}}
-    <nav 
-        id="opw-primary-nav" 
+    {{! Sometimes.. there is just no pretty way to Bootstrap >:| }}
+    <nav
+        id="opw-primary-nav"
         class="navbar{{opwNavbarContextualClass}}{{opwIfNavbarIsFixed}}">
 
         <div class="container{{opwIfNavbarIsFluid}}">
@@ -17,17 +17,17 @@
                         <a class="page-scroll hide" href="#top">One Page Wonder</a>
                     </li>
 
-                    {{!-- Dynamic rows --}}
+                    {{! Dynamic rows }}
                     {{#each opwRows}}
 
-                        {{!-- > opwNavigationItem --}}
+                        {{! > opwNavigationItem }}
                         <li>
                             <a class="page-scroll" href="#{{slug}}">{{title}}</a>
                         </li>
 
                     {{/each}}
 
-                    {{!-- Detailed contact form --}}
+                    {{! Detailed contact form }}
                     {{#if opwShowDetailedContactLink}}
                         <li id="opw-contact-detailed">
                             <a>
@@ -36,7 +36,7 @@
                         </li>
                     {{/if}}
 
-                    {{!-- Change theme --}}
+                    {{! Change theme }}
                     {{#if opwAllowDynamicTheme}}
                         <li id="opw-change-navigation">
                             <a>
@@ -45,7 +45,7 @@
                         </li>
                     {{/if}}
 
-                    {{!-- Change navigation style --}}
+                    {{! Change navigation style }}
                     {{#if opwAllowDynamicNavigation}}
                         <li id="opw-change-navigation">
                             <a>
@@ -54,16 +54,16 @@
                         </li>
                     {{/if}}
 
-                    {{!-- Add row --}}
+                    {{! Add row }}
                     {{#if currentUser}}
-                        <li id="opw-add-row">
+                        <li id="opw-launch-editor">
                             <a>
                                 <span class="fa fa-gear"></span>
                             </a>
                         </li>
                     {{/if}}
 
-                    {{!-- Authentication --}}
+                    {{! Authentication }}
                     {{#if currentUser}}
                         <li id="opw-logout">
                             <a class="opw-auth-icon">
@@ -101,10 +101,10 @@
 <template name="opwNavigationMobile">
 
     <div class="navbar-header">
-        <button 
-            type="button" 
-            class="navbar-toggle collapsed" 
-            data-toggle="collapse" 
+        <button
+            type="button"
+            class="navbar-toggle collapsed"
+            data-toggle="collapse"
             data-target="#opw-navigation">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>

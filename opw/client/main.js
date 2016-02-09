@@ -25,7 +25,10 @@ Accounts.onLogin(function (user) {
         notifyAdmin: OPW.getNestedConfig('toggles',
                                          'notifyAdminOnLoginSuccess'),
         sendEvent: true,
+        eventTag: 'Login Success',
+        auth: true,
         type: 'success',
+        data: user,
     });
 
 });
@@ -33,16 +36,15 @@ Accounts.onLogin(function (user) {
 Accounts.onLoginFailure(function (user) {
 
     OPW.log({
-        message: OPW.getString('authenticationLoginFailure')
-            + '\n'
-            + email
-            + ' failed login: '
-            + error,
-        notifyUser: false,
+        message: OPW.getString('authenticationLoginFailure'),
+        notifyUser: true,
         notifyAdmin: OPW.getNestedConfig('toggles',
                                          'notifyAdminOnLoginFailure'),
         sendEvent: true,
-        type: 'error',
+        eventTag: 'Login Failure',
+        auth: true,
+        type: 'danger',
+        data: user,
     });
 
 });
@@ -358,11 +360,7 @@ Template.opwLayout.onRendered(function () {
 Template.opwModal.helpers({
 
     closeLabel: function () {
-        return OPW.getNestedConfig(
-            'bootstrap',
-            'alert',
-            'closeLabel'
-        ) || 'Close';
+        return OPW.getString('closeLabel');
     },
 
 });
@@ -547,7 +545,7 @@ if (OPW.getNestedConfig('astronomer', 'enable')) {
         if (ip && ip.length) {
             OPW.log({
                 message: 'Registering IP helper',
-                data: ip,
+                data: {ip: ip},
                 type: 'debug'
             });
             Template.registerHelper('currentIp', function () {

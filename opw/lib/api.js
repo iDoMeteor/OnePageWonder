@@ -96,26 +96,52 @@ OPW = {
 
     // Validate IP & check for dupe
     if (OPW.isValidIp(ip)) {
-      OPW.log('Checking for duplicate source IP', 1);
-      console.log(opwContacts.find({source: ip}).count());
+      OPW.log({
+        message: 'Checking for duplicate source IP',
+        type: 'debug',
+      });
       if (opwContacts.find({source: ip}).count()) {
-        OPW.log('ERROR This source already exists in contact log', 2);
+        OPW.log({
+          message: 'This source already exists in contact log.',
+          type: 'danger',
+          sendEvent: true,
+          eventTitle: 'Duplicate IP via Contact',
+          notifyUser: true,
+        });
         return true;
       }
     } else {
-      OPW.log('ERROR Invalid IP when checking for duplicates', 2);
+      OPW.log({
+        message: 'Invalid IP when checking for duplicates',
+        type: 'error',
+        sendEvent: true,
+        eventTag: 'Invalid IP via Contact',
+        notifyUser: true,
+      });
       return true;
     }
 
     // Validate string & check for dupe
     if (OPW.isValidEmail(string)) {
-      OPW.log('Checking for duplicate email', 1);
+      OPW.log({
+        message: 'Checking for duplicate email',
+        type: 'debug',
+      });
       return (opwContacts.find({email: string}).count());
     } else if (OPW.isValidTweeter(string)) {
-      OPW.log('Checking for duplicate twitter handle', 1);
+      OPW.log({
+        message: 'Checking for duplicate twitter handle',
+        type: 'debug',
+      });
       return (opwContacts.find({twitter: string}).count());
     } else {
-      OPW.log('ERROR Invalid contact when checking for duplicates', 2);
+      OPW.log({
+        message: 'Invalid contact when checking for duplicates',
+        type: 'error',
+        sendEvent: true,
+        eventTag: 'Invalid User via Contact',
+        notifyUser: true,
+      });
       return true;
     }
 
@@ -375,6 +401,43 @@ OPW = {
 
   /***************************************************************************
    *
+   * @Summary         XXX
+   * @Method          getAuthenticationHistory
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  getAuthenticationHistory: function(fetch) {
+
+    // Locals
+    fetch = ('boolean' == typeof (fetch))
+      ? fetch : true;
+    selector = {
+      auth: true,
+    };
+
+    // Do it
+    return (fetch) ? (
+            opwLog.find(selector, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            }).fetch()
+    ) : (
+            opwLog.find(selector, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            })
+    )
+
+  },
+
+
+  /***************************************************************************
+   *
    * @Summary         Get all active rows
    * @Method          getAllActiveRows
    * @Param           n/a
@@ -491,8 +554,8 @@ OPW = {
   getContacts: function(fetch) {
 
     // Locals
-    fetch       = ('boolean' == typeof (fetch))
-                      ? fetch : true;
+    fetch = ('boolean' == typeof (fetch))
+      ? fetch : true;
     // Do it
     return (fetch) ? (
         opwContacts.find({}).fetch()
@@ -581,57 +644,92 @@ OPW = {
 
 
   /**
-   * getNestedConfig
-   *
-   * @name getNestedConfig
-   * @function
-   * @access public
-   * @param {string} k1 Top level property, required
-   * @param {string} k2 Second level property, optional
-   * @param {string} k3 Tertiary property, optional
-   * @return {any} Can return any valid data type
-   *
-   * TODO:
-   *  Database settings override Meteor settings override defaults
-   *
+  * getNestedConfig
+  *
+  * @name getNestedConfig
+  * @function
+  * @access public
+  * @param {string} k1 Top level property, required
+  * @param {string} k2 Second level property, optional
+  * @param {string} k3 Tertiary property, optional
+  * @return {any} Can return any valid data type
+  *
+  * TODO:
+  *  Database settings should override Meteor settings /config defaults
+  *  Re-write the ternary disaster using hasOwnProperty and bulletproof it
+  *
    */
   getNestedConfig: function(k1, k2, k3) {
 
     // Validate
     if (!OPW.isString(k1)) {
-      OPW.log('ERROR Attempting to get invalid configuration value' + key.toString(), 2);
+      OPW.log('ERROR Attempting to get invalid configuration value' + k1.toString(), 2);
       return false
     }
     if (k2 && !OPW.isString(k2)) {
-      OPW.log('ERROR Attempting to get invalid configuration value' + key.toString(), 2);
+      OPW.log('ERROR Attempting to get invalid configuration value' + k2.toString(), 2);
       return false
     }
     if (k3 && !OPW.isString(k3)) {
-      OPW.log('ERROR Attempting to get invalid configuration value' + key.toString(), 2);
+      OPW.log('ERROR Attempting to get invalid configuration value' + k3.toString(), 2);
       return false
     }
 
     // Do it
     return (
-            k3 && k2 && k1
-               && opw[k1]
-               && opw[k1][k2]
-               && opw[k1][k2][k3]
-            )
-        ? opw[k1][k2][k3]
-        : (
-            k2 && k1
-                && opw[k1]
-                && opw[k1][k2]
-            )
+      k3 && k2 && k1
+      && opw[k1]
+      && opw[k1][k2]
+      && opw[k1][k2][k3]
+    )
+      ? opw[k1][k2][k3]
+      : (
+        k2 && k1
+        && opw[k1]
+        && opw[k1][k2]
+      )
         ? opw[k1][k2]
         : (k1 && opw[k1])
-            ? opw[k1]
-            : (
-                OPW.log('ERROR Attempting to get invalid configuration value' + key.toString(),
+          ? opw[k1]
+          : (
+            OPW.log('ERROR Attempting to get invalid configuration value' + key.toString(),
                     2),
-                false
-            );  // How ya like them apples :>
+                    false
+          );  // How ya like them apples :>
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          getRawLog
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  getRawLog: function (fetch) {
+
+    // Locals
+    fetch = ('boolean' == typeof (fetch))
+      ? fetch : true;
+
+    // Do it
+    return (fetch) ? (
+            opwLog.find({}, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            }).fetch()
+    ) : (
+            opwLog.find({}, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            })
+    )
 
   },
 
@@ -705,7 +803,8 @@ OPW = {
     }
     var projection  = {
       limit:      limit,
-      sort:       {'stamps.created': 1},
+      sort:       {order: 1},
+      // sort:       {'stamps.created': 1},
     };
 
     // Do it
@@ -714,6 +813,43 @@ OPW = {
     ) : (
         opwRows.find(selector, projection)
     )
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          getSecurityLog
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  getSecurityLog: function(fetch) {
+
+    // Locals
+    fetch = ('boolean' == typeof (fetch))
+      ? fetch : true;
+    selector = {
+      security: {$exists: true},
+    };
+
+    // Do it
+    return (fetch) ? (
+            opwLog.find(selector, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            }).fetch()
+    ) : (
+            opwLog.find(selector, {
+              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+            })
+    )
+
   },
 
 
@@ -756,7 +892,11 @@ OPW = {
 
     // Validate
     if (!OPW.isString(key)) {
-      OPW.log('ERROR Attempting to get invalid string', 2);
+      OPW.log({
+        message: 'Attempting to get invalid string',
+        type: 'error',
+        data: key,
+      });
       return '';
     }
 
@@ -764,7 +904,11 @@ OPW = {
     return (opw.strings[key])
         ? opw.strings[key]
         : (
-            OPW.log('ERROR Attempting to get invalid string', 2),
+            OPW.log({
+              message: 'Attempting to get invalid string',
+              type: 'error',
+              data: key,
+            }),
             ''
         );
 
@@ -1325,7 +1469,7 @@ OPW = {
       sectionClass: 'opw-sm',
     }
     var opwScrollMenu = ScrollMenu(options);
-    OPW.log(JSON.stringify(opwScrollMenu, null, 4));
+    OPW.log(JSON.stringify(opwScrollMenu, null, 2));
 
   },
 
@@ -1878,6 +2022,63 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         Checks if parameter is a valid mail object
+   * @Method          isValidLogObject
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  isValidLogObject: function(value) {
+
+    // Validate
+    if (!OPW.isObject(value)) {
+      OPW.log({
+        data: value,
+        message: 'Attempting to validate improperly formatted log object',
+        type: 'error',
+      });
+      return false;
+    }
+
+    // Sanitize keys
+    var whitelist = _.pick(value,
+                           'auth',
+                           'alertType',
+                           'date',
+                           'data',
+                           'eventTag',
+                           'message',
+                           'notifyAdmin',
+                           'notifyUser',
+                           'security',
+                           'sendEvent',
+                           'source',
+                           'type'
+                          );
+
+    // Check for additions
+    if (_.keys(whitelist).length < _.keys(value).length) {
+      OPW.log({
+        data: value,
+        message: 'Too many keys detected in log object!',
+        type: 'security',
+      });
+      return false;
+    }
+
+    return  true;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Checks if parameter is a valid mail object
    * @Method          isValidMailObject
    * @Param           n/a
    * @Returns         undefined
@@ -1903,10 +2104,12 @@ OPW = {
     var whitelist = _.pick(value, 'to', 'from', 'subject', 'text');
 
     // Check for additions
-    if (whitelist.keys().length != value.keys().length) {
-      OPW.log('ERROR Attempting to validate potentially malformed'
-              + ' notification object: \n'
-              + JSON.stringify(value), 2);
+    if (_.keys(whitelist).length < _.keys(value).length) {
+      OPW.log({
+        data: value,
+        message: 'Too many keys detected in mail object!',
+        type: 'security',
+      });
       return false;
     }
 
@@ -2057,6 +2260,9 @@ OPW = {
    *                      success
    *                      warning
    *                  sendEvent
+   *                  eventTag
+   *                  auth
+   *                  security
    *                  notifyUser
    *                  notifyAdmin
    *                  data
@@ -2078,7 +2284,7 @@ OPW = {
 
       critical: function(obj) {
         console.log('OPW CRITICAL ERROR: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
@@ -2088,7 +2294,7 @@ OPW = {
 
       danger: function(obj) {
         console.log('OPW DANGER: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = 'danger';
         obj.sendEvent   = true;
@@ -2098,7 +2304,7 @@ OPW = {
       debug: function(obj) {
         if (OPW.getConfig('debug')) {
           console.log('OPW DEBUG: '
-                      + JSON.stringify(obj, null, 4)
+                      + JSON.stringify(obj, null, 2)
                      );
         }
         obj.notifyAdmin = false;
@@ -2110,7 +2316,7 @@ OPW = {
       deployed: function(obj) {
         if (OPW.getConfig('debug')) {
           console.log('OPW DANGER: '
-                      + JSON.stringify(obj, null, 4)
+                      + JSON.stringify(obj, null, 2)
                      );
         }
         // TODO: Send rollbar deployment
@@ -2121,7 +2327,7 @@ OPW = {
 
       error: function(obj) {
         console.log('OPW ERROR: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
@@ -2133,7 +2339,7 @@ OPW = {
         // TODO: Probably should give event specific options
         if (OPW.getConfig('debug')) {
           console.log('OPW EVENT: '
-                      + JSON.stringify(obj, null, 4)
+                      + JSON.stringify(obj, null, 2)
                      );
         }
         obj.alertType   = 'info';
@@ -2143,7 +2349,7 @@ OPW = {
 
       failure: function(obj) {
         console.log('OPW FAILURE: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
@@ -2153,7 +2359,7 @@ OPW = {
 
       info: function(obj) {
         console.log('OPW INFO: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = obj.type;
         return obj;
@@ -2163,7 +2369,7 @@ OPW = {
         // TODO: Probably should give event specific options
         if (OPW.getConfig('debug')) {
           console.log('OPW PAGEVIEW: '
-                      + JSON.stringify(obj, null, 4)
+                      + JSON.stringify(obj, null, 2)
                      );
         }
         obj.alertType   = 'info';
@@ -2173,17 +2379,18 @@ OPW = {
 
       security: function(obj) {
         console.log('OPW SECURITY ISSUE: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
+        obj.security    = true;
         obj.sendEvent   = true;
         return obj;
       },
 
       success: function(obj) {
         console.log('OPW SUCCESS: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = obj.type;
         return obj;
@@ -2191,7 +2398,7 @@ OPW = {
 
       warning: function(obj) {
         console.log('OPW WARNING: '
-                    + JSON.stringify(obj, null, 4)
+                    + JSON.stringify(obj, null, 2)
                    );
         obj.alertType   = obj.type;
         return obj;
@@ -2232,6 +2439,12 @@ OPW = {
                           ? options.notifyUser : false;
       wood.sendEvent      = (OPW.isBoolean(options.sendEvent))
                           ? options.sendEvent : false;
+      wood.eventTag       = (OPW.isString(options.eventTag))
+                          ? options.eventTag : 'OPW Log Event';
+      wood.auth           = (OPW.isBoolean(options.auth))
+                          ? options.auth : false;
+      wood.security       = (OPW.isBoolean(options.security))
+                          ? options.security : false;
       wood.type           = (
                               (type = options.type)
                               && ('function' == typeof (logJam[type]))
@@ -2251,11 +2464,12 @@ OPW = {
     log = logJam[chop](wood);
 
     // Log to database
+    console.log(JSON.stringify(log, null, 2));
     opwLog.insert(log);
 
     // Notify admin if requested
     if (log.notifyAdmin) {
-      OPW.notifyAdmin(JSON.stringify(log, null, 4));
+      OPW.notifyAdmin(log);
     }
 
     // Send events
@@ -2264,7 +2478,7 @@ OPW = {
       // Astronomer
       // if (useAstro)
       // Google Analytics
-      if (useGAEvent) idmGA.event('Log', log.type, null, null, log);
+      // if (useGAEvent) idmGA.event('Log', log.type, null, null, log);
       // Rollbar
       // if (useRollbar)
 
@@ -2298,8 +2512,11 @@ OPW = {
   logAdminNotification: function(data) {
 
     // Validate
-    if (!OPW.isValidMailObject(data)) {
-      OPW.log('ERROR Attempting to log invalid mail object');
+    if (!OPW.isObject(data)) {
+      OPW.log({
+        message: 'Attempting to log invalid object',
+        type: 'error',
+      });
     }
 
     // Log it
@@ -2331,6 +2548,8 @@ OPW = {
       email = (OPW.isString(email)) ? email : 'Invalid email';
       return (error) ? (
           // User message
+              /*
+               * Handled in login failure hook
                 OPW.log({
                   message: OPW.getString('authenticationLoginFailure'),
                   notifyAdmin: false,
@@ -2338,6 +2557,7 @@ OPW = {
                   sendEvent: false,
                   type: 'danger',
                 }),
+              */
                 false
             ) : (
                 $('#opw-auth-email').val(''),
@@ -2443,49 +2663,67 @@ OPW = {
    *
    * ************************************************************************/
 
-  // Get total row count
-  notifyAdmin: function(message, callback) {
+  notifyAdmin: function(log, callback) {
 
+    /**
+     * Not sure this is necessary, and if it is.. then
+     * I think we could remove the else statement? Will
+     * have to try and see how it goes when it's working :)
+     *
     if (Meteor.isServer) {
       this.unblock();
     } else {
       return (OPW.isFunction(callback)) ? callback(false) : null;
     }
+    */
+
+    // Validate
+    if (!OPW.isObject(log)) {
+      OPW.log({
+        message: 'Invalid attempt to notify admin',
+        type: 'error',
+      });
+      OPW.curry(callback, false);
+    }
 
     // Locals
-    var to      = (opw && opw.contact && OPW.isString(opw.contact.recips))
-                ? opw.contact.recips
+    var to      = (OPW.getNestedConfig('contact', 'recips'))
+                ? OPW.getNestedConfig('contact', 'recips')
                 : Meteor.users.findOne({}, {fields: {email: 1}}).email;
     var from    = to;
-    var subject = opw.title || 'Contact Request from Your OPW Site!';
+    var subject = opw.title || 'Contact';
     var mail    = {};
-    var message = (OPW.isString(message)) ? message : (
+    var message = (OPW.isString(log.message)) ? log.message : (
         OPW.log('EROR Attempting to notify admin with invalid message: '
-                + JSON.stringify(message, null, 4), 2),
+                + JSON.stringify(log, null, 2), 2),
         'Invalid message, check logs @' + new Date()
     )
 
     // Validate
     if (!OPW.isValidEmail(to)) {
       OPW.log('ERROR Admin contact has been improperly configured');
-      return (OPW.isFunction(callback)) ? callback(false) : null;
+      OPW.curry(callback, false);
     }
 
     // Formulate mail object
     mail = {
       from: from,
       subject: subject,
-      text: message,
+      text: message + '\n\nDetails:\n' + JSON.stringify(log, null, 2),
       to: to,
     }
 
     // Log it
-    OPW.logAdminNotification(mail);
+    OPW.logAdminNotification(log);
 
     // Send it
-    Email.send(mail);
+    // TODO: Methodize & throttle this for client side messages
+    if (Meteor.isServer) {
+      Email.send(mail);
+    }
 
-    return (OPW.isFunction(callback)) ? callback(true) : null;
+    OPW.curry(callback, true);
+
   },
 
 
@@ -2524,37 +2762,6 @@ OPW = {
 
     // Render editor into DOM w/data
     Blaze.renderWithData(Template.opwAlert, data, $('body')[0]);
-
-  },
-
-
-  /***************************************************************************
-   *
-   * @Summary         XXX
-   * @Method          popEditor
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   * ************************************************************************/
-
-  popEditor: function(id) {
-
-
-    // Locals
-    var row = OPW.getRowById(id) || { // Get row by ID validates
-      id: 0,
-      title: 'New Row',
-      slug: 'opw-new-row',
-      content: Blaze.toHTML('opwEditorContentExample').trim(),
-    };
-
-    // Render editor into DOM w/data
-    Blaze.renderWithData(Template.opwEditor, row, $('body'));
 
   },
 
@@ -2601,6 +2808,47 @@ OPW = {
     // Render into the DOM
     // Should pop automagically via onRendered hook
     UI.renderWithData(Template.opwModal, options, $('body')[0]);
+
+    return;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          popModalEditor
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   *      TODO:
+   *        Possibly allow an optional data object to be passed in
+   *
+   * ************************************************************************/
+
+  popModalEditor: function(options) {
+
+    // This should only run on the client
+    if (Meteor.isServer) {
+      OPW.log('WARNING Attempting to pop modal from server');
+      return;
+    }
+
+    // Validate TODO: Better
+    if (!OPW.isObject(options)) {
+      OPW.log('ERROR Invalid attempt to pop lightbox');
+    }
+    if (options.template && !Blaze.isTemplate(Template[options.template])) {
+      OPW.log('ERROR Invalid template passed to lightbox');
+    }
+
+    // Render into the DOM
+    UI.renderWithData(Template.opwModalEditor, options, $('body')[0]);
 
     return;
 
@@ -2850,7 +3098,7 @@ OPW = {
     }
 
     // Debug
-    // OPW.log('SI State: ' + JSON.stringify(state, null, 4), 1);
+    // OPW.log('SI State: ' + JSON.stringify(state, null, 2), 1);
 
     // Return
     Session.set('opwScrollState', state);
@@ -3018,7 +3266,7 @@ OPW = {
     };
     if (!OPW.isValidSlug(slug)) {
       OPW.log('ERROR Invalid slug encountered trying to update row: '
-                 + JSON.stringify(slug, null, 4));
+                 + JSON.stringify(slug, null, 2));
       return;
     };
     if (

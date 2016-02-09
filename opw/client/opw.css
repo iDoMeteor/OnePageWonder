@@ -1,4 +1,5 @@
 /** #OnePageWonder by @iDoMeteor v1.0.0-RC.2 **/
+Buttons
 /** TODO: Cursor changes, hovers, etc **/
 
 /* Generic Tags */
@@ -51,6 +52,11 @@ section:last-of-type {
     background-color: #efe !important;
 }
 
+.float-left {
+    float: left;
+    position: relative;
+}
+
 .float-right {
     float: right;
     position: relative;
@@ -77,9 +83,23 @@ section:last-of-type {
     padding-top: 101px;
 }
 
+.opw-editor-list .badge {
+  float: right;
+  position: relative;
+}
+
+.sortable-handle {
+  cursor: move;
+  cursor: -webkit-grabbing;
+}
+
 .root-height {
     min-height: 100%;
     padding-top: 0px;
+}
+
+.width-20em {
+  width: 20em;
 }
 
 /* OPW Specific IDs */

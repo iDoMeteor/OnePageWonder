@@ -5,9 +5,9 @@
 
 <body>
 
-    {{!-- TODO: It would be nice to serve up a cached static
-                version of the site, automatically removing forms
-                and injected in a way that doesn't affect load time --}}
+    {{! TODO: It would be nice to serve up a cached static
+          version of the site, automatically removing forms
+          and injected in a way that doesn't affect load time }}
     <noscript>
         Our site relies on cutting edge Javascript technology,
         please enable it now or visit us again using a modern
@@ -27,7 +27,7 @@
         <div
             class="col-sm-12 col-md-8 col-lg-6 text-center">
 
-            {{!-- TODO --}}
+            {{! TODO }}
             <p>OPW Sexy Info Page</p>
 
         </div>
@@ -148,7 +148,7 @@
         id="opw-{{#if opwFixedFooter}}fixed{{else}}static{{/if}}-footer"
         class="row bg-primary">
 
-        {{!-- Social icons --}}
+        {{! Social icons }}
         <div class="col-sm-4 text-center">
             {{#if opwShowSocialIcons}}
                 {{> opwSocialIcons}}
@@ -157,7 +157,7 @@
 
         <div class="col-sm-4 text-center">
 
-            {{!-- Fixed scroll indicator --}}
+            {{! Fixed scroll indicator }}
             {{#if opwFixedScrollIndicator}}
                 {{> opwScrollIndicator}}
             {{/if}}
@@ -166,7 +166,7 @@
 
         <div class="col-sm-4 text-center">
 
-            {{!-- One Page Wonder info --}}
+            {{! One Page Wonder info }}
             <a id="opw-site-stats"
                 class="float-right img-rounded">
                 <i class="fa fa-2x fa-bar-graph"></i>
@@ -188,7 +188,7 @@
 <template name="opwHelp">
 
     <section id="opw-help" class="row opw-lightbox-content">
-        {{!-- Separated for use in instantiating home row when necessary --}}
+        {{! Separated for use in instantiating home row when necessary }}
         {{>opwHelpContent}}
     </section>
 
@@ -299,7 +299,7 @@
 
 <template name="opwModal">
 
-    {{!-- Re-factor Editor & others to use this --}}
+    {{! Re-factor Editor & others to use this }}
     <div
         class="modal fade"
         id="{{cssId}}"
@@ -333,22 +333,24 @@
 
                 <div class="modal-body">
                     <div class="container-fluid">
+                        {{! Not sure what this does, lol.. is it supposed to be rows? :)}}
                         {{#if columns}}
                         <section
                             id="{{cssId}}-section"
                             class="row">
-                                {{!-- For consistency w/editor input --}}
+                                {{! For consistency w/editor input }}
                                 {{{columns}}}
                             </section>
                         {{/if}}
                         {{#if template}}
-                            {{!-- w00t! --}}
+                            {{! w00t! }}
                             {{> Template.dynamic template=template}}
                         {{/if}}
                     </div>
                 </div>
 
                 <div class="modal-footer">
+
                     <button
                         type="button"
                         class="btn btn-default"
@@ -379,7 +381,7 @@
 
 <template name="opwLoading">
 
-    {{!-- TODO: Get some CSS loaders set up already! lol --}}
+    {{! TODO: Get some CSS loaders set up already! lol }}
     <div id="opw-loading">
         <p>
             Loading...
@@ -410,7 +412,7 @@
     <section
         id="{{slug}}"
         class="row{{#unless title}} root-height{{/unless}}">
-        {{!-- TODO: Give each page a full-height toggle --}}
+        {{! TODO: Give each page a full-height toggle }}
 
         {{{content}}}
 
@@ -432,7 +434,7 @@
 
         <div class="col-sm-12 col-md-8 col-lg-6 text-center">
 
-            {{!-- TODO --}}
+            {{! TODO }}
 
         </div>
 

@@ -8,7 +8,6 @@ Router.route ('/', {
     name: 'opwRoot',
     subscriptions: function() {
         Meteor.subscribe('opwRows');
-        Meteor.subscribe('opwContacts');
     },
     waitOn: function () {
         return [

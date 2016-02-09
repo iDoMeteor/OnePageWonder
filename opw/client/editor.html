@@ -1,20 +1,30 @@
 <template name="opwEditor">
 
-    {{!-- Menu Navigation Buttons --}}
-        {{!-- Dashboard --}}
-            {{!-- Quick stats overview --}}
-        {{!-- Configuration --}}
-            {{!-- Use jQuery Validation! --}}
-            {{!-- Broken up by root key --}}
-                {{!-- Then auto-detect fields? --}}
-        {{!-- Logs --}}
-            {{!-- Admin Notifications --}}
-            {{!-- Authentication History --}}
-            {{!-- Contact Log --}}
-            {{!-- Log Logs --}}
-        {{!-- New Section --}}
-        {{!-- Section List --}}
-            {{!-- Draggable Page List w/view count badges--}} {{!-- Edit --}} {{!-- Remove --}}
+{{! Menu Navigation Buttons }}
+  {{! Dashboard }}
+    {{! Quick stats overview }}
+  {{! Configuration }}
+  {{! Logs }}
+    {{! Admin Notifications }}
+    {{! Authentication History }}
+    {{! Contact Log }}
+    {{! Log Logs }}
+  {{! Sections }}
+    {{! New Section }}
+    {{! Draggable Page List w/view count badges}}
+    {{! Edit }}
+    {{! Remove }}
+
+  <section
+    id="opw-editor-section"
+    class="row block-center opw-lightbox-content">
+    <div class="col-sm-12 text-center">
+
+      {{> opwEditorMenu}}
+      {{> Template.dynamic template=template}}
+
+    </div>
+  </section>
 
 </template>
 
@@ -22,17 +32,20 @@
 
 <template name="opwEditorConfiguration">
 
-    {{!-- Autoform would be nice here but a lot of extra weight for one convenience --}}
-    {{!-- Use jQuery Validation! --}}
-    {{!-- Broken up by root key --}}
-        {{!-- Then auto-detect fields? --}}
+  {{! Use jQuery Validation! }}
+  {{! Broken up by root key }}
+  {{! Then auto-detect fields? }}
+
+  <div>
+    <h1>Configuration!</h1>
+  </div>
 
 </template>
 
 
 
 <template name="opwEditorContentExample">
-{{!-- TODO: Update this --}}
+{{! TODO: Update this }}
 <div class="col-lg-12">
   <h1>New Section</h1>
   <h2>Tagline for new section</h2>
@@ -47,8 +60,11 @@
 
 <template name="opwEditorDashboard">
 
-    {{!-- Dashboard --}}
-        {{!-- Quick stats overview --}}
+  {{! Dashboard }}
+  {{! Quick stats overview }}
+  <div>
+    <h1>Dashboard!</h1>
+  </div>
 
 </template>
 
@@ -56,11 +72,419 @@
 
 <template name="opwEditorLogs">
 
-    {{!-- Logs --}}
-        {{!-- Admin Notifications --}}
-        {{!-- Authentication History --}}
-        {{!-- Contact Log --}}
-        {{!-- Log Logs --}}
+  <div class="text-center">
+    <ul
+      id="opw-editor-title-order"
+      class="list-group opw-editor-list">
+
+      <li class="list-group-item">
+        <button
+          id="opw-log-admin"
+            type="button"
+            class="btn btn-info width-20em">
+          <span class="badge">42</span>
+          Admin Notifications
+        </button>
+        <button
+          id="opw-trash-opw-home-row"
+            type="button"
+            class="btn btn-success">
+          <i class="fa fa-download"></i>
+        </button>
+      </li>
+      <li class="list-group-item">
+        <button
+          id="opw-log-authentication"
+            type="button"
+            class="btn btn-info width-20em">
+          <span class="badge">42</span>
+          Authentication History
+        </button>
+        <button
+          id="opw-trash-opw-home-row"
+            type="button"
+            class="btn btn-success">
+          <i class="fa fa-download"></i>
+        </button>
+      </li>
+      <li class="list-group-item">
+        <button
+          id="opw-log-contact"
+            type="button"
+            class="btn btn-info width-20em">
+          <span class="badge">42</span>
+          Contact Requests
+        </button>
+        <button
+          id="opw-trash-opw-home-row"
+            type="button"
+            class="btn btn-success">
+          <i class="fa fa-download"></i>
+        </button>
+      </li>
+      <li class="list-group-item">
+        <button
+          id="opw-log-raw"
+            type="button"
+            class="btn btn-info width-20em">
+          <span class="badge">42</span>
+          Raw Log
+        </button>
+        <button
+          id="opw-trash-opw-home-row"
+            type="button"
+            class="btn btn-success">
+          <i class="fa fa-download"></i>
+        </button>
+      </li>
+      <li class="list-group-item">
+        <button
+          id="opw-log-security"
+            type="button"
+            class="btn btn-info width-20em">
+          <span class="badge">42</span>
+          Security Log
+        </button>
+        <button
+          id="opw-trash-opw-home-row"
+            type="button"
+            class="btn btn-success">
+          <i class="fa fa-download"></i>
+        </button>
+      </li>
+
+    </ul>
+  </div>
+
+</template>
+
+
+
+<template name="opwEditorLogAdmin">
+
+  <h2>Admin Notifications</h2>
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <td>
+          <strong>Type</strong>
+        </td>
+        <td>
+          <strong>Message</strong>
+        </td>
+        <td>
+          <strong>Date</strong>
+        </td>
+      </tr>
+    </thead>
+
+    {{#each log}}
+
+      <tbody>
+        <tr>
+          <td>
+            {{type}}
+          </td>
+          <td>
+            {{message}}
+          </td>
+          <td>
+            {{date}}
+          </td>
+        </tr>
+      </tbody>
+
+    {{/each}}
+
+    </table>
+
+</template>
+
+
+
+<template name="opwEditorLogAuthentication">
+
+  <h2>Authentication History</h2>
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <td>
+          <strong>Type</strong>
+        </td>
+        <td>
+          <strong>Message</strong>
+        </td>
+        <td>
+          <strong>Date</strong>
+        </td>
+      </tr>
+    </thead>
+
+    {{#each log}}
+
+      <tbody>
+        <tr>
+          <td>
+            {{type}}
+          </td>
+          <td>
+            {{message}}
+          </td>
+          <td>
+            {{date}}
+          </td>
+        </tr>
+      </tbody>
+
+    {{/each}}
+
+    </table>
+
+</template>
+
+
+
+<template name="opwEditorLogContact">
+
+  <h2>Contact Requests</h2>
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+            <tr>
+                <td>
+                    <strong>Contact</strong>
+                </td>
+                <td>
+                    <strong>Label</strong>
+                </td>
+                <td>
+                    <strong>Date</strong>
+                </td>
+                <td>
+                    <strong>IP</strong>
+                </td>
+            </tr>
+            <tr colspan="4">
+              <td>
+                <strong>Message</strong>
+              </td>
+            </tr>
+        </thead>
+
+        {{#each log}}
+
+            <tbody>
+                <tr>
+                    <td>
+                        {{user}}
+                    </td>
+                    <td>
+                        {{label}}
+                    </td>
+                    <td>
+                        {{stamp}}
+                    </td>
+                    <td>
+                        {{source}}
+                    </td>
+                </tr>
+                {{#if message}}
+                    <tr>
+                        <td colspan="4">
+                            {{message}}
+                        </td>
+                    </tr>
+                {{/if}}
+            </tbody>
+
+        {{/each}}
+
+    </table>
+
+</template>
+
+
+
+<template name="opwEditorLogRaw">
+
+  <h2>Raw Log</h2>
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <td>
+          <strong>Type</strong>
+        </td>
+        <td>
+          <strong>Message</strong>
+        </td>
+        <td>
+          <strong>Date</strong>
+        </td>
+      </tr>
+    </thead>
+
+    {{#each log}}
+
+      <tbody>
+        <tr>
+          <td>
+            {{type}}
+          </td>
+          <td>
+            {{message}}
+          </td>
+          <td>
+            {{date}}
+          </td>
+        </tr>
+      </tbody>
+
+    {{/each}}
+
+    </table>
+
+</template>
+
+
+
+<template name="opwEditorLogSecurity">
+
+  <h2>Security Log</h2>
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <td>
+          <strong>Type</strong>
+        </td>
+        <td>
+          <strong>Message</strong>
+        </td>
+        <td>
+          <strong>Date</strong>
+        </td>
+      </tr>
+    </thead>
+
+    {{#each log}}
+
+      <tbody>
+        <tr>
+          <td>
+            {{type}}
+          </td>
+          <td>
+            {{message}}
+          </td>
+          <td>
+            {{date}}
+          </td>
+        </tr>
+      </tbody>
+
+    {{/each}}
+
+    </table>
+
+</template>
+
+
+
+<template name="opwEditorMenu">
+
+      <div class="btn-group">
+        <button
+          id="opw-edit-dashboard"
+          type="button"
+          class="btn btn-primary">
+          {{opwDashboardLabel}}
+        </button>
+        <button
+          id="opw-edit-configuration"
+          type="button"
+          class="btn btn-primary">
+          {{opwConfigurationLabel}}
+        </button>
+        <button
+          id="opw-edit-logs"
+          type="button"
+          class="btn btn-primary">
+          {{opwLogsLabel}}
+        </button>
+        <button
+          id="opw-edit-sections"
+          type="button"
+          class="btn btn-primary">
+          {{opwSectionsLabel}}
+        </button>
+      </div>
+
+</template>
+
+
+
+<template name="opwModalEditor">
+
+    {{! Re-factor Editor & others to use this }}
+    <div
+        class="modal fade"
+        id="{{cssId}}"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="{{cssId}}-label">
+
+        <div
+            class="modal-dialog"
+            role="document">
+
+            <div class="modal-content">
+
+                <div class="modal-header text-center">
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="{{closeLabel}}">
+                        <span
+                            aria-hidden="true">
+                            &times;
+                        </span>
+                    </button>
+                    {{> opwEditorMenu}}
+                </div>
+
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        {{! Not sure what this does, lol.. is it supposed to be rows? :)}}
+                        {{#if template}}
+                            {{> Template.dynamic template=template}}
+                        {{/if}}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                        {{#if closeText}}
+                            {{closeText}}
+                        {{else}}
+                            {{closeLabel}}
+                        {{/if}}
+                    </button>
+                    {{#if actionText}}
+                        <button
+                            id="{{actionId}}"
+                            type="button"
+                            class="btn btn-primary {{actionClass}}">
+                            {{actionText}}
+                        </button>
+                    {{/if}}
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </template>
 
@@ -68,10 +492,10 @@
 
 <template name="opwEditorRow">
 
-    <div class="row">
-        {{>opwEditorRowTitle}}
-        {{>opwEditorRowContent}}
-    </div>
+  <div class="row">
+    {{>opwEditorRowTitle}}
+    {{>opwEditorRowContent}}
+  </div>
 
 </template>
 
@@ -79,35 +503,16 @@
 
 <template name="opwEditorRowContent">
 
-    <div
-        id="opw-element-bar"
-        class="col-sm-12 text-center">
-        {{>opwWonderBar}}
-    </div>
-    <div
-        id="opw-editor-content"
-        class="col-sm-12 block-center">
-        {{>opwEditorTextarea}}
-    </div>
-
-</template>
-
-
-
-<template name="opwEditorRowList">
-
-  {{!-- Section List --}}
-  {{!-- Draggable Page List w/view count badges--}} {{!-- Edit --}} {{!-- Remove --}}
-
-  <ul id="opw-editor-title-order" class="list-group">
-    {{#each opwRows}}
-      <li class="list-group-item">
-        <i class="fa fa-arrows-v"></i>
-        {{title}}
-        <i class="fa fa-pencil"></i>
-      </li>
-      {{/each}}}}
-  </ul>
+  <div
+      id="opw-element-bar"
+      class="col-sm-12 text-center">
+    {{>opwWonderBar}}
+  </div>
+  <div
+      id="opw-editor-content"
+      class="col-sm-12 block-center">
+    {{>opwEditorTextarea}}
+  </div>
 
 </template>
 
@@ -115,27 +520,124 @@
 
 <template name="opwEditorRowTitle">
 
-    <div
-        id="opw-editor-title"
-        class="col-sm-12 text-center">
-        <input
-            type="text"
-            id="opw-title-editor"
-            class="form-control"
-            maxlength="25"
-            placeholder="{{opwEditorTitlePlaceholder}}"
-            >
-    </div>
+  <div
+    id="opw-editor-title"
+    class="col-sm-12 text-center">
+    <input
+      type="text"
+      id="opw-title-editor"
+      class="form-control"
+      maxlength="25"
+      placeholder="{{opwEditorTitlePlaceholder}}"
+    >
+  </div>
+
+</template>
+
+
+
+<template name="opwEditorSectionItem">
+
+  <div data-id={{order}} class="sortable-item removable">
+    <span
+      id="opw-drag-{{slug}}"
+        type="button"
+        class="btn btn-success sortable-handle">
+      <i class="fa fa-arrows-v"></i>
+    </span>
+    <button
+      id="opw-edit-{{slug}}"
+        type="button"
+        class="btn btn-info width-20em">
+      <span class="badge">42</span>
+      <i class="fa fa-pencil float-left"></i>
+      {{title}}
+    </button>
+    <button
+      id="opw-trash-{{slug}}"
+        type="button"
+        class="btn btn-danger">
+      <i class="fa fa-trash"></i>
+    </button>
+  </div>
+
+</template>
+
+
+
+<template name="opwEditorSectionsSortable">
+
+    {{#sortable items=opwRows options=sortableOptions}}
+      {{> opwEditorSectionItem}}
+    {{/sortable}}
+
+</template>
+
+
+
+<template name="opwEditorSection">
+
+  <li
+    class="list-group-item"
+    data-id="{{_id}}">
+    <input
+      name="opw-editor-row-id"
+      type="hidden">
+    <span
+      id="opw-drag-{{slug}}"
+        type="button"
+        class="btn btn-success sortable-handle">
+      <i class="fa fa-arrows-v"></i>
+    </span>
+    <button
+      id="opw-edit-{{slug}}"
+        type="button"
+        class="btn btn-info width-20em opw-edit-row">
+      <span class="badge" title="42 section views">42</span>
+      <i class="fa fa-pencil float-left"></i>
+      {{title}}
+    </button>
+    <button
+      id="opw-trash-{{slug}}"
+        type="button"
+        class="btn btn-danger opw-trash-row">
+      <i class="fa fa-trash"></i>
+    </button>
+  </li>
+
+</template>
+
+
+
+<template name="opwEditorSections">
+
+  <div class="text-center">
+
+    <ul id="opw-editor-title-order" class="list-group opw-editor-list">
+      <li class="list-group-item">
+        <button
+          id="opw-edit-opw-home-row"
+            type="button"
+            class="btn btn-info width-20em opw-edit-row">
+          <span class="badge">42</span>
+          <i class="fa fa-pencil float-left"></i>
+          Home Row
+        </button>
+      </li>
+
+      {{#each opwRows}}
+        {{> opwEditorSection}}
+      {{/each}}
+    </ul>
+
+  </div>
 
 </template>
 
 
 
 <template name="opwEditorTextarea">
-{{!-- It must be done, uses opwEditorContentExample (above) --}}
+{{! It must be done, uses opwEditorContentExample (above) }}
 <textarea id="opw-editor-textarea" class="form-control">{{#if rowContent}}{{{rowContent}}}{{else}}{{>opwEditorContentExample}}{{/if}}</textarea>
-{{!-- Ugh! lol --}}
+{{! Ugh! lol }}
 </template>
-
-
-

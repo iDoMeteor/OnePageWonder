@@ -2,84 +2,9 @@
  *
  * OPW Editor event handlers
  *
- * Note: This is *very* in progress.
- *
  ******************************************************************************/
 
 Template.opwEditor.events({
-
-  // XXX
-  'click #opw-editor-config': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // XXX
-  'click #opw-editor-config-lock': function (event) {
-
-    event.preventDefault();
-
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // XXX
-  'click #opw-editor-config-save': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // XXX
-  'click #opw-editor-config-unlock': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // XXX
-  'click #opw-editor-config': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // XXX
-  'click #opw-editor-dashboard': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
 
   // Save
   'click .opw-editor-edit-page': function (event) {
@@ -141,7 +66,7 @@ Template.opwEditor.events({
   },
 
   // Save
-  'click #opw-editor-save-close': function (event) {
+  'click #opw-editor-save': function (event) {
 
     var param           = {};
 
@@ -162,42 +87,6 @@ Template.opwEditor.events({
 
   },
 
-  // Save
-  'click #opw-editor-save-new': function (event) {
-
-
-  },
-
-  // Save
-  'click #opw-editor-save-next': function (event) {
-
-
-  },
-
-  // Save
-  'click #opw-editor-save-prev': function (event) {
-
-
-  },
-
-  // Save
-  'click #opw-editor-save-stay': function (event) {
-
-
-  },
-
-  // Save
-  'drag .something': function (event) {
-
-
-  },
-
-  // Save
-  'drop .something': function (event) {
-
-
-  },
-
 });
 
 
@@ -209,71 +98,452 @@ Template.opwEditor.events({
 
 Template.opwEditor.helpers({
 
-  // Set up for the editor's select range
-  opwRowSortRange: function () {
-    return _.range(0,99);
-  }
+  template: function () {
+    return Session.get('opwActiveEditorTemplate') || 'opwEditorDashboard';
+  },
 
 });
 
 
 /*******************************************************************************
  *
- * OPW Editor rendered handler
+ * OPW Editor Configuration event handlers
  *
  ******************************************************************************/
 
-Template.opwEditor.onRendered(function () {
+Template.opwEditorConfiguration.events({
 
-  $('opw-editor').modal({keyboard: false});
+  // XXX
+  'click #opw-editor-config-lock': function (event) {
+
+    event.preventDefault();
+
+
+    // TODO: Confirm with user
+
+    OPW.XXX($(event.target).attr('id'));
+    Router.go('/');
+
+  },
+
+  // XXX
+  'click #opw-editor-config-save': function (event) {
+
+    event.preventDefault();
+
+    // TODO: Confirm with user
+
+    OPW.XXX($(event.target).attr('id'));
+    Router.go('/');
+
+  },
+
+  // XXX
+  'click #opw-editor-config-unlock': function (event) {
+
+    event.preventDefault();
+
+    // TODO: Confirm with user
+
+    OPW.XXX($(event.target).attr('id'));
+    Router.go('/');
+
+  },
 
 });
 
 
 /*******************************************************************************
  *
- * OPW Editor list helpers
+ * OPW Editor Configuration helpers
  *
  ******************************************************************************/
 
-Template.opwEditorRowTitle.helpers({
+Template.opwEditorConfiguration.helpers({
 
-  /*
-  opwRowListOptions: function () {
+  config: function () {
+
+    return;
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Admin Notification Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogAdmin.helpers({
+
+  log: function () {
+
+    return OPW.getAdminNotificationLog();
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Admin Notification Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogAdmin.onCreated(function () {
+
+  this.subscribe('opwAdminNotificationLog');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Authentication Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogAuthentication.helpers({
+
+  log: function () {
+
+    return OPW.getAuthenticationHistory();
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Authentication Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogAuthentication.onCreated(function () {
+
+  this.subscribe('opwAuthenticationHistory');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Contact Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogContact.helpers({
+
+  log: function () {
+
+    return OPW.getContacts();
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Admin Notification Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogContact.onCreated(function () {
+
+  this.subscribe('opwContacts');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Raw Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogRaw.helpers({
+
+  log: function () {
+
+    return OPW.getRawLog();
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Raw Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogRaw.onCreated(function () {
+
+  this.subscribe('opwRawLog');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Security Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogSecurity.helpers({
+
+  log: function () {
+
+    return OPW.getSecurityLog();
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Security Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogSecurity.onCreated(function () {
+
+  this.subscribe('opwSecurityLog');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogs.events({
+
+
+  'click #opw-log-admin': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogAdmin');
+
+  },
+
+  'click #opw-log-authentication': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogAuthentication');
+
+  },
+
+  'click #opw-log-contact': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogContact');
+
+  },
+
+  'click #opw-log-raw': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogRaw');
+
+  },
+
+  'click #opw-log-security': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogSecurity');
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor event handlers
+ *
+ ******************************************************************************/
+
+Template.opwEditorMenu.events({
+
+  // XXX
+  'click #opw-edit-dashboard': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorDashboard');
+
+  },
+
+  'click #opw-edit-configuration': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorConfiguration');
+
+  },
+
+  'click #opw-edit-logs': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorLogs');
+
+  },
+
+  'click #opw-edit-sections': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorSections');
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Menu helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorMenu.helpers({
+
+  opwDashboardLabel: function () {
+    return OPW.getString('editorDashboardLabel');
+  },
+
+  opwConfigurationLabel: function () {
+    return OPW.getString('editorConfigurationLabel');
+  },
+
+  opwLogsLabel: function () {
+    return OPW.getString('editorLogsLabel');
+  },
+
+  opwSectionsLabel: function () {
+    return OPW.getString('editorSectionsLabel');
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor section events
+ *
+ ******************************************************************************/
+
+Template.opwEditorSection.events({
+
+  'click .opw-edit-row': function (event) {
+
+    console.log('Edit');
+
+  },
+
+  'click .opw-trash-row': function (event) {
+
+    console.log('Trashing our rights!  Trashing!!');
+
+  },
+
+});
+
+/*******************************************************************************
+ *
+ * OPW Editor Sections helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorSections.helpers({
+
+  opwRows: function () {
+    return OPW.getRows();
+  },
+
+  sortableOptions: function () {
     return {
-      handle: '.fa-arrows-v',
-      onSort: function(event) {
-        console.log('Moved player #%d from %d to %d',
-                    event.data.order, event.oldIndex, event.newIndex
-                   );
-      },
+      animation: 150,
+      handle: '.sortable-handle',
+      sortField: 'order',
     };
-  }
-  */
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor sections rendered handler
+ *
+ ******************************************************************************/
+
+Template.opwEditorSections.onRendered(function () {
+
+
+  var list = $('#opw-editor-title-order').get(0);
+  var sortable = Sortable.create(list, {
+    animation: 150,
+    handle: '.sortable-handle',
+    onUpdate: function (event) {
+      /**
+       * Update & save affected records
+       * .. while making sure home row is always 0
+       */
+      var newIndex  = event.newIndex;
+      var oldIndex  = event.oldIndex;
+      OPW.log({
+        data: {
+          newIndex: newIndex,
+          oldIndex: oldIndex
+        },
+        message: 'Sortable updating:',
+        type: 'debug',
+      });
+    },
+  });
 
 });
 
 /*******************************************************************************
  *
- * OPW Editor list editor rendered handler
+ * OPW Lightbox helpers
  *
  ******************************************************************************/
 
-Template.opwEditor.onRendered(function () {
+Template.opwModalEditor.helpers({
+
+  closeLabel: function () {
+    return OPW.getString('closeLabel');
+  },
+
+  template: function () {
+    return Session.get('opwActiveEditorTemplate') || 'opwEditorDashboard';
+  },
+
+});
 
 
-  var list = $('#opw-editor-title-order');
-  Sortable.create(list, {
-    animation: 150,
-    /*
-    onUpdate: function (event) {
-      var target  = event.item;
-      var indCur  = event.data.order;
-      var indOld  = event.oldIndex;
-      var indNew  = event.newIndex;
-      console.log(indCur, indOld, indNew, target);
-    */
-    });  // Awesome.
+/*******************************************************************************
+ *
+ * OPW Lightbox rendered handler
+ *
+ ******************************************************************************/
+
+Template.opwModalEditor.onRendered(function () {
+
+    var target = this.find('.modal');
+    $(target).modal('show');
+    $(target).on('hidden.bs.modal', function () {
+        $(target).remove();
+    });
 
 });
 

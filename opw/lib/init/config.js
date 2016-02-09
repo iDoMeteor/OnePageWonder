@@ -45,8 +45,7 @@ opw = {
 
         alert: {
             // Defaults, can override when called
-            closeLabel: 'Close',
-            duration: 7000,
+            duration: 7000, // May want to move this out when adding other UIs
             type: 'info',
         },
         carouselInterval: 6000,
@@ -307,6 +306,12 @@ opw = {
         authenticationLogoutSuccess: 'Thank you, drive thru.',
         authenticationTagline: 'Present your credentials for inspection.',
         cancelLabel: 'Cancel',
+        closeLabel: 'Close',
+        editorConfigurationLabel: 'Configuration',
+        editorDashboardLabel: 'Dashboard',
+        editorLighboxTitle: 'System Editor',
+        editorLogsLabel: 'Logs',
+        editorSectionsLabel: 'Sections',
         emailLabel: 'Email Address',
         loadingText: 'Loading..',
         passwordLabel: 'Password',

@@ -15,3 +15,5 @@ rubaxa:sortable
 service-configuration
 themeteorchef:jquery-validation
 astronomerio:core
+kadira:blaze-layout
+msavin:mongol

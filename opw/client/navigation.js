@@ -57,13 +57,6 @@ Template.opwNavigation.events({
 
     },
 
-    // Open the editor
-    'click #opw-editor-open': function (event, template) {
-        event.preventDefault();
-        var id = OPW.getIdFromSlug(contentParent.parent().attr('id'));
-        OPW.popEditor(id);
-    },
-
     // Switch navigation styles
     'click #opw-brush': function (event, template) {
         event.preventDefault();
@@ -75,9 +68,16 @@ Template.opwNavigation.events({
     },
 
     // Instantiate the new content editor
-    'click #opw-add-row': function (event, template) {
+    'click #opw-launch-editor': function (event, template) {
         event.preventDefault();
-        OPW.popEditor();
+        active = Session.get('opwActiveEditorTemplate')
+                  || 'opwEditorDashboard';
+        OPW.popModalEditor({
+            cssId:      'opw-editor',
+            footer:     true,
+            id:         'opw-editor',
+            template:   active,
+        });
     },
 
     // Expose authentication section
