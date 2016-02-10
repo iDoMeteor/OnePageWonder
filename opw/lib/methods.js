@@ -93,7 +93,7 @@ Meteor.methods({
    * @Method          opwUpdateSortOrders
    * @param {String} collectionName - name of the collection to update
    * @param {String[]} ids - array of document ids
-   * @param {String} orderField - the name of the order field, usually "order"
+   * @param {String} sortField - the name of the order field, usually "order"
    * @param {Number} incDec - pass 1 or -1
    * @Returns         XXX
    * @Location        Client, Server
@@ -104,47 +104,136 @@ Meteor.methods({
    *    incrementing it by incDec
    *
    * TODO: THIS IS WIDE OPEN TO ATTACK, VALIDATE!!!!!!!!!!!!!!!!!!!!!!!!
+   *       REFACTOR :D
    *
    * ************************************************************************/
 
-  opwUpdateSortOrders: function (ids, sortField, step, id, modifier) {
+  opwUpdateSortOrders: function (data) {
 
     // Validate
-    check(ids, [String]);
-    check(sortField, String);
-    check(step, Number);
+    check(data, Object);
+
+
+    // Debug
+    OPW.log({
+      message: 'Sort order data:',
+      type: 'debug',
+      data: JSON.stringify(data, null, 2),
+    });
 
     // Locals
+    var sortField = data.sortField;
+    // Locals for dropped row query
+    var id = data.id;
+    var modifierSingle = data.modifierSingle;
+    var to = data.to;
+    // Locals for affected rows query
+    var ids = data.ids;
+    var modifierMulti = {$inc: {}};
     var selector = {
       _id: {$in: ids}
     };
-    var modifier = {$inc: {}};
-    modifier.$inc[sortField] = step;
+    var step = data.step;
+    modifierMulti.$inc[sortField] = step;
 
-    opwRows.update(selector, modifier, {multi: true}, function (error, affected) {
+    // Execute update of affected rows
+    opwRows.update(selector,
+                   modifierMulti,
+                   {multi: true},
+                   function (error, affected) {
 
-      (error) ?
-        OPW.log({
-          message: 'Unable to update rows.',
-          type: 'error',
-          notifyUser: true,
-          data: {
-            affected: affected,
-            error: error,
-          },
-        })
-        :
-        OPW.log({
-          message: 'Updated ' + affected + ' rows.',
-          type: 'success',
-          notifyUser: true,
-          data: {
-            affected: affected,
-            error: error,
-          },
-        });
+      (affected)
+        ? (
+          OPW.log({
+            message: 'Updated ' + affected + ' row(s).',
+            type: 'debug',
+            data: {
+              affected: affected,
+              data: JSON.stringify(data, null, 2),
+              error: error,
+            },
+          }),
+          // Update moved row
+          opwRows.update({_id: id},
+                         modifierSingle,
+                         function (error, affected) {
 
-    });
+            (affected)
+              ? (
+                // Success, update scroll indicator
+                state = OPW.scrollIndicatorUpdate(),
+                OPW.log({
+                  message: 'Successly sorted all affected rows.',
+                  type: 'debug',
+                  data: {
+                    affected: affected,
+                    data: JSON.stringify(data, null, 2),
+                    error: error,
+                  },
+                })
+              ) : (
+                // Failure, undo previous updates
+                step = step * -1,
+                modifierMulti.$inc[sortField] = step,
+                opwRows.update(selector,
+                               modifierMulti,
+                               {multi: true},
+                               function (error, affected) {
+
+                  (affected)
+                    ? (
+                      OPW.log({
+                        message: 'Reverted ' + affected + ' rows back to their'
+                          + 'original order because we could not save the'
+                          + 'dropped element.',
+                        type: 'error',
+                        notifyUser: true,
+                        data: {
+                          affected: affected,
+                          data: JSON.stringify(data, null, 2),
+                          error: error,
+                        },
+                      })
+                    ) : (
+                      OPW.log({
+                        message: 'Update of dropped element failed and I could'
+                          + 'not undo the changes to the affected rows.',
+                        type: 'critical',
+                        notifyUser: true,
+                        data: {
+                          affected: affected,
+                          data: JSON.stringify(data, null, 2),
+                          error: error,
+                        },
+                      })
+                    );
+
+                  return;
+
+                })  // End reversion callback
+
+              );
+
+              return;
+
+          })  // End single update callback
+
+        ) : (
+
+          OPW.log({
+            message: 'Unable to update rows.',
+            type: 'error',
+            notifyUser: true,
+            data: {
+              affected: affected,
+              data: JSON.stringify(data, null, 2),
+              error: error,
+            },
+          })
+
+        );  // End ternary
+
+    });  // End multi update callback
 
   },
 

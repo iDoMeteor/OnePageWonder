@@ -57,53 +57,55 @@ OPW = {
     // Validate
 
     // Locals
-    var orderField = 'order';
+    var sortField = 'order';
     var selector = filter || {};
     var modifier = {$set: {}};
+    modifier.$set[sortField] = to;
     var ids = [];
+    var data = {
+        id: id,
+        modifierSingle: modifier,
+        sortField: sortField,
+        to: to,
+      };
 
     // Process affected rows
     if (to > from) {
       // Moved item down, decrease the order of intervening elements
 
-      selector[orderField] = {
+      selector[sortField] = {
         $lte: to,
         $gt: from
       };
 
-      ids = _.pluck(opwRows.find(selector, {
+      data.step = -1;
+      data.ids = _.pluck(opwRows.find(selector, {
         fields: {_id: 1}
       }).fetch(), '_id');
 
       // Execute query
-      Meteor.call('opwUpdateSortOrders', ids, orderField, -1, id, modifier);
+      Meteor.call('opwUpdateSortOrders', data);
 
     } else if (to < from) {
       // Moved item up, increase the order of intervening elements
 
-      selector[orderField] = {
+      selector[sortField] = {
         $gte: to,
         $lt: from
       };
 
-      ids = _.pluck(opwRows.find(selector, {
+      data.step = 1;
+      data.ids = _.pluck(opwRows.find(selector, {
         fields: {_id: 1}
       }).fetch(), '_id');
 
       // Execute query
-      Meteor.call('opwUpdateSortOrders', ids, orderField, 1, id, modifier);
-
-    } else {
-
-      // Dropped in original place, probably
-      return;
+      Meteor.call('opwUpdateSortOrders', data);
 
     }
 
-    // Update moved row
-    // TODO: Should only run if call succeeded
-    modifier.$set[orderField] = to;
-    opwRows.update(id, modifier);
+
+    return;
 
   },
 
@@ -2909,6 +2911,14 @@ OPW = {
   popAlert: function(content, type, duration) {
 
     // Validate
+    if (Meteor.isServer) {
+      OPW.log({
+        message: 'Trying to pop alert on server.',
+        type: 'debug',
+        data: {content: content, type: type, duration: duration},
+      });
+      return false;
+    }
     if (!OPW.isString(content)) {
       OPW.log({
         message: 'Invalid attempt to create alert.',
@@ -3237,6 +3247,10 @@ OPW = {
    * ************************************************************************/
 
   scrollIndicatorUpdate: function() {
+
+    if (Meteor.isServer) {
+      return;
+    }
 
     var first    = 'top';
 
