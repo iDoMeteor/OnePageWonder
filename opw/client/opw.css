@@ -103,6 +103,14 @@ section:last-of-type {
 }
 
 /* OPW Specific IDs */
+#opw-editor-textarea {
+  height: 20em;
+}
+
+#opw-element-bar {
+  margin-top: .75em;
+}
+
 #opw-fixed-footer {
     bottom: 0px;
     height: 4em;

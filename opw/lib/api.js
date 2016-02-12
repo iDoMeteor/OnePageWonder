@@ -48,13 +48,60 @@ OPW = {
    *
    * @Description
    *
-   *      Stolen & modified from reactivize.js.
+   *      Stolen & modified (heavily) from reactivize.js.
+   *
+   * TODO: Re-factor to reduce length
    *
    * ************************************************************************/
 
   adjustRowOrder: function(id, to, from, filter) {
 
     // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid row id while attempting to sort.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: id,
+          to: to,
+          from: from,
+          filter: filter,
+        }
+      });
+      return false;
+    }
+    if (
+      !OPW.isNumber(to)
+      || !OPW.isNumber(from)
+    ) {
+      OPW.log({
+        message: 'Invalid data encountered while attempting to sort.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: id,
+          to: to,
+          from: from,
+          filter: filter,
+        }
+      });
+      return false;
+    }
+    if (filter && !OPW.isObject(filter)) {
+      OPW.log({
+        message: 'Invalid filter encountered while attempting to sort.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: id,
+          to: to,
+          from: from,
+          filter: filter,
+        }
+      });
+      return false;
+    }
 
     // Locals
     var sortField = 'order';
@@ -615,24 +662,72 @@ OPW = {
   },
 
 
-  // TODO: Doc these
-  //       Database settings override Meteor settings override defaults
+  /***************************************************************************
+   *
+   * @Summary         Returns a configuration root key value
+   * @Method          getConfig
+   * @Param           {string} key
+   * @Returns         undefined If no value found
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      Database settings override Meteor settings override defaults
+   *
+   * ************************************************************************/
+
   getConfig: function(key) {
 
     // Validate
     if (!OPW.isString(key)) {
       OPW.log({
+        message: 'Attempting to get invalid configuration type',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Set up for return value
+    var value = '';
+
+    // Check key exists in defaults
+    if (!opw.hasOwnProperty(key)) {
+      OPW.log({
         message: 'Attempting to get invalid configuration value',
         type: 'error',
         data: key,
       });
-      return '';
+      return;
     }
 
-    // Do it
-    return (opw[key])
-        ? opw[key]
-        : false;
+    // Check for key & value in Singletons
+    /*
+    if (XXX) {
+      OPW.log({
+        message: 'Attempting to get invalid configuration value',
+        type: 'error',
+        data: key,
+      });
+      return opw[key];
+    }
+    */
+
+    // Check for key & value in Meteor.settings.public
+    if (Meteor.settings['public'].hasOwnProperty('opw')) {
+      if (Meteor.settings['public']['opw'].hasOwnProperty(key)) {
+        return Meteor.settings['public']['opw'][key];
+      }
+    }
+
+    // Check for key & value in Meteor.settings
+    if (Meteor.settings.hasOwnProperty('opw')) {
+      if (Meteor.settings.opw.hasOwnProperty(key)) {
+        return Meteor.settings.opw[key];
+      }
+    }
+
+    // If all else fails, return default
+    return opw[key];
 
   },
 
@@ -760,50 +855,92 @@ OPW = {
   * @return {any} Can return any valid data type
   *
   * TODO:
-  *  Database settings should override Meteor settings /config defaults
-  *  Re-write the ternary disaster using hasOwnProperty and bulletproof it
+  *  Database settings
   *
    */
   getNestedConfig: function(k1, k2, k3) {
 
     // Validate
+    if (!k1) {
+      OPW.log({
+        message: 'Invalid attempt to get nested configuration value',
+        type: 'error',
+      });
+      return;
+    }
+
     if (
-      !OPW.isString(k1)
+        (!OPW.isString(k1))
         || (k2 && !OPW.isString(k2))
         || (k3 && !OPW.isString(k3))
-    ) {
+       ) {
+      OPW.log({
+        message: 'Attempting to get invalid configuration type',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Set up for return value
+    var value = '';
+
+    // Check key exists in defaults
+    if (
+        (!opw.hasOwnProperty(k1))
+        || (k2 && !opw[k1].hasOwnProperty(k2))
+        || (k3 && !opw[k1][k2].hasOwnProperty(k3))
+       ) {
+      OPW.log({
+        message: 'Attempting to get invalid nested configuration key',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Check for key & value in Singletons
+    /*
+    if (XXX) {
       OPW.log({
         message: 'Attempting to get invalid configuration value',
         type: 'error',
         data: {k1: k1, k2: k2, k3: k3},
       });
-      return false
+      return opw[key];
+    }
+    */
+
+    // Check for key & value in Meteor.settings.public
+    if (Meteor.settings['public'].hasOwnProperty('opw')) {
+      if (Meteor.settings['public']['opw'].hasOwnProperty(k1)) {
+        if (k2 && Meteor.settings['public']['opw'][k1].hasOwnProperty(k2)) {
+          if (k3 && Meteor.settings['public']['opw'][k1][k2].hasOwnProperty(k3)) {
+            return Meteor.settings['public']['opw'][k1][k2][k3];
+          }
+          return Meteor.settings['public']['opw'][k1][k2];
+        }
+        return Meteor.settings['public']['opw'][k1];
+      }
     }
 
-    // Do it
-    return (
-      k3 && k2 && k1
-      && opw[k1]
-      && opw[k1][k2]
-      && opw[k1][k2][k3]
-    )
-      ? opw[k1][k2][k3]
-      : (
-        k2 && k1
-        && opw[k1]
-        && opw[k1][k2]
-      )
+    // Check for key & value in Meteor.settings.opw
+    if (Meteor.settings.hasOwnProperty('opw')) {
+      if (Meteor.settings.opw.hasOwnProperty(k1)) {
+        if (k2 && Meteor.settings.opw[k1].hasOwnProperty(k2)) {
+          if (k3 && Meteor.settings.opw[k1][k2].hasOwnProperty(k3)) {
+            return Meteor.settings.opw[k1][k2][k3];
+          }
+          return Meteor.settings.opw[k1][k2];
+        }
+        return Meteor.settings.opw[k1];
+      }
+    }
+
+    // If all else fails, return default
+    return (k1 && k2 && k3)
+      ? opw[k1[k2]][k3]
+      : (k1 && k2)
         ? opw[k1][k2]
-        : (k1 && opw[k1])
-          ? opw[k1]
-          : (
-              OPW.log({
-                message: 'Attempting to get invalid configuration value',
-                type: 'error',
-                data: {k1: k1, k2: k2, k3: k3},
-              }),
-              false
-          );  // How ya like them apples :>
+        : opw[k1];
 
   },
 
@@ -1442,7 +1579,7 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         Uses CSS ID to choose & insert a Wonderbar Element
-   * @Method          insertBootstrapElement
+   * @Method          insertWonderBarElement
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
@@ -1451,10 +1588,13 @@ OPW = {
    *
    *      XXX
    *
+   *  TODO:
+   *    Insert at cursor location rather than appending
+   *
    * ************************************************************************/
 
   // Determins which button was activated & inserts appropriate template
-  insertWonderbarElement: function(id) {
+  insertWonderBarElement: function(id) {
 
     // Validate
     if (!OPW.isString(id)) {
@@ -1465,16 +1605,29 @@ OPW = {
       return false;
     }
 
-    // Locals & action
-    var element  = id.substr(7)
-    element      = element.charAt(0).toUpperCase();
-    element      = element.replace('-', '');
+    // Locals
+    var element  = OPW.idToElementName(id);
     var template = 'opwElement' + element;
+
+    // Debug
+    OPW.log({
+      message: 'Attempting to insert WonderBar element.',
+      type: 'debug',
+      data: {
+        element: element,
+        id: id,
+        template: template,
+      },
+    });
+
+    // Some action
     var append = '\n'
         + Blaze.toHTML(Template[template])
         + '\n';
     var target = $('#opw-editor-textarea');
     var value = target.val() + append;
+
+    // Update textarea value
     target.val(value);
 
   },
@@ -2567,10 +2720,7 @@ OPW = {
       },
 
     };
-    var useAstro    = (
-        OPW.getNestedConfig('astronomer', 'enable')
-        && OPW.getNestedConfig('astronomer', 'sendLogEvents')
-    ) ? true : false;
+
     var useGAEvent = false;
     /*
     * This is currently broken because the false value returned
@@ -2636,8 +2786,6 @@ OPW = {
     // Send events
     if (log.sendEvent) {
 
-      // Astronomer
-      // if (useAstro)
       // Google Analytics
       // if (useGAEvent) idmGA.event('Log', log.type, null, null, log);
       // Rollbar
@@ -3397,6 +3545,54 @@ OPW = {
 
     // MUUAHAHAHA
     return;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Makes URL friendly slugs from a string (ie; nav title)
+   * @Method          idToElementName
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      TODO: Change to Node transliterate in Meteor 1.3
+   *
+   * ************************************************************************/
+
+  idToElementName: function(string) {
+
+    // Validate
+    if (!OPW.isString(string)) {
+      return false;
+    }
+
+    // Strip opw-wonderbar
+    string = string.substr(14);
+
+    // Split into array at hyphens
+    var arr = string.split('-');
+    var element = '';
+
+    // Loop array and capatilize each word
+    _.each(arr, function (value) {
+      element += value.charAt(0).toUpperCase();
+      element += value.substr(1);
+    });
+
+    OPW.log({
+      message: 'Converting ID to Element',
+      type: 'debug',
+      data: {
+        string: string,
+        eleement: element,
+      }
+    });
+
+    return element;
 
   },
 

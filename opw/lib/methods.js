@@ -103,8 +103,7 @@ Meteor.methods({
    *   Update the sortField of documents with given ids in a collection,
    *    incrementing it by incDec
    *
-   * TODO: THIS IS WIDE OPEN TO ATTACK, VALIDATE!!!!!!!!!!!!!!!!!!!!!!!!
-   *       REFACTOR :D
+   * TODO: REFACTOR...carefully! :D
    *
    * ************************************************************************/
 
@@ -112,14 +111,96 @@ Meteor.methods({
 
     // Validate
     check(data, Object);
-
-
-    // Debug
-    OPW.log({
-      message: 'Sort order data:',
-      type: 'debug',
-      data: JSON.stringify(data, null, 2),
-    });
+    if (!Meteor.user()) {
+      OPW.log({
+        message: 'You must be logged in to sort rows.',
+        type: 'security',
+        notifyUser: true,
+      });
+      return false;
+    }
+    if (!OPW.isCollectionId(data.id)) {
+      OPW.log({
+        message: 'Invalid ID for dropped element.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: data.id,
+        }
+      });
+      return false;
+    }
+    if (
+      !OPW.isNumber(data.to)
+      || !OPW.isNumber(data.from)
+    ) {
+      OPW.log({
+        message: 'Invalid sort orders encountered during update.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: data.id,
+          to: data.to,
+          from: data.from,
+        }
+      });
+      return false;
+    }
+    if (!OPW.isString(data.modifierSingle)) {
+      OPW.log({
+        message: 'Invalid format for dropped row update.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: data.id,
+          modifier: JSON.stringify(data.modifierSingle, null, 2),
+        }
+      });
+      return false;
+    }
+    if (!OPW.isString(data.step)) {
+      OPW.log({
+        message: 'Invalid step encountered during sorting.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: data.id,
+          to: data.to,
+          from: data.from,
+          step: data.step,
+        }
+      });
+      return false;
+    }
+    // TODO: Should loop through these and OPW.isCollectionID them
+    if (!OPW.isObject(data.ids)) {
+      OPW.log({
+        message: 'Invalid ID set encountered while sorting.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: data.id,
+          to: data.to,
+          from: data.from,
+          ids: JSON.stringify(data.ids, null, 2),
+        }
+      });
+      return false;
+    }
+    if (!OPW.isString(data.sortField)) {
+      OPW.log({
+        message: 'Invalid sort field while attempting to sort rows.',
+        type: 'error',
+        notifyUser: true,
+        data: {
+          id: id,
+          to: to,
+          from: from,
+          sortField: data.sortField,
+        }
+      });
+      return false;
+    }
 
     // Locals
     var sortField = data.sortField;
@@ -208,7 +289,7 @@ Meteor.methods({
                       })
                     );
 
-                  return;
+                  return; // Yes, I am a pimp.
 
                 })  // End reversion callback
 

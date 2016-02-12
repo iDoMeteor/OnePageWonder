@@ -4,88 +4,8 @@
  *
  ******************************************************************************/
 
-Template.opwEditor.events({
+Template.opwEditorDashboard.events({
 
-  // Save
-  'click .opw-editor-edit-page': function (event) {
-
-    var param           = {};
-
-    // Formulate parameter object
-    //      .. I'm not sure where these values come from anymore! lol
-    //            id, content, isTop
-    //            .. probably from helpers of course..or maybe they don't yet :)
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
-    }
-
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
-
-  },
-
-  // Save
-  'click .opw-editor-list-pages': function (event) {
-
-    var param           = {};
-
-    // Formulate parameter object
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
-    }
-
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
-
-  },
-
-  // Trash can handler, soft deletes a row
-  'click #opw-editor-remove': function (event) {
-
-    event.preventDefault();
-
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // Save
-  'click #opw-editor-save': function (event) {
-
-    var param           = {};
-
-    // Formulate parameter object
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
-    }
-
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
-
-  },
 
 });
 
@@ -96,11 +16,33 @@ Template.opwEditor.events({
  *
  ******************************************************************************/
 
-Template.opwEditor.helpers({
+Template.opwEditorDashboard.helpers({
 
-  template: function () {
-    return Session.get('opwActiveEditorTemplate') || 'opwEditorDashboard';
-  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Admin Notification Log created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorDashboard.onCreated(function () {
+
+  this.subscribe('opwAdminNotificationLog');
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor sections rendered handler
+ *
+ ******************************************************************************/
+
+Template.opwEditorDashboard.onRendered(function () {
+
 
 });
 
@@ -322,7 +264,7 @@ Template.opwEditorLogSecurity.onCreated(function () {
 
 /*******************************************************************************
  *
- * OPW Editor Log helpers
+ * OPW Editor Log events
  *
  ******************************************************************************/
 
@@ -369,13 +311,65 @@ Template.opwEditorLogs.events({
 
 /*******************************************************************************
  *
+ * OPW Editor Log helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogs.helpers({
+
+
+  counts: function () {
+
+    return {
+      notifications: opwAdminNotificationLog.find({
+        read: {$ne: true}
+      }).count(),
+      authentications: opwLog.find({
+        auth: {$ne: true},
+        read: {$ne: true}
+      }).count(),
+      contacts: opwContacts.find({
+        read: {$ne: true}
+      }).count(),
+      raw: opwLog.find({
+        read: {$ne: true}
+      }).count(),
+      security: opwLog.find({
+        security: {$ne: true},
+        read: {$ne: true}
+      }).count(),
+    };
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Log on created routine
+ *
+ ******************************************************************************/
+
+Template.opwEditorLogs.onCreated( function () {
+
+  this.subscribe('opwAdminNotificationLog');
+  this.subscribe('opwAuthenticationHistory');
+  this.subscribe('opwContacts');
+  this.subscribe('opwRawLog');
+  this.subscribe('opwSecurityLog');
+
+});
+
+
+/*******************************************************************************
+ *
  * OPW Editor event handlers
  *
  ******************************************************************************/
 
 Template.opwEditorMenu.events({
 
-  // XXX
   'click #opw-edit-dashboard': function (event) {
 
     event.preventDefault();
@@ -394,6 +388,13 @@ Template.opwEditorMenu.events({
 
     event.preventDefault();
     Session.set('opwActiveEditorTemplate', 'opwEditorLogs');
+
+  },
+
+  'click #opw-edit-new-section': function (event) {
+
+    event.preventDefault();
+    Session.set('opwActiveEditorTemplate', 'opwEditorRow');
 
   },
 
@@ -427,11 +428,16 @@ Template.opwEditorMenu.helpers({
     return OPW.getString('editorLogsLabel');
   },
 
+  opwNewSectionLabel: function () {
+    return OPW.getString('editorNewSectionLabel');
+  },
+
   opwSectionsLabel: function () {
     return OPW.getString('editorSectionsLabel');
   },
 
 });
+
 
 
 /*******************************************************************************
@@ -440,17 +446,19 @@ Template.opwEditorMenu.helpers({
  *
  ******************************************************************************/
 
-Template.opwEditorSection.events({
+Template.opwEditorSections.events({
 
   'click .opw-edit-row': function (event) {
 
-    console.log('Edit');
+    var id = $(event.target).parent().attr('data-id');
+    Session.set('opwActiveEditorTemplate', 'opwEditorRow');
+    Session.set('opwEditRowId', id);
 
   },
 
   'click .opw-trash-row': function (event) {
 
-    console.log('Trashing our rights!  Trashing!!');
+    var id = $(event.target).parent().attr('data-id');
 
   },
 
@@ -463,6 +471,10 @@ Template.opwEditorSection.events({
  ******************************************************************************/
 
 Template.opwEditorSections.helpers({
+
+  opwHomeRow: function () {
+    return OPW.getHomeRow();
+  },
 
   opwRows: function () {
     return OPW.getRows();
@@ -534,13 +546,163 @@ Template.opwEditorSections.onRendered(function () {
 
 });
 
+
 /*******************************************************************************
  *
- * OPW Lightbox helpers
+ * OPW Row Editor helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorRow.helpers({
+
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Row Editor event handlers
+ *
+ ******************************************************************************/
+
+Template.opwEditorRow.events({
+
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Editor Row Title helpers
+ *
+ ******************************************************************************/
+
+Template.opwEditorRowTitle.helpers({
+
+  opwEditorTitlePlaceholder: function () {
+    return 'New Section Title';
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Modal Editor event handlers
+ *
+ ******************************************************************************/
+
+Template.opwModalEditor.events({
+
+  // Save
+  'click .opw-editor-edit-page': function (event) {
+
+    var param           = {};
+
+    // Formulate parameter object
+    //      .. I'm not sure where these values come from anymore! lol
+    //            id, content, isTop
+    //            .. probably from helpers of course..or maybe they don't yet :)
+    param.id           = id;
+    param.content      = content;
+    param.target       = event.target;
+    param.isTop        = isTop;
+
+    if (!isTop) {
+      param.title     = title;
+    }
+
+    // Update
+    OPW.expireRow(param);
+    OPW.insertRow(param);
+    OPW.updateRow(param);
+
+  },
+
+  // Save
+  'click .opw-editor-list-pages': function (event) {
+
+    var param           = {};
+
+    // Formulate parameter object
+    param.id           = id;
+    param.content      = content;
+    param.target       = event.target;
+    param.isTop        = isTop;
+
+    if (!isTop) {
+      param.title     = title;
+    }
+
+    // Update
+    OPW.expireRow(param);
+    OPW.insertRow(param);
+    OPW.updateRow(param);
+
+  },
+
+  // Trash can handler, soft deletes a row
+  'click #opw-editor-remove': function (event) {
+
+    event.preventDefault();
+
+    // TODO: Confirm with user
+
+    OPW.removeRow($(event.target).attr('id'));
+    Router.go('/');
+
+  },
+
+  // Save
+  'click #opw-editor-save': function (event) {
+
+    var param           = {};
+
+    // Formulate parameter object
+    param.id           = id;
+    param.content      = content;
+    param.target       = event.target;
+    param.isTop        = isTop;
+
+    if (!isTop) {
+      param.title     = title;
+    }
+
+    // Update
+    OPW.expireRow(param);
+    OPW.insertRow(param);
+    OPW.updateRow(param);
+
+  },
+
+});
+
+
+/*******************************************************************************
+ *
+ * OPW Modal Editor helpers
  *
  ******************************************************************************/
 
 Template.opwModalEditor.helpers({
+
+  actionId: function () {
+
+    if ('opwEditorRow' == Session.get('opwActiveEditorTemplate')) {
+      return 'opw-editor-new-section-save';
+    }
+
+    return;
+  },
+
+  actionText: function () {
+
+    if ('opwEditorRow' == Session.get('opwActiveEditorTemplate')) {
+      return 'Save Section';
+    }
+
+    return;
+  },
 
   closeLabel: function () {
     return OPW.getString('closeLabel');
@@ -555,7 +717,7 @@ Template.opwModalEditor.helpers({
 
 /*******************************************************************************
  *
- * OPW Lightbox rendered handler
+ * OPW Modal Editor rendered handler
  *
  ******************************************************************************/
 

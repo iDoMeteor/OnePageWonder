@@ -311,6 +311,7 @@ opw = {
         editorDashboardLabel: 'Dashboard',
         editorLighboxTitle: 'System Editor',
         editorLogsLabel: 'Logs',
+        editorNewSectionLabel: '<i class="fa fa-plus"></i>',
         editorSectionsLabel: 'Sections',
         emailLabel: 'Email Address',
         loadingText: 'Loading..',
@@ -326,6 +327,10 @@ opw = {
     toggles: {
         notifyAdminOnLoginSuccess: true,
         notifyAdminOnLoginFailure: true,
+    },
+
+    wonderBar: {
+      helpTitle: '#OnePageWonder WonderBar Help',
     },
 
 }
