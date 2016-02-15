@@ -19,33 +19,13 @@ console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor');
 
 Accounts.onLogin(function (user) {
 
-    OPW.log({
-        message: OPW.getString('authenticationLoginSuccess'),
-        notifyUser: true,
-        notifyAdmin: OPW.getNestedConfig('toggles',
-                                         'notifyAdminOnLoginSuccess'),
-        sendEvent: true,
-        eventTag: 'Login Success',
-        auth: true,
-        type: 'success',
-        data: user,
-    });
+  // This runs all the time, DDP auth!
 
 });
 
 Accounts.onLoginFailure(function (user) {
 
-    OPW.log({
-        message: OPW.getString('authenticationLoginFailure'),
-        notifyUser: true,
-        notifyAdmin: OPW.getNestedConfig('toggles',
-                                         'notifyAdminOnLoginFailure'),
-        sendEvent: true,
-        eventTag: 'Login Failure',
-        auth: true,
-        type: 'danger',
-        data: user,
-    });
+  // This runs all the time, DDP auth!
 
 });
 

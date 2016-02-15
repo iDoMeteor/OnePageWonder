@@ -146,7 +146,7 @@ Meteor.methods({
       });
       return false;
     }
-    if (!OPW.isString(data.modifierSingle)) {
+    if (!OPW.isObject(data.modifierSingle)) {
       OPW.log({
         message: 'Invalid format for dropped row update.',
         type: 'error',
@@ -158,7 +158,7 @@ Meteor.methods({
       });
       return false;
     }
-    if (!OPW.isString(data.step)) {
+    if (!OPW.isNumber(data.step)) {
       OPW.log({
         message: 'Invalid step encountered during sorting.',
         type: 'error',

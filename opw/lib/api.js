@@ -114,6 +114,7 @@ OPW = {
         modifierSingle: modifier,
         sortField: sortField,
         to: to,
+        from: from,
       };
 
     // Process affected rows
@@ -377,16 +378,67 @@ OPW = {
   },
 
 
-  /*****************
+  /***************************************************************************
    *
-   */
+   * @Summary         Expires a row by ID, checks for authenticated user
+   * @Method          expireRow
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * ************************************************************************/
 
-  gaEnabled: function() {
-    return (
-        idmGA && idmGA.pageview && idmGA.event
-        && OPW.getNestedConfig('google', 'enable')
-        && OPW.getNestedConfig('google', 'account')
-    ) ? true : false;
+  expireRow: function(id) {
+
+    // Check perms
+    if (!Meteor.userId()) {
+      OPW.log({
+        message: 'You must be logged in to expire a row.',
+        notifyUser: true,
+        type: 'error',
+      });
+      return;
+    }
+
+    // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid attempt to expire row.',
+        notifyUser: true,
+        type: 'error',
+      });
+      return;
+    }
+
+    // Do it
+    opwRows.update({
+      '_id': id
+    }, {
+      $set: {
+        'stale':          true,
+        'stamps.expired':   new Date()
+      }
+    }, function expireRowCallback (error, affected) {
+
+      (affected) ? (
+          OPW.log({
+            message: 'Expired previous row.',
+            type: 'Success',
+          })
+      ) : (
+          OPW.log({
+            message: 'Failed to expire previous row.',
+            notifyUser: true,
+            type: 'error',
+          })
+      );
+
+      return;
+
+    });
+
+    return;
+
   },
 
 
@@ -501,6 +553,50 @@ OPW = {
     // Set valid indicator
     $(template.find(identifier))
       .addClass('fa-flag-checkered bg-success');
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Flash background-color
+   * @Method          flashBG
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  flashBG: function(selector) {
+
+    if (Meteor.isServer) {
+      return;
+    }
+    // Validate selector TODO: Better
+    if (!OPW.isString(selector)) {
+      return;
+    }
+
+    $(selector).addClass('bg-invalid', 200, function() {
+      $(selector).removeClass('bg-invalid', 400);
+    });
+
+  },
+
+
+  /*****************
+   *
+   */
+
+  gaEnabled: function() {
+    return (
+        idmGA && idmGA.pageview && idmGA.event
+        && OPW.getNestedConfig('google', 'enable')
+        && OPW.getNestedConfig('google', 'account')
+    ) ? true : false;
   },
 
 
@@ -1007,12 +1103,14 @@ OPW = {
     }
 
     // Locals
-    var row = OPW.getRowById(id) || Blaze.toHTML('opwEditorContentExample');
     fetch   = (OPW.isBoolean(fetch)) ? fetch : true;
+
+    // Pretty sure this was pointless
+    // var row = OPW.getRowById(id) || Blaze.toHTML('opwEditorContentExample');
 
     // Do it
     return (fetch) ? (
-        opwRows.find({_id: id}).fetch()
+        opwRows.findOne({_id: id})
     ) : (
         opwRows.find({_id: id})
     )
@@ -1396,182 +1494,83 @@ OPW = {
    * @Method          insertRow
    * @Param           n/a
    * @Returns         undefined
+   * @Callback
    * @Location        Client, Server
    *
    * @Description
    *
-   * TODO: Add order field
+   * TODO: Make default order a numeric setting
    *
    * ************************************************************************/
 
-  insertRow: function(event) {
+  insertRow: function(obj, callback) {
 
 
     // Permissions check
     if (!Meteor.userId()) {
+      message = 'You may not add rows unless you are logged in.';
       OPW.log({
-        message: 'You must be logged in.',
+        message: message,
+        notifyUser: true,
         type: 'security',
       });
-      return;
+      return OPW.curry(callback, message);
     }
 
     // Validate
-    if (!event) {
-      return;
+    if (!obj.content || !OPW.isValidContent(obj.content)) {
+      message = 'Invalid content encountered while attempting to insert row.';
+      OPW.log({
+        message: message,
+        notifyUser: true,
+        type: 'warning',
+      });
+      return OPW.curry(callback, message);
+    }
+    if (!obj.isTop
+        && (!obj.title
+          || !OPW.isValidTitle(obj.title))
+       ) {
+         message = 'Invalid title encountered while attempting to insert row.';
+         OPW.log({
+           message: message,
+           notifyUser: true,
+           type: 'warning',
+         });
+         return OPW.curry(callback, message);
+       }
+
+    // Validate or correct
+    if (!obj.order || !OPW.isNumber(obj.order)) {
+      // Find highest order and add 1 to it, making this the last row
+      obj.order = opwRows.findOne({
+        removed:    {$ne: true},
+        slug:       {$ne: 'top'},
+        stale:      {$ne: true},
+      }, {
+        fields: {order: 1},
+        sort: {order: -1},
+      }).order + 1;
+    }
+    if (!obj.previous || !OPW.isCollectionId(obj.previous)) {
+      obj.previous = undefined;
+    }
+    if (!obj.slug || !OPW.isValidSlug(obj.slug)) {
+      obj.slug = OPW.stringToSlug(obj.title);
     }
 
-    // Check keypress
-    if (
-        (event.which) // This will allow blur event to work
-        && (!OPW.pressedEnter(event))
-    ) {
-      return;
-    }
-
-    // Locals
-    var obj     = {};
-    var slug    = null;
-    var target  = $(event.target);
-    var val     = target.val();
-    val         = val.trim();
-
-    // Validate
-    if (
-        (!OPW.isString(val))
-        || (!val.length)
-        || (20 < val.length)
-    ) {
-      OPW.invalidTitle();
-      return;
-    };
-
-    // Create slug
-    slug = OPW.stringToSlug(val);
-
-    // Formulate insert object
-    obj = {
-      content:    null,
-      slug:       slug,
-      title:      val,
-      stamps:     {
-        created: new Date(),
-      },
-    }
+    // Stamp it
+    obj.stamps = { created: new Date() };
 
     // Save to database
     opwRows.insert (obj, function(error, id) {
 
-      var result = (id) ? (
-          // Drop it up
-                $('#opw-new-nav').hide('drop', {direction: 'up'}, function() {
-                  // Remove it
-                  $('#opw-new-nav').remove();
-                  // Assign id to textarea
-                  $('textarea').attr('data-id', id);
-                  // Assign slug to textarea
-                  $('textarea').attr('id', slug);
-                  // Assign scroll event to new thingy
-                  $('[href=' + slug + ']').addClass('page-scroll');
-                  $('[href=' + slug + ']').bind('click', OPW.scrollToHref);
-                  // Move focus to textarea
-                  $('textarea').focus();
-                }),
-                // Log
-                OPW.log ('SUCCESS Inserted new navigation item')
-            ) : (
-                // Set failure message
-                OPW.invalidTitle(),
-                OPW.log ('FAILURE Failed to insert navigation item')
-            )
-
-      return;
+      // Return results to origin or into the void
+      return OPW.curry(callback, error, id);
 
     });
 
-    // Permissions check
-    if (!Meteor.userId()) {
-      OPW.log({
-        message: 'You must be logged in to add rows.',
-        notifyUser: true,
-        type: 'security',
-      });
-      return;
-    }
-
-    if (!OPW.pressedControlEnter(event)) {
-      return;
-    }
-
-    // Update created row with content
-    // Alert user if attempting to save before nav item
-
-    // Locals
-    var id        = $(event.target).attr('data-id');
-    var modifier  = {};
-    var selector  = {};
-    var slug      = $(event.target).attr('id');
-    var target    = $(event.target);
-    var val       = target.val();
-    val           = val.trim();
-
-    // Validate
-    if (
-        (!OPW.isString(val))
-        || (!val.length)
-    ) {
-      OPW.invalidContent();
-      return;
-    };
-
-    // Formulate update objects
-    selector = {
-      _id:       id,
-    }
-    modifier = {
-      $set: {
-        content: val,
-        'stamps.modified': new Date(),
-      },
-    }
-
-    // Save to database
-    opwRows.update (selector, modifier, function(error, affected) {
-
-      var result = (affected) ? (
-          // Drop it out
-          $('#opw-new-section').hide(
-              'drop',
-              {direction: 'down'},
-                    function() {
-
-                      // Remove it
-                      $('#opw-new-section').remove();
-                      // Scroll to it
-                      /* If the DB read doesn't occur quick enough,
-                       * this will fail... Metoerize it.. :)
-                       */
-                      $('html, body').stop().animate({
-                        scrollTop: $('#' + slug).offset().top
-                      }, 1500, 'easeInOutExpo');
-                      // Refresh scroll spy
-                      $('body').scrollspy('refresh');
-                    }
-                ),
-                // Log
-                OPW.log ('SUCCESS Inserted new row content')
-            ) : (
-                // Flash input
-                OPW.invalidContent(),
-                // Set failure message
-                OPW.log ('FAILURE Failed to insert new row content')
-            )
-
-      return;
-
-    });
-
-    return;
+    return;  // End insertRow
 
   },
 
@@ -1797,50 +1796,6 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Alert user that the content they have entered is invalid
-   * @Method          invalidContent
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   * ************************************************************************/
-
-  // Flash the textarea if it cannot be saved
-  invalidContent: function() {
-    $('textarea').addClass('bg-invalid', 200, function() {
-      $('textarea').removeClass('bg-invalid', 400);
-    });
-  },
-
-
-  /***************************************************************************
-   *
-   * @Summary         Alert user that they have tried to save an invalid title
-   * @Method          invalidTitle
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   * ************************************************************************/
-
-  // Flash the nav title input if it cannot be saved
-  invalidTitle: function() {
-    $('input').addClass('bg-invalid', 200, function() {
-      $('input').removeClass('bg-invalid', 400);
-    });
-  },
-
-
-  /***************************************************************************
-   *
    * @Summary         Check connection log for this an IP
    * @Method          ipExists
    * @Param           n/a
@@ -1938,9 +1893,12 @@ OPW = {
 
   // Tests a subject to match a Meteor/Mongo collection _id string
   isCollectionId: function(value) {
-    return (/^\x{24}$/.test(value))
-        ? true
-        : false;
+    return (
+      (/^\x{24}$/.test(value))
+      || (/^\w{17}$/.test(value))
+    )
+      ? true
+      : false;
   },
 
 
@@ -2004,9 +1962,12 @@ OPW = {
 
   // Tests a subject for [0-9]
   isNumber: function(value) {
-    return (/^[0-9]?$/.test(value))
-        ? true
-        : false;
+    return (
+      ('number' == typeof (value))
+        || (/^-?[0-9]?$/.test(value))
+    )
+      ? true
+      : false;
   },
 
 
@@ -2244,9 +2205,10 @@ OPW = {
   // Tests a subject to make sure it is a string (could do more,
   // but not much danger here, thanks to Meteor & BP, etc)
   isValidContent: function(value) {
-    return ('string' == typeof (value))
-        ? true
-        : false;
+    return (
+        ('string' == typeof (value))
+        && (0 < value.length)
+    ) ? true : false;
   },
 
 
@@ -2506,6 +2468,7 @@ OPW = {
   isValidTitle: function(value) {
     return (
         ('string' == typeof (value))
+        && (0 < value.length) // TODO: Make dynamic
         && (25 > value.length) // TODO: Make dynamic
     ) ? true : false;
   },
@@ -2857,23 +2820,35 @@ OPW = {
       email = (OPW.isString(email)) ? email : 'Invalid email';
       return (error) ? (
           // User message
-              /*
-               * Handled in login failure hook
-                OPW.log({
-                  message: OPW.getString('authenticationLoginFailure'),
-                  notifyAdmin: false,
-                  notifyUser: true,
-                  sendEvent: false,
-                  type: 'danger',
-                }),
-              */
-                false
-            ) : (
-                $('#opw-auth-email').val(''),
-                $('#opw-auth-password').val(''),
-                $('#opw-authenticate').modal('hide'),
-                true
-            )
+          OPW.log({
+            message: OPW.getString('authenticationLoginFailure'),
+            notifyUser: true,
+            notifyAdmin: OPW.getNestedConfig('toggles',
+                                             'notifyAdminOnLoginFailure'),
+            sendEvent: true,
+            eventTag: 'Login Failure',
+            auth: true,
+            type: 'danger',
+            data: user,
+          }),
+          false
+        ) : (
+          $('#opw-auth-email').val(''),
+          $('#opw-auth-password').val(''),
+          $('#opw-authenticate').modal('hide'),
+          OPW.log({
+            message: OPW.getString('authenticationLoginSuccess'),
+            notifyUser: true,
+            notifyAdmin: OPW.getNestedConfig('toggles',
+                                             'notifyAdminOnLoginSuccess'),
+            sendEvent: true,
+            eventTag: 'Login Success',
+            auth: true,
+            type: 'success',
+            data: user,
+          }),
+          true
+        )
     });
   },
 
@@ -2988,11 +2963,12 @@ OPW = {
 
     // Validate
     if (!OPW.isObject(log)) {
+      message = 'Invalid attempt to notify admin';
       OPW.log({
-        message: 'Invalid attempt to notify admin',
+        message: message,
         type: 'error',
       });
-      OPW.curry(callback, false);
+      return OPW.curry(callback, message);
     }
 
     // Locals
@@ -3012,12 +2988,13 @@ OPW = {
 
     // Validate
     if (!OPW.isValidEmail(to)) {
+      message = 'Admin contact has been improperly configured.';
       OPW.log({
-        message: 'Admin contact has been improperly configured.',
+        message: message,
         type: 'error',
         data: log,
       });
-      OPW.curry(callback, false);
+      return OPW.curry(callback, message);
     }
 
     // Formulate mail object
@@ -3037,7 +3014,7 @@ OPW = {
       Email.send(mail);
     }
 
-    OPW.curry(callback, true);
+    OPW.curry(callback, undefined,  true);
 
   },
 
@@ -3309,7 +3286,7 @@ OPW = {
     }
 
     // Validate
-    if (!OPW.isString(id)) {
+    if (!OPW.isCollectionId(id)) {
       OPW.log({
         message: 'Invalid attempt to remove row.',
         notifyUser: true,
@@ -3326,7 +3303,27 @@ OPW = {
         'removed':          true,
         'stamps.removed':   new Date()
       }
+    }, function removeRowCallback (error, affected) {
+
+      (affected) ? (
+          OPW.log({
+            message: 'Removed row.',
+            notifyUser: true,
+            type: 'Success',
+          })
+      ) : (
+          OPW.log({
+            message: 'Failed to remove row.',
+            notifyUser: true,
+            type: 'error',
+          })
+      );
+
+      return;
+
     });
+
+    return;
 
   },
 
@@ -3640,7 +3637,7 @@ OPW = {
    * @Description
    *
    * TODO:
-   *     Post processing should probably be out-sourced
+   *     This is for pre-v1.0.0-RC.2-final, can be removed
    *
    * ************************************************************************/
 

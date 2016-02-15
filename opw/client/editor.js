@@ -394,6 +394,7 @@ Template.opwEditorMenu.events({
   'click #opw-edit-new-section': function (event) {
 
     event.preventDefault();
+    Session.set('opwEditRowId', false);
     Session.set('opwActiveEditorTemplate', 'opwEditorRow');
 
   },
@@ -450,15 +451,20 @@ Template.opwEditorSections.events({
 
   'click .opw-edit-row': function (event) {
 
+    event.preventDefault();
     var id = $(event.target).parent().attr('data-id');
     Session.set('opwActiveEditorTemplate', 'opwEditorRow');
     Session.set('opwEditRowId', id);
 
   },
 
+  // Trash can handler, soft deletes a row
   'click .opw-trash-row': function (event) {
 
+    event.preventDefault();
+    // TODO: Confirm with user
     var id = $(event.target).parent().attr('data-id');
+    OPW.removeRow(id);
 
   },
 
@@ -555,18 +561,12 @@ Template.opwEditorSections.onRendered(function () {
 
 Template.opwEditorRow.helpers({
 
+  row: function () {
 
-});
+    var id = Session.get('opwEditRowId');
+    return OPW.getRowById(id);
 
-
-/*******************************************************************************
- *
- * OPW Row Editor event handlers
- *
- ******************************************************************************/
-
-Template.opwEditorRow.events({
-
+  },
 
 });
 
@@ -580,7 +580,7 @@ Template.opwEditorRow.events({
 Template.opwEditorRowTitle.helpers({
 
   opwEditorTitlePlaceholder: function () {
-    return 'New Section Title';
+    return 'Section Title';
   },
 
 });
@@ -595,83 +595,109 @@ Template.opwEditorRowTitle.helpers({
 Template.opwModalEditor.events({
 
   // Save
-  'click .opw-editor-edit-page': function (event) {
-
-    var param           = {};
-
-    // Formulate parameter object
-    //      .. I'm not sure where these values come from anymore! lol
-    //            id, content, isTop
-    //            .. probably from helpers of course..or maybe they don't yet :)
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
-    }
-
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
-
-  },
-
-  // Save
-  'click .opw-editor-list-pages': function (event) {
-
-    var param           = {};
-
-    // Formulate parameter object
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
-    }
-
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
-
-  },
-
-  // Trash can handler, soft deletes a row
-  'click #opw-editor-remove': function (event) {
+  'click #opw-editor-section-save': function (event) {
 
     event.preventDefault();
+    // TODO: Make isTop a perm property so can change home row w/ button
 
-    // TODO: Confirm with user
-
-    OPW.removeRow($(event.target).attr('id'));
-    Router.go('/');
-
-  },
-
-  // Save
-  'click #opw-editor-save': function (event) {
-
-    var param           = {};
+    var current = null;
+    var id = OPW.isCollectionId(Session.get('opwEditRowId'))
+      ? Session.get('opwEditRowId')
+      : undefined;
+    var obj = {};
 
     // Formulate parameter object
-    param.id           = id;
-    param.content      = content;
-    param.target       = event.target;
-    param.isTop        = isTop;
-
-    if (!isTop) {
-      param.title     = title;
+    if (id) {
+      current = OPW.getRowById(id);
+    }
+    // The props are not required for insert
+    if (current) {
+      obj.isTop    = ('top' == current.slug) ? true : false;
+      obj.order    = (OPW.isNumber(current.order))
+                      ? current.order
+                      : 1;
+      obj.previous = id; // id is obviously valid now
+    }
+    // The props are required for insert
+    obj.title = $('#opw-title-editor').val();
+    obj.content = $('#opw-editor-textarea').val();
+    if (obj.isTop) {
+      obj.slug = current.slug;
+    } else {
+      obj.slug = OPW.stringToSlug(obj.title);
     }
 
-    // Update
-    OPW.expireRow(param);
-    OPW.insertRow(param);
-    OPW.updateRow(param);
+    // Validate before sending to server
+    if (!obj.isTop && !OPW.isValidTitle(obj.title)) {
+      OPW.flashBG('#opw-title-editor');
+      OPW.log ({
+        message: 'You must enter a valid title for non-top rows.',
+        type: 'danger',
+        notifyUser: true,
+        data: obj,
+      });
+      $('#opw-editor-title').focus();
+      return;
+    }
+    if (!OPW.isValidContent(obj.content)) {
+      OPW.flashBG('#opw-editor-textarea');
+      OPW.log ({
+        message: 'You must enter valid content before saving.',
+        type: 'danger',
+        notifyUser: true,
+        data: obj,
+      });
+      $('#opw-editor-textarea').focus();
+      return;
+    }
+
+    // Debug
+    OPW.log ({
+      message: 'Row object prior to insertion attempt:',
+      type: 'debug',
+      data: obj,
+    });
+
+    // Insert
+    OPW.insertRow(obj, function insertRowEventCallback (error, result) {
+
+      if (result) {
+        // If success
+        OPW.log ({
+          message: 'Saved row.',
+          type: 'Success',
+          notifyUser: true,
+          data: obj,
+        });
+        // Expire previous version if there was one
+        if (obj.previous) {
+          OPW.expireRow(obj.previous);
+        }
+        // Assign scroll event to new thingy
+        $('[href=' + obj.slug + ']').addClass('page-scroll');
+        $('[href=' + obj.slug + ']').bind('click', OPW.scrollToHref);
+        // Scroll to it
+        // If the DB read doesn't occur quick enough,
+        // this will fail... should Metoerize it.. :)
+        $('html, body').stop().animate({
+          scrollTop: $('#' + obj.slug).offset().top
+        }, 1500, 'easeInOutExpo');
+        // Refresh scroll spy
+        $('body').scrollspy('refresh');
+      } else {
+        // Failure
+        OPW.log ({
+          message: 'Failed to save row.',
+          type: 'error',
+          notifyUser: true,
+          data: obj,
+        });
+        return;
+      }
+
+      return;
+
+    }); // End insertRowCallback
 
   },
 
@@ -689,7 +715,7 @@ Template.opwModalEditor.helpers({
   actionId: function () {
 
     if ('opwEditorRow' == Session.get('opwActiveEditorTemplate')) {
-      return 'opw-editor-new-section-save';
+      return 'opw-editor-section-save';
     }
 
     return;
