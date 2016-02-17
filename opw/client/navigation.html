@@ -27,13 +27,22 @@
 
                     {{/each}}
 
-                    {{! Detailed contact form }}
-                    {{#if opwShowDetailedContactLink}}
-                        <li id="opw-contact-detailed">
+                    {{! Editor }}
+                    {{#if currentUser}}
+                        <li id="opw-launch-editor">
                             <a>
-                                <span class="fa fa-pencil"></span>
+                                <span class="fa fa-gear"></span>
                             </a>
                         </li>
+                    {{/if}}
+
+                    {{! Detailed contact form }}
+                    {{#if opwShowDetailedContactLink}}
+                      <li id="opw-contact-detailed">
+                          <a>
+                              <span class="fa fa-pencil"></span>
+                          </a>
+                      </li>
                     {{/if}}
 
                     {{! Change theme }}
@@ -50,15 +59,6 @@
                         <li id="opw-change-navigation">
                             <a>
                                 <span class="fa fa-magic"></span>
-                            </a>
-                        </li>
-                    {{/if}}
-
-                    {{! Add row }}
-                    {{#if currentUser}}
-                        <li id="opw-launch-editor">
-                            <a>
-                                <span class="fa fa-gear"></span>
                             </a>
                         </li>
                     {{/if}}

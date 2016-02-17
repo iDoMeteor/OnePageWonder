@@ -309,6 +309,8 @@ Meteor.methods({
               affected: affected,
               data: JSON.stringify(data, null, 2),
               error: error,
+              selector: JSON.stringify(selector, null, 2),
+              modifierMulti: JSON.stringify(modifierMulti, null, 2),
             },
           })
 

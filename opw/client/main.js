@@ -392,14 +392,14 @@ Template.opwRoot.helpers({
 
 /*******************************************************************************
  *
- * Root rendered function
+ * Root created function
  *
  ******************************************************************************/
 
 Template.opwRoot.onRendered(function () {
 
-    // Remove injected loader div
-    $('#opw-loader').remove();
+    // Log view
+    OPW.logSectionView('top');
 
 });
 
@@ -506,39 +506,3 @@ Template.opwSocialIcons.helpers ({
 if (OPW.getNestedConfig('astronomer', 'enable')) {
     window.AstronomerConfig = OPW.getConfig('astronomer');
 }
-
-// iDM Connection Log IP Cheat
-// TODO: This may be slightly broken
-(function idmIpCheat(x) {
-    var x = x * 2 || 100;
-    if (1600 < x) {
-        OPW.log({
-            message: 'IP helper failed',
-            notifyUser: false,
-            type: 'failure'
-        });
-        return;
-    }
-    Meteor.setTimeout(function () {
-        // Sometimes root renders before injections finish
-        var ip = $('meta[name=ip]').attr('content');
-        if (ip && ip.length) {
-            OPW.log({
-                message: 'Registering IP helper',
-                data: {ip: ip},
-                type: 'debug'
-            });
-            Template.registerHelper('currentIp', function () {
-                // This is static, obviously
-                return ip;
-            });
-            $('meta[name=ip]').remove();
-        } else {
-            OPW.log({
-                message: 'Waiting for IP helper',
-                type: 'debug'
-            });
-            idmIpCheat(x);
-        }
-    }, x);
-})(); // i<3Meteor

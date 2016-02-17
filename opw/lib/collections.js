@@ -106,9 +106,9 @@ if (Meteor.isServer) {
     remove: function () {
       return true;
     },
-    // No one can update!
+    // Allow if logged in
     update: function () {
-      return true;
+      return (Meteor.userId()) ? false : true;
     },
 
   });
@@ -169,9 +169,9 @@ if (Meteor.isServer) {
     remove: function () {
       return true;
     },
-    // No one can update!
+    // Allow if logged in
     update: function () {
-      return true;
+      return (Meteor.userId()) ? false : true;
     },
 
   });
@@ -184,9 +184,9 @@ if (Meteor.isServer) {
     remove: function () {
       return true;
     },
-    // No one can update!
+    // Allow if logged in
     update: function () {
-      return true;
+      return (Meteor.userId()) ? false : true;
     },
 
   });

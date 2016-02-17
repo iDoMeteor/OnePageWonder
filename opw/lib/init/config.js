@@ -238,8 +238,8 @@ opw = {
     navigation: {
 
         // General
-        allowDynamicTheme: true, // Allow users to change navigation style
-        allowDynamicNavigation: true, // Allow users to change navigation style
+        allowDynamicTheme: false, // Allow users to change navigation style
+        allowDynamicNavigation: false, // Allow users to change navigation style
         collapse: true,     // Navbar collapse?
         collapseOffset: 40, // Distance from top until collapse
         contextClass: 'default', // Bootstrap navbar-X class (default or inverted)
@@ -260,6 +260,7 @@ opw = {
     // Numerics
     numerics: {
 
+        menuItemMaxCount: 12,
         menuItemMaxLength: 25,
         // Maximum length of a navigation item (section title)
         navTitle: 25,
@@ -325,6 +326,7 @@ opw = {
 
     // Toggles
     toggles: {
+        logSectionViews: true,
         notifyAdminOnLoginSuccess: true,
         notifyAdminOnLoginFailure: true,
     },

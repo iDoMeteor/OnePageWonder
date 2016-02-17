@@ -172,6 +172,78 @@ Template.opwEditorLogAuthentication.onCreated(function () {
 });
 
 
+/******************************************************************************
+ *
+ * Contact log helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditorLogAdmin.events({
+
+    'click tbody': function (event) {
+      var id = $(event.currentTarget).attr('data-id');
+      opwAdminNotificationLog.update({_id: id}, {$set: {
+        read: true,
+      }});
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Contact log helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditorLogAuthentication.events({
+
+    'click tbody': function (event) {
+      var id = $(event.currentTarget).attr('data-id');
+      opwLog.update({_id: id}, {$set: {
+        read: true,
+      }});
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Contact log helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditorLogSecurity.events({
+
+    'click tbody': function (event) {
+      var id = $(event.currentTarget).attr('data-id');
+      opwLog.update({_id: id}, {$set: {
+        read: true,
+      }});
+    },
+
+});
+
+
+/******************************************************************************
+ *
+ * Contact log helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditorLogContact.events({
+
+    'click tbody': function (event) {
+      var id = $(event.currentTarget).attr('data-id');
+      opwContacts.update({_id: id}, {$set: {
+        read: true,
+      }});
+    },
+
+});
+
+
 /*******************************************************************************
  *
  * OPW Editor Contact Log helpers
@@ -321,23 +393,11 @@ Template.opwEditorLogs.helpers({
   counts: function () {
 
     return {
-      notifications: opwAdminNotificationLog.find({
-        read: {$ne: true}
-      }).count(),
-      authentications: opwLog.find({
-        auth: {$ne: true},
-        read: {$ne: true}
-      }).count(),
-      contacts: opwContacts.find({
-        read: {$ne: true}
-      }).count(),
-      raw: opwLog.find({
-        read: {$ne: true}
-      }).count(),
-      security: opwLog.find({
-        security: {$ne: true},
-        read: {$ne: true}
-      }).count(),
+      notifications: OPW.getAdminNotificationLog(false).count(),
+      authentications: OPW.getAuthenticationHistory(false).count(),
+      contacts: OPW.getContacts(false).count(),
+      raw: OPW.getRawLog(false).count(),
+      security: OPW.getSecurityLog(false).count(),
     };
 
   },
@@ -453,6 +513,7 @@ Template.opwEditorSections.events({
 
     event.preventDefault();
     var id = $(event.target).parent().attr('data-id');
+    var slug = $(event.target).parent().attr('data-slug');
     Session.set('opwActiveEditorTemplate', 'opwEditorRow');
     Session.set('opwEditRowId', id);
 
@@ -536,15 +597,8 @@ Template.opwEditorSections.onRendered(function () {
         type: 'debug',
       });
 
-      if (newIndex < oldIndex) {
-        // Element moved up in the list.
-        // The dropped element has a next sibling for sure.
-        OPW.adjustRowOrder(rowId, newIndex, oldIndex, filter);
-      } else if (newIndex > oldIndex) {
-        // Element moved down in the list.
-        // The dropped element has a previous sibling for sure.
-        OPW.adjustRowOrder(rowId, newIndex, oldIndex, filter);
-      }
+      // Re-order the elements
+      OPW.adjustRowOrder(rowId, newIndex, oldIndex, filter);
 
     },
 
@@ -684,6 +738,9 @@ Template.opwModalEditor.events({
         }, 1500, 'easeInOutExpo');
         // Refresh scroll spy
         $('body').scrollspy('refresh');
+
+        // TODO: Reset form
+
       } else {
         // Failure
         OPW.log ({

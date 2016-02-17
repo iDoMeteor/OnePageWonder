@@ -9,11 +9,7 @@ less
 meteor-platform
 meteorhacks:fast-render
 meteorhacks:inject-initial
-meteorhacks:sikka
 mizzao:jquery-ui
 rubaxa:sortable
 service-configuration
-themeteorchef:jquery-validation
 astronomerio:core
-kadira:blaze-layout
-msavin:mongol

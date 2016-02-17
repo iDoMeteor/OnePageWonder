@@ -48,8 +48,6 @@ OPW = {
    *
    * @Description
    *
-   *      Stolen & modified (heavily) from reactivize.js.
-   *
    * TODO: Re-factor to reduce length
    *
    * ************************************************************************/
@@ -364,16 +362,19 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         Callback a function with result or return the result
-   * @Method          curry
+   * @Method          returnCall
    * @Param           n/a
    * @Returns         Result of callback or passed in result
    * @Location        Client, Server
    *
    * ************************************************************************/
 
-  curry: function (fx, error, result) {
+  returnCall: function (fx, error, result) {
 
-      return (OPW.isFunction(fx)) ? fx(error, result) : result;
+      if (OPW.isFunction(fx)) {
+        fx(error, result);
+      }
+      return;
 
   },
 
@@ -617,18 +618,22 @@ OPW = {
   getAdminNotificationLog: function(fetch) {
 
     // Locals
-    fetch       = ('boolean' == typeof (fetch))
-                      ? fetch : true;
-    // Do it
-    return (fetch) ? (
-            opwAdminNotificationLog.find({}, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            }).fetch()
-    ) : (
-            opwAdminNotificationLog.find({}, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            })
-    )
+    fetch = ('boolean' == typeof (fetch))
+      ? fetch : true;
+      // Do it
+      return (fetch) ? (
+        opwAdminNotificationLog.find({
+          read: {$ne: true}
+        }, {
+          limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+          sort: {date: -1},
+        }).fetch()
+      ) : (
+        opwAdminNotificationLog.find({}, {
+          limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+          sort: {date: -1},
+        })
+      )
 
   },
 
@@ -654,17 +659,20 @@ OPW = {
       ? fetch : true;
     selector = {
       auth: true,
+      read: {$ne: true},
     };
 
     // Do it
     return (fetch) ? (
-            opwLog.find(selector, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            }).fetch()
+      opwLog.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      }).fetch()
     ) : (
-            opwLog.find(selector, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            })
+      opwLog.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      })
     )
 
   },
@@ -847,11 +855,21 @@ OPW = {
     // Locals
     fetch = ('boolean' == typeof (fetch))
       ? fetch : true;
+    selector = {
+      read: {$ne: true},
+    };
+
     // Do it
     return (fetch) ? (
-        opwContacts.find({}).fetch()
+      opwContacts.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {stamp: -1},
+      }).fetch()
     ) : (
-        opwContacts.find({})
+      opwContacts.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {stamp: -1},
+      })
     )
 
   },
@@ -1061,15 +1079,17 @@ OPW = {
     fetch = ('boolean' == typeof (fetch))
       ? fetch : true;
 
-    // Do it
+      // Do it
     return (fetch) ? (
-            opwLog.find({}, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            }).fetch()
+      opwLog.find({}, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      }).fetch()
     ) : (
-            opwLog.find({}, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            })
+      opwLog.find({}, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      })
     )
 
   },
@@ -1106,6 +1126,7 @@ OPW = {
     fetch   = (OPW.isBoolean(fetch)) ? fetch : true;
 
     // Pretty sure this was pointless
+    // ... or it may have been for the installer?
     // var row = OPW.getRowById(id) || Blaze.toHTML('opwEditorContentExample');
 
     // Do it
@@ -1114,6 +1135,50 @@ OPW = {
     ) : (
         opwRows.find({_id: id})
     )
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          getRowOrderById
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  // This will get any row by ID, if it exists
+  getRowOrderById: function(id) {
+
+    // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid ID encountered trying to get row order.',
+        type: 'error',
+        data: {
+          id: id
+        },
+      });
+      return;
+    }
+
+    var row = OPW.getRowById(id);
+    var order = (row && row.order) ? row.order : false;
+    OPW.log({
+      message: 'Getting row ' + id + ' by ID.',
+      type: 'debug',
+      data: {
+        row: row,
+        order: order,
+      }
+    });
+    return order;
 
   },
 
@@ -1183,18 +1248,21 @@ OPW = {
     fetch = ('boolean' == typeof (fetch))
       ? fetch : true;
     selector = {
-      security: {$exists: true},
+      read: {$ne: true},
+      security: true,
     };
 
     // Do it
     return (fetch) ? (
-            opwLog.find(selector, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            }).fetch()
+      opwLog.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      }).fetch()
     ) : (
-            opwLog.find(selector, {
-              limit: OPW.getNestedConfig('numerics', 'publishLimit'),
-            })
+      opwLog.find(selector, {
+        limit: OPW.getNestedConfig('numerics', 'publishLimit'),
+        sort: {date: -1},
+      })
     )
 
   },
@@ -1505,6 +1573,7 @@ OPW = {
 
   insertRow: function(obj, callback) {
 
+    var cb = callback;
 
     // Permissions check
     if (!Meteor.userId()) {
@@ -1514,7 +1583,8 @@ OPW = {
         notifyUser: true,
         type: 'security',
       });
-      return OPW.curry(callback, message);
+      OPW.returnCall(callback, message);
+      return;
     }
 
     // Validate
@@ -1525,27 +1595,30 @@ OPW = {
         notifyUser: true,
         type: 'warning',
       });
-      return OPW.curry(callback, message);
+      OPW.returnCall(callback, message);
+      return;
     }
     if (!obj.isTop
         && (!obj.title
-          || !OPW.isValidTitle(obj.title))
-       ) {
-         message = 'Invalid title encountered while attempting to insert row.';
-         OPW.log({
-           message: message,
-           notifyUser: true,
-           type: 'warning',
-         });
-         return OPW.curry(callback, message);
-       }
+        || !OPW.isValidTitle(obj.title))
+     ) {
+       message = 'Invalid title encountered while attempting to insert row.';
+       OPW.log({
+         message: message,
+         notifyUser: true,
+         type: 'warning',
+       });
+      OPW.returnCall(callback, message);
+      return;
+     }
 
     // Validate or correct
-    if (!obj.order || !OPW.isNumber(obj.order)) {
+    if (obj.isTop) {
+      obj.order = 0;
+    } else if (!obj.order || !OPW.isNumber(obj.order)) {
       // Find highest order and add 1 to it, making this the last row
       obj.order = opwRows.findOne({
         removed:    {$ne: true},
-        slug:       {$ne: 'top'},
         stale:      {$ne: true},
       }, {
         fields: {order: 1},
@@ -1563,10 +1636,23 @@ OPW = {
     obj.stamps = { created: new Date() };
 
     // Save to database
-    opwRows.insert (obj, function(error, id) {
+    opwRows.insert (obj, function insertRowCallback (error, id) {
 
+      OPW.log ({
+        message: 'Tried to insert row.',
+        type: 'debug',
+        data: {
+          error: error,
+          id: id,
+          obj: obj,
+          cb: typeof(cb),
+        },
+      });
+      // Ensure proper row order
+      OPW.packRowOrders(id)
       // Return results to origin or into the void
-      return OPW.curry(callback, error, id);
+      OPW.returnCall(cb, error, id);
+      return;
 
     });
 
@@ -1996,7 +2082,7 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         XXX
-   * @Method          scrollToHref
+   * @Method          isStaticFooterShowing
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
@@ -2739,7 +2825,9 @@ OPW = {
     log = logJam[chop](wood);
 
     // Log to database
-    opwLog.insert(log);
+    if ('debug' != log.type) {
+      opwLog.insert(log);
+    }
 
     // Notify admin if requested
     if (log.notifyAdmin) {
@@ -2758,7 +2846,7 @@ OPW = {
     }
 
     // Notify user if desired
-    if (log.notifyUser) {
+    if (log.notifyUser && Meteor.isClient) {
       OPW.popAlert(log.message, log.alertType);
     }
 
@@ -2802,6 +2890,44 @@ OPW = {
   /***************************************************************************
    *
    * @Summary         XXX
+   * @Method          logSectionView
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client
+   *
+   * @Description
+   *
+   *      This only operates on active rows
+   *
+   * ************************************************************************/
+
+  logSectionView: function(slug) {
+
+    // Validate
+    if (!OPW.isValidSlug(slug)) {
+      OPW.log({
+        message: 'Invalid slug encountered trying to log section view',
+        type: 'warning',
+        notifyAdmin: true,
+        data: {slug: slug},
+      });
+      return;
+    }
+
+    // Locals
+    id = OPW.getIdFromSlug(slug);
+
+    // Do it.  Removed callback, not worried about success or failure atm.
+    opwRows.update({_id: id}, {
+      $inc: {views: 1}
+    });
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
    * @Method          loginWithPassword
    * @Param           n/a
    * @Returns         undefined
@@ -2829,7 +2955,10 @@ OPW = {
             eventTag: 'Login Failure',
             auth: true,
             type: 'danger',
-            data: user,
+            data: {
+              email: email,
+              error: error
+            }
           }),
           false
         ) : (
@@ -2845,7 +2974,10 @@ OPW = {
             eventTag: 'Login Success',
             auth: true,
             type: 'success',
-            data: user,
+            data: {
+              email: email,
+              error: error
+            }
           }),
           true
         )
@@ -2968,7 +3100,8 @@ OPW = {
         message: message,
         type: 'error',
       });
-      return OPW.curry(callback, message);
+      OPW.returnCall(callback, message);
+      return;
     }
 
     // Locals
@@ -2994,7 +3127,8 @@ OPW = {
         type: 'error',
         data: log,
       });
-      return OPW.curry(callback, message);
+      OPW.returnCall(callback, message);
+      return;
     }
 
     // Formulate mail object
@@ -3014,7 +3148,106 @@ OPW = {
       Email.send(mail);
     }
 
-    OPW.curry(callback, undefined,  true);
+    OPW.returnCall(callback, undefined,  true);
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          packRowOrders
+   * @Param           {string}
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * This should be run whenever adding or removing rows.
+   *
+   * TODO:
+   *    This might be more reliable if it starts at 0 and loops through
+   *    them all doing its own math, rather than the error prone way it's
+   *    doing it now.
+   *
+   * ************************************************************************/
+
+  packRowOrders: function(id) {
+
+    // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid attempt to pack rows.',
+        type: 'error',
+        data: {
+          id: id
+        },
+      });
+      return;
+    }
+
+    // Locals
+    var ids = [];
+    var modifier = {
+      $inc: {order: -1},
+    };
+    var order = OPW.getRowOrderById(id);
+    if (!order) {
+      OPW.log({
+        message: 'Cannot pack rows without valid origin.',
+        type: 'error',
+        data: {
+          id: id,
+          order: order,
+        },
+      });
+      return;
+    }
+    var selector = {
+      order: {
+        $gt: order,
+      },
+      removed: {$ne: true},
+      stale: {$ne: true}
+    };
+
+    // Double check
+    if (!OPW.isNumber(order)) {
+      OPW.log({
+        message: 'Unknown order encountered when packing rows.',
+        type: 'error',
+        notifyAdmin: true,
+          notifyUser: true,
+        data: {
+          id: id,
+          order: order,
+        },
+      });
+      return;
+    }
+
+    // Decrement order fields of affected rows
+    opwRows.update(selector, modifier, {multi: true},
+                   function packRowOrdersCb (error, affected) {
+      (affected) ? (
+        OPW.log({
+          message: 'Packed ' + affected + ' rows.',
+          type: 'info',
+        })
+      ) : (
+        OPW.log({
+          message: 'Packed ' + affected + ' rows.',
+          notifyAdmin: true,
+          notifyUser: true,
+          type: 'error',
+        })
+      )
+
+      return;
+
+    });
+
+    return;
 
   },
 
@@ -3310,12 +3543,24 @@ OPW = {
             message: 'Removed row.',
             notifyUser: true,
             type: 'Success',
-          })
+            data: {
+              affected: affected,
+              error: error,
+              id: id,
+            },
+          }),
+          // Consolidate row orders
+          OPW.packRowOrders(id)
       ) : (
           OPW.log({
             message: 'Failed to remove row.',
             notifyUser: true,
             type: 'error',
+            data: {
+              affected: affected,
+              error: error,
+              id: id,
+            },
           })
       );
 

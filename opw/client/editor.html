@@ -145,8 +145,10 @@
 
     {{#each log}}
 
-      <tbody>
-        <tr title="{{_id}}">
+      <tbody
+        data-id="{{_id}}"
+        title="Click to mark log entry {{_id}} as read">
+          <tr>
           <td>
             {{type}}
           </td>
@@ -187,8 +189,10 @@
 
     {{#each log}}
 
-      <tbody>
-        <tr title="{{_id}}">
+      <tbody
+        data-id="{{_id}}"
+        title="Click to mark log entry {{_id}} as read">
+          <tr>
           <td>
             {{type}}
           </td>
@@ -211,59 +215,60 @@
 
 <template name="opwEditorLogContact">
 
-  <h2>Contact Requests</h2>
-    <table class="table table-condensed table-striped table-hover">
-        <thead>
-            <tr>
-                <td>
-                    <strong>Contact</strong>
-                </td>
-                <td>
-                    <strong>Label</strong>
-                </td>
-                <td>
-                    <strong>Date</strong>
-                </td>
-                <td>
-                    <strong>IP</strong>
-                </td>
-            </tr>
-            <tr colspan="4">
-              <td>
-                <strong>Message</strong>
-              </td>
-            </tr>
-        </thead>
+  <table class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <td>
+          <strong>Contact</strong>
+        </td>
+        <td>
+          <strong>Label</strong>
+        </td>
+        <td>
+          <strong>Date</strong>
+        </td>
+        <td>
+          <strong>IP</strong>
+        </td>
+      </tr>
+      <tr colspan="4">
+        <td>
+          <strong>Message</strong>
+        </td>
+      </tr>
+    </thead>
 
-        {{#each log}}
+    {{#each log}}
 
-            <tbody>
-              <tr title="{{_id}}">
-                    <td>
-                      {{user}}{{! Legacy compat}}{{email}}{{twitter}}
-                    </td>
-                    <td>
-                        {{label}}
-                    </td>
-                    <td>
-                        {{stamp}}
-                    </td>
-                    <td>
-                        {{source}}
-                    </td>
-                </tr>
-                {{#if message}}
-                    <tr>
-                        <td colspan="4">
-                            {{message}}
-                        </td>
-                    </tr>
-                {{/if}}
-            </tbody>
+    <tbody
+      data-id="{{_id}}"
+      title="Click to mark message {{_id}} as read">
+        <tr>
+          <td>
+            {{user}}{{! Legacy compat}}{{email}}{{twitter}}
+          </td>
+          <td>
+            {{label}}
+          </td>
+          <td>
+            {{stamp}}
+          </td>
+          <td>
+            {{source}}
+          </td>
+        </tr>
+        {{#if message}}
+        <tr>
+          <td colspan="4">
+            {{message}}
+          </td>
+        </tr>
+        {{/if}}
+      </tbody>
 
-        {{/each}}
+    {{/each}}
 
-    </table>
+  </table>
 
 </template>
 
@@ -289,8 +294,10 @@
 
     {{#each log}}
 
-      <tbody>
-        <tr title="{{_id}}">
+      <tbody
+        data-id="{{_id}}"
+        title="Viewing log entry {{_id}}">
+          <tr>
           <td>
             {{type}}
           </td>
@@ -331,8 +338,10 @@
 
     {{#each log}}
 
-      <tbody>
-        <tr title="{{_id}}">
+      <tbody
+        data-id="{{_id}}"
+        title="Click to mark log entry {{_id}} as read">
+          <tr>
           <td>
             {{type}}
           </td>
@@ -517,7 +526,8 @@
 
   <li
     class="list-group-item"
-    data-id="{{_id}}">
+    data-id="{{_id}}"
+    data-slug="{{slug}}">
     <input
       name="opw-editor-row-id"
       type="hidden">
@@ -533,7 +543,9 @@
         type="button"
         title="Click to edit row ({{_id}})"
         class="btn btn-info width-20em opw-edit-row">
-      <span class="badge">42</span>
+        {{#if views}}
+          <span class="badge">{{views}}</span>
+        {{/if}}
       <i class="fa fa-pencil float-left"></i>
       {{title}}
     </button>
@@ -565,7 +577,9 @@
               type="button"
               title="Click to edit row ({{_id}})"
               class="btn btn-info width-20em opw-edit-row">
-            <span class="badge">42</span>
+              {{#if views}}
+                <span class="badge">{{views}}</span>
+              {{/if}}
             <i class="fa fa-pencil float-left"></i>
             Home Row
           </button>

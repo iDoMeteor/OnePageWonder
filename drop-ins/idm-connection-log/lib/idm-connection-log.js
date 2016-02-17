@@ -102,15 +102,19 @@ idmConnectionUniques.deny({
  *
  * ****************************************************************************/
 
+/*
 if (Meteor.isServer) {
   Meteor.onConnection(function(o) {
 
-    console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: '
-                + 'Logging DDP connection');
-    var ip = idmCL.logConnection (o);
+    Session.set('currentIp', idmCL.logConnection (o));
+    if (debug || DEBUG) {
+      console.log('iDM-CL by @iDoMeteor :: Connection from '
+                  + Session.get('currentIp'));
+    }
 
   });
 }
+*/
 
 /*******************************************************************************
  *
@@ -250,42 +254,3 @@ idmCL = {
 
   // End connection logging object
 }
-
-// Register client-side method
-/*
- * None of this crap works, I tried everything..so I cheated. >:D
- * You are more than welcome to try & fix it for me!
-Meteor.methods({
-
-    // Get the connections *real* IP
-    getConnectionIP: function () {
-
-        // No need to make others wait
-        this.unblock();
-
-        // Locals
-        var conn        = this.connection;
-        var ipPublic    = conn.clientAddress;
-        var ipSource    = conn.httpHeaders['x-forwarded-for'].split(',')[0]
-                        || ipPublic;
-        var prox        = (process.env.HTTP_FORWARDED_COUNT)
-                        ? parseInt(process.env.HTTP_FORWARDED_COUNT)
-                        : 0;
-
-        // Determine IP to log
-        return (prox) ? ipSource : ipPublic;
-
-    },
-
-});
-
-// Register global helper
-if (Meteor.isClient) {
-    UI.registerHelper('currentIp', function () {
-        return $('meta[name=ip]').attr('content');
-    });
-    UI.registerHelper('currentUserIp', function () {
-        return $('meta[name=ip]').attr('content');
-    });
-}
-*/

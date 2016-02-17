@@ -11,10 +11,15 @@ Template.opwNavigation.events({
     'activate.bs.scrollspy .nav li': function () {
         if (
             OPW.getNestedConfig('navigation', 'showScrollIndicator')
-            && OPW.getRows().length
+            && OPW.getRows().length // Probably could be more efficient here
         ) {
             state = OPW.scrollIndicatorUpdate();
         }
+        // Log section view using slug
+        // Note: Doing this here provides the most reasonable assumption that a
+        //        user has actually viewed the content, and not just that it has
+        //        been rendered by Blaze.
+        OPW.logSectionView(state.active);
     },
 
     // Detailed contact
@@ -99,11 +104,21 @@ Template.opwNavigation.events({
         event.preventDefault();
         Meteor.logout(function (error) {
             if (error) {
-                OPW.log({message: OPW.getString('authenticationLogoutFailure'),
-                        type: 'error'});
+                OPW.log({
+                  message: OPW.getString('authenticationLogoutFailure'),
+                  type: 'error',
+                  notifyAdmin: true,
+                  notifyUser: true,
+                  auth: true,
+                  security: true,
+                });
             } else {
-                OPW.log({message: OPW.getString('authenticationLogoutSuccess'),
-                        type: 'success'});
+                OPW.log({
+                  message: OPW.getString('authenticationLogoutSuccess'),
+                  type: 'success',
+                  notifyUser: true,
+                  auth: true,
+                });
             }
         });
     },
@@ -176,7 +191,10 @@ Template.opwNavigation.helpers({
     },
 
     opwShowDetailedContactLink: function () {
-        return (OPW.getNestedConfig('contact', 'showDetailed'));
+        return (
+          !Meteor.user()
+          && OPW.getNestedConfig('contact', 'showDetailed')
+        );
     },
 
 });
