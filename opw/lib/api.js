@@ -1649,7 +1649,7 @@ OPW = {
         },
       });
       // Ensure proper row order
-      OPW.packRowOrders(id)
+      OPW.packRowOrders()
       // Return results to origin or into the void
       OPW.returnCall(cb, error, id);
       return;
@@ -3163,91 +3163,91 @@ OPW = {
    *
    * @Description
    *
-   * This should be run whenever adding or removing rows.
-   *
-   * TODO:
-   *    This might be more reliable if it starts at 0 and loops through
-   *    them all doing its own math, rather than the error prone way it's
-   *    doing it now.
+   * This must when when removing rows and doesn't hurt to run any ol'time.
    *
    * ************************************************************************/
 
-  packRowOrders: function(id) {
+  packRowOrders: function() {
+
+    // Locals
+    var order = 1;  // Top row is always 0 and not loaded by getRows
+    var rows = OPW.getRows();
+
+    _.each(rows, function (row) {
+      OPW.setRowOrder(row._id, order); // Let'er rip, no cb for now
+      order++;
+    });
+
+    return;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Sets the order field of a single row
+   * @Method          setRowOrder
+   * @Param           {string}
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * XXX
+   *
+   * ************************************************************************/
+
+  setRowOrder: function (id, order, callback) {
 
     // Validate
     if (!OPW.isCollectionId(id)) {
+      message = 'Invalid ID encountered trying to set row order.';
       OPW.log({
-        message: 'Invalid attempt to pack rows.',
-        type: 'error',
-        data: {
-          id: id
-        },
-      });
-      return;
-    }
-
-    // Locals
-    var ids = [];
-    var modifier = {
-      $inc: {order: -1},
-    };
-    var order = OPW.getRowOrderById(id);
-    if (!order) {
-      OPW.log({
-        message: 'Cannot pack rows without valid origin.',
+        message: message,
         type: 'error',
         data: {
           id: id,
           order: order,
-        },
+          callback: typeof(callback),
+        }
       });
+      if (OPW.isFunction(callback)) callback(message);
       return;
     }
-    var selector = {
-      order: {
-        $gt: order,
-      },
-      removed: {$ne: true},
-      stale: {$ne: true}
-    };
-
-    // Double check
     if (!OPW.isNumber(order)) {
+      message = 'Invalid order encountered trying to set row order.';
       OPW.log({
-        message: 'Unknown order encountered when packing rows.',
+        message: message,
         type: 'error',
-        notifyAdmin: true,
-          notifyUser: true,
         data: {
           id: id,
           order: order,
-        },
+          callback: typeof(callback),
+        }
       });
+      if (OPW.isFunction(callback)) callback(message);
       return;
     }
 
-    // Decrement order fields of affected rows
-    opwRows.update(selector, modifier, {multi: true},
-                   function packRowOrdersCb (error, affected) {
-      (affected) ? (
+    // Execute query
+    opwRows.update(id, {$set: {order: order}},
+                   function setRowOrderSFC (error, affected) {
+      result = (affected) ? (
         OPW.log({
-          message: 'Packed ' + affected + ' rows.',
-          type: 'info',
+          message: 'Set row ' + id + ' order to ' + order + '.',
+          type: 'debug',
         })
       ) : (
         OPW.log({
-          message: 'Packed ' + affected + ' rows.',
-          notifyAdmin: true,
-          notifyUser: true,
+          message: 'Could not set row ' + id + ' order to ' + order + '.',
           type: 'error',
         })
       )
 
-      return;
+      // Return to caller
+      if (OPW.isFunction(callback)) callback(error, affected);
 
     });
-
-    return;
 
   },
 
@@ -3550,7 +3550,7 @@ OPW = {
             },
           }),
           // Consolidate row orders
-          OPW.packRowOrders(id)
+          OPW.packRowOrders()
       ) : (
           OPW.log({
             message: 'Failed to remove row.',
