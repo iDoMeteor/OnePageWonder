@@ -36,6 +36,7 @@ email@1.0.8
 fastclick@1.0.7
 fortawesome:fontawesome@4.5.0
 geojson-utils@1.0.4
+harrison:papa-parse@1.1.1
 html-tools@1.0.5
 htmljs@1.0.5
 http@1.1.1

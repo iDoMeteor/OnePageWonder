@@ -700,7 +700,7 @@ OPW = {
   getAllActiveRows: function(limit, fetch) {
 
     // Locals
-    limit           = limit || 8;
+    limit           = limit || OPW.getNestedConfig('numerics', 'menuItemMaxCount');
     fetch           = ('boolean' == typeof (fetch))
                       ? fetch : true;
     var selector    = {
@@ -778,6 +778,10 @@ OPW = {
    *
    *      Database settings override Meteor settings override defaults
    *
+   *  TODO:
+   *
+   *      Re-factor string to boolean conversion
+   *
    * ************************************************************************/
 
   getConfig: function(key) {
@@ -816,17 +820,29 @@ OPW = {
     }
     */
 
-    // Check for key & value in Meteor.settings.public
-    if (Meteor.settings['public'].hasOwnProperty('opw')) {
-      if (Meteor.settings['public']['opw'].hasOwnProperty(key)) {
-        return Meteor.settings['public']['opw'][key];
-      }
-    }
-
     // Check for key & value in Meteor.settings
     if (Meteor.settings.hasOwnProperty('opw')) {
       if (Meteor.settings.opw.hasOwnProperty(key)) {
-        return Meteor.settings.opw[key];
+        value = Meteor.settings.opw[key];
+        if ('false' == value) {
+          value = false;
+        } else if ('true' == value) {
+          value = true;
+        }
+        return value;
+      }
+    }
+
+    // Check for key & value in Meteor.settings.public
+    if (Meteor.settings['public'].hasOwnProperty('opw')) {
+      if (Meteor.settings['public']['opw'].hasOwnProperty(key)) {
+        value = Meteor.settings['public']['opw'][key];
+        if ('false' == value) {
+          value = false;
+        } else if ('true' == value) {
+          value = true;
+        }
+        return value;
       }
     }
 
@@ -930,17 +946,6 @@ OPW = {
   //  the need to publish it)
   getIdFromSlug: function(slug) {
 
-    // Permissions check
-    if (!Meteor.userId()) {
-      OPW.log({
-        message: 'You must be logged in.',
-        notifyUser: true,
-        type: 'security',
-        data: slug,
-      });
-      return;
-    }
-
     if (!OPW.isString(slug)) {
       return false;
     }
@@ -970,9 +975,175 @@ OPW = {
   *
   * TODO:
   *  Database settings
+  *  Re-factor string to boolean conversion
   *
    */
   getNestedConfig: function(k1, k2, k3) {
+
+    // Set up for return value
+    var value = '';
+
+    // Make sure we have at least one key to get
+    if (!k1 || !OPW.isString(k1)) {
+      OPW.log({
+        message: 'Invalid attempt to get nested configuration value',
+        type: 'error',
+      });
+      return;
+    }
+
+    // If k2 or k3 are set, they must be strings
+    if (
+        (k2 && !OPW.isString(k2))
+        || (k3 && !OPW.isString(k3))
+       ) {
+      OPW.log({
+        message: 'Attempting to get invalid configuration property',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Make sure if k3 is set, all keys are set
+    if (k3 && !k2) {
+      OPW.log({
+        message: 'Invalid nested config format',
+        type: 'error',
+      });
+    }
+
+    // Check passed keys exist in defaults
+    if (k1 && !opw.hasOwnProperty(k1)) {
+      OPW.log({
+        message: 'Invalid nested config format',
+        type: 'error',
+      });
+    }
+    if (k2 && !opw[k1].hasOwnProperty(k2)) {
+      OPW.log({
+        message: 'Invalid nested config format',
+        type: 'error',
+      });
+    }
+    if (k3 && !opw[k1][k2].hasOwnProperty(k3)) {
+      OPW.log({
+        message: 'Invalid nested config format',
+        type: 'error',
+      });
+    }
+
+    // All passed keys are valid, now pick our favorite version & return it
+
+    // Prefer database
+    // TODO
+
+
+    // Then private user deployment overrides
+    if (k3
+        && Meteor.settings.hasOwnProperty('opw')
+      && Meteor.settings.opw.hasOwnProperty(k1)
+      && Meteor.settings.opw[k1].hasOwnProperty(k2)
+      && Meteor.settings.opw[k1][k2].hasOwnProperty(k3)
+       ) {
+         value = Meteor.settings.opw[k1][k2][k3];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+    if (!k3 && k2
+        && Meteor.settings.hasOwnProperty('opw')
+        && Meteor.settings.opw.hasOwnProperty(k1)
+        && Meteor.settings.opw[k1].hasOwnProperty(k2)
+       ) {
+         value = Meteor.settings.opw[k1][k2];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+    if (!k3 && !k2
+        && Meteor.settings.hasOwnProperty('opw')
+        && Meteor.settings.opw.hasOwnProperty(k1)
+       ) {
+         value = Meteor.settings.opw[k1];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+
+    // Check public user deployment overrides
+    if (k3
+        && Meteor.settings['public'].hasOwnProperty('opw')
+        && Meteor.settings['public']['opw'].hasOwnProperty(k1)
+        && Meteor.settings['public']['opw'][k1].hasOwnProperty(k2)
+        && Meteor.settings['public']['opw'][k1][k2].hasOwnProperty(k3)
+       ) {
+         value = Meteor.settings['public']['opw'][k1][k2][k3];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+    if (!k3 && k2
+        && Meteor.settings['public'].hasOwnProperty('opw')
+        && Meteor.settings['public']['opw'].hasOwnProperty(k1)
+        && Meteor.settings['public']['opw'][k1].hasOwnProperty(k2)
+       ) {
+         value = Meteor.settings['public']['opw'][k1][k2];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+    if (!k3 && !k2
+        && Meteor.settings['public'].hasOwnProperty('opw')
+        && Meteor.settings['public']['opw'].hasOwnProperty(k1)
+       ) {
+         value = Meteor.settings['public']['opw'][k1];
+         if ('false' == value) {
+           value = false;
+         } else if ('true' == value) {
+           value = true;
+         }
+         return value;
+       }
+
+    // Default if all else fails
+    if (k3) return opw[k1][k2][k3];
+    if (k2) return opw[k1][k2];
+    if (k1) return opw[k1];
+
+  },
+
+
+  /**
+  * getNestedConfigOld
+  *
+  * @name getNestedConfigOld
+  * @function
+  * @access public
+  * @param {string} k1 Top level property, required
+  * @param {string} k2 Second level property, optional
+  * @param {string} k3 Tertiary property, optional
+  * @return {any} Can return any valid data type
+  *
+  * TODO:
+  *  Database settings
+  *
+   */
+  getNestedConfigOld: function(k1, k2, k3) {
 
     // Validate
     if (!k1) {
@@ -1197,15 +1368,14 @@ OPW = {
    *    (not any of: home, stale, removed)
    *
    *  TODO:  Integrate sortables / sort order
-   *         Replace 8 with config item maxRows or some such
    * ************************************************************************/
 
   getRows: function(limit, fetch) {
 
     // Locals
-    limit           = limit || 8;
+    limit           = limit || OPW.getNestedConfig('numerics', 'menuItemMaxCount');
     limit           = (OPW.isNumber(limit))
-                      ? limit : 8;
+                      ? limit : OPW.getNestedConfig('numerics', 'menuItemMaxCount');
     fetch           = ('boolean' == typeof (fetch))
                       ? fetch : true;
     var selector    = {
@@ -1574,6 +1744,7 @@ OPW = {
   insertRow: function(obj, callback) {
 
     var cb = callback;
+    var views = null;
 
     // Permissions check
     if (!Meteor.userId()) {
@@ -1625,7 +1796,11 @@ OPW = {
         sort: {order: -1},
       }).order + 1;
     }
-    if (!obj.previous || !OPW.isCollectionId(obj.previous)) {
+    if (obj.previous && OPW.isCollectionId(obj.previous)) {
+      // Perpetuate section view counts
+      views = opwRows.findOne(obj.previous).views;
+      if (views) obj.views = views;
+    } else {
       obj.previous = undefined;
     }
     if (!obj.slug || !OPW.isValidSlug(obj.slug)) {
@@ -2492,6 +2667,47 @@ OPW = {
 
   /***************************************************************************
    *
+   * @Summary         XXX
+   * @Method          isValidRowObject
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   *  TODO:
+   *      Remove some of the optionals and make them required once migrated
+   *      Properly validate previous, slug, title
+   *      I don't really like Match, but we'll see..maybe I'll change my mind
+   * ************************************************************************/
+
+  isValidRowObject: function(obj) {
+
+      if (Match.test(obj, {
+        _id: Match.Optional(String),
+        content: Match.Optional(String),
+        isTop: Match.Optional(Boolean),
+        order: Match.Optional(Match.Integer),
+        previous: Match.Optional(String),
+        removed: Match.Optional(Boolean),
+        slug: Match.Optional(String),
+        stale: Match.Optional(Boolean),
+        stamps: Match.Optional(Match.OneOf(Date, Object)),
+        title: Match.Optional(String),
+        views: Match.Optional(Match.Integer),
+      })) {
+        return true;
+      } else {
+        return false;
+      }
+
+  },
+
+
+  /***************************************************************************
+   *
    * @Summary         Checks if parameter is a string matching a valid slug
    * @Method          isValidSlug
    * @Param           n/a
@@ -2641,6 +2857,7 @@ OPW = {
   log: function(options) {
 
     var chop        = 'info'; // Default type
+    var debug       = OPW.getConfig('debug');
     var wood        = {};
     var log         = {};
     // Process message for console & set BS alert context
@@ -2666,7 +2883,7 @@ OPW = {
       },
 
       debug: function(obj) {
-        if (OPW.getConfig('debug')) {
+        if (debug) {
           console.log('OPW DEBUG: '
                       + JSON.stringify(obj, null, 2)
                      );
@@ -2678,7 +2895,7 @@ OPW = {
       },
 
       deployed: function(obj) {
-        if (OPW.getConfig('debug')) {
+        if (debug) {
           console.log('OPW DANGER: '
                       + JSON.stringify(obj, null, 2)
                      );
@@ -2701,7 +2918,7 @@ OPW = {
 
       event: function(obj) {
         // TODO: Probably should give event specific options
-        if (OPW.getConfig('debug')) {
+        if (debug) {
           console.log('OPW EVENT: '
                       + JSON.stringify(obj, null, 2)
                      );
@@ -2731,7 +2948,7 @@ OPW = {
 
       pageview: function(obj) {
         // TODO: Probably should give event specific options
-        if (OPW.getConfig('debug')) {
+        if (debug) {
           console.log('OPW PAGEVIEW: '
                       + JSON.stringify(obj, null, 2)
                      );
@@ -2917,10 +3134,8 @@ OPW = {
     // Locals
     id = OPW.getIdFromSlug(slug);
 
-    // Do it.  Removed callback, not worried about success or failure atm.
-    opwRows.update({_id: id}, {
-      $inc: {views: 1}
-    });
+    Meteor.call('opwLogSectionView', id);
+    return;
 
   },
 

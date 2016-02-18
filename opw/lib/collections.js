@@ -139,7 +139,7 @@ if (Meteor.isServer) {
       }
 
       // Message
-      if ('string' != typeof(doc.message)) {
+      if (doc.message && 'string' != typeof(doc.message)) {
         console.log('OPW DENIAL Invalid message');
         return true;
       }
@@ -201,8 +201,8 @@ if (Meteor.isServer) {
       return true;
     },
     // Only if logged in
-    update: function () {
-      return (Meteor.userId()) ? false : true; // TODO: Validate here
+    update: function (uid, doc) {
+      return (Meteor.userId()) ? false : true;
     },
 
   });

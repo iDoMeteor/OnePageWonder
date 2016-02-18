@@ -89,6 +89,42 @@ Meteor.methods({
 
   /**************************************************************************
    *
+   * @Summary         XXX
+   * @Method          opwLogSectionView
+   * @param {String} id ID of row to update
+   * @Returns         XXX
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *
+   * ************************************************************************/
+
+  opwLogSectionView: function (id) {
+
+    check(id, String);
+    this.unblock();
+
+    // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid ID encountered logging section view.',
+        type: 'error',
+      });
+    }
+
+    // Do it.  Removed callback, not worried about success or failure atm.
+    opwRows.update({_id: id}, {
+      $inc: {views: 1}
+    });
+
+    return;
+
+  },
+
+
+  /**************************************************************************
+   *
    * @Summary         Update Row Sort Orders
    * @Method          opwUpdateSortOrders
    * @param {String} collectionName - name of the collection to update

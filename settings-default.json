@@ -1,211 +1,214 @@
 {
-  "opw":  {
-    "acao": "localhost:*, https://ddp*.meteor.com, *.idometeor.com",
-    "astronomer": {
-      "appId": "vd8pnoqTEkWzt6bnh",
-      "disableMethodTracking": false,
-      "disableRouteTracking": false,
-      "disableUserTracking": false,
-      "enable": true
-    },
-    "bootstrap": {
-      "alert": {
-        "duration": 7000,
-        "type": "info"
+  "public":  {
+    "opw":  {
+      "acao": "localhost:*, https://ddp*.meteor.com, *.idometeor.com",
+      "astronomer": {
+        "appId": "vd8pnoqTEkWzt6bnh",
+        "disableMethodTracking": false,
+        "disableRouteTracking": false,
+        "disableUserTracking": false,
+        "enable": true
       },
-      "carouselInterval": 6000
-    },
-    "contact": {
-      "btnString": "Confirm Request!",
-      "btnStringDetailed": "Send!",
-      "detailedFormInvalidSubmission": "Your submission requires more information, please try again.",
-      "from": "idometeor@gmail.com",
-      "lightboxLogTitle": "Contact Log",
-      "lightboxTitle": "Direct Communication Form",
-      "recips": "idometeor@gmail.com",
-      "showDetailed": true,
-      "showDetailedIcon": "fa-pencil",
-      "showDetailedText": "Write Us",
-      "thankYouAlert": "We have received your request and will respond at our earliest opportunity!",
-      "thankYouText": "Thank you! We won't abuse your trust! :>"
-    },
-    "debug": true,
-    "log": {
-      "clientSideConsoleLogs": true,
-      "debug": true,
-      "outputTypes": [
-        "critical",
-        "danger",
-        "error",
-        "failure",
-        "info",
-        "security",
-        "warning"
-      ]
-    },
-    "footer": {
-      "fixed": true,
-      "show": true,
-      "fluid": true
-    },
-    "google": {
-      "account": "UA-23671882-12",
-      "cookie": {
-        "auto": true,
-        "domain": null,
-        "expires": null,
-        "name": null
+      "bootstrap": {
+        "alert": {
+          "duration": 7000,
+          "type": "info"
+        },
+        "carouselInterval": 6000
       },
-      "debug": true,
-      "debugTrace": false,
-      "enable": true,
-      "sendLogEvents": true,
-      "trackInPage": true,
-      "trackInterests": true
-    },
-    "logoAbs": "http://opw.idometeor.com/logo.png",
-    "logoRel": "/logo.png",
-    "logoNavigationAbs": "http://opw.idometeor.com/opw/images/onepagewonder-logo-24.png",
-    "logoNavigationRel": "/opw/images/onepagewonder-logo-24.png",
-    "kadira": {
-      "key": "xxx",
-      "enable": false,
-      "secret": "xxx"
-    },
-    "layout": {
-      "fluid": true,
-      "style": "bootstrap"
-    },
-    "limit": {
-      "navTitle": 25,
-      "publish": 100
-    },
-    "linter": {
-      "requireLogin": false
-    },
-    "meta": {
-      "http-equiv": {
-        "content-type": "text/html; charset=utf-8",
-        "content-script-type": "text/javascript",
-        "content-lanuage": "EN",
-        "author": "@iDoMeteor - Marquette, MI",
-        "copyright": "The author retains all copyrights to all code, script or graphics which are directly related to the #OnePageWonder Content Management System.  @iDoMeteor retains all copyrights to any intellectual property, logos, or graphics created exclusively for #OnePageWonder. Copyright 2015",
-        "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
-        "distribution": "Global",
-        "expires": 1455689771104,
-        "keywords": "meteor, javascript, cms, content management, content management system, open source",
-        "last-modified": "2016-02-16T06:16:11.104Z",
-        "revisit-after": "7 Days",
-        "robots": "index,follow",
-        "X-UA-Compatible": "IE=edge"
+      "contact": {
+        "btnString": "Confirm Request!",
+        "btnStringDetailed": "Send!",
+        "detailedFormInvalidSubmission": "Your submission requires more information, please try again.",
+        "from": "idometeor@gmail.com",
+        "lightboxLogTitle": "Contact Log",
+        "lightboxTitle": "Direct Communication Form",
+        "recips": "idometeor@gmail.com",
+        "showDetailed": true,
+        "showDetailedIcon": "fa-pencil",
+        "showDetailedText": "Write Us",
+        "thankYouAlert": "We have received your request and will respond at our earliest opportunity!",
+        "thankYouText": "Thank you! We won't abuse your trust! :>"
       },
-      "charset": "UTF-8",
-      "itemprop": {
-        "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
-        "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
+      "debug": false,
+      "log": {
+        "clientSideConsoleLogs": true,
+        "debug": true,
+        "outputTypes": [
+          "critical",
+          "danger",
+          "error",
+          "failure",
+          "info",
+          "security",
+          "warning"
+        ]
+      },
+      "footer": {
+        "fixed": true,
+        "show": true,
+        "fluid": true
+      },
+      "google": {
+        "account": "UA-23671882-12",
+        "cookie": {
+          "auto": true,
+          "domain": null,
+          "expires": null,
+          "name": null
+        },
+        "debug": true,
+        "debugTrace": false,
+        "enable": true,
+        "sendLogEvents": true,
+        "trackInPage": true,
+        "trackInterests": true
+      },
+      "logoAbs": "http://opw.idometeor.com/logo.png",
+      "logoRel": "/logo.png",
+      "logoNavigationAbs": "http://opw.idometeor.com/opw/images/onepagewonder-logo-24.png",
+      "logoNavigationRel": "/opw/images/onepagewonder-logo-24.png",
+      "kadira": {
+        "key": "xxx",
+        "enable": false,
+        "secret": "xxx"
+      },
+      "layout": {
+        "fluid": true,
+        "style": "bootstrap"
+      },
+      "limit": {
+        "navTitle": 25,
+        "publish": 100
+      },
+      "linter": {
+        "requireLogin": false
+      },
+      "meta": {
+        "http-equiv": {
+          "content-type": "text/html; charset=utf-8",
+          "content-script-type": "text/javascript",
+          "content-lanuage": "EN",
+          "author": "@iDoMeteor - Marquette, MI",
+          "copyright": "The author retains all copyrights to all code, script or graphics which are directly related to the #OnePageWonder Content Management System.  @iDoMeteor retains all copyrights to any intellectual property, logos, or graphics created exclusively for #OnePageWonder. Copyright 2015",
+          "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
+          "distribution": "Global",
+          "expires": 1455689771104,
+          "keywords": "meteor, javascript, cms, content management, content management system, open source",
+          "last-modified": "2016-02-16T06:16:11.104Z",
+          "revisit-after": "7 Days",
+          "robots": "index,follow",
+          "X-UA-Compatible": "IE=edge"
+        },
+        "charset": "UTF-8",
+        "itemprop": {
+          "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
+          "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
+          "title": "#OnePageWonder by @iDoMeteor"
+        },
+        "link": {
+          "favicon": "/favicon.png"
+        },
+        "name": {
+          "dc": {
+            "title": "#OnePageWonder by @iDoMeteor"
+          },
+          "geo": {
+            "placename": "Marquette",
+            "position": "46.5;-87.4",
+            "region": "US-MI"
+          },
+          "icbm": "46.5, -87.4",
+          "twitter": {
+            "creator": "@iDoMeteor",
+            "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
+            "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
+            "site": "http://opw.idometeor.com",
+            "title": "#OnePageWonder by @iDoMeteor"
+          },
+          "viewport": "width=device-width, initial-scale=1"
+        },
+        "property": {
+          "og": {
+            "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
+            "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
+            "site_name": "#OnePageWonder by @iDoMeteor",
+            "title": "#OnePageWonder by @iDoMeteor",
+            "type": "site",
+            "url": "http://opw.idometeor.com"
+          }
+        },
         "title": "#OnePageWonder by @iDoMeteor"
       },
-      "link": {
-        "favicon": "/favicon.png"
+      "navigation": {
+        "allowDynamicTheme": false,
+        "allowDynamicNavigation": false,
+        "collapse": true,
+        "collapseOffset": 40,
+        "contextClass": "default",
+        "fixed": true,
+        "fluid": true,
+        "fixedScrollIndicator": true,
+        "scrollStyle": "single",
+        "showScrollIndicator": true,
+        "style": "Horizontal"
       },
-      "name": {
-        "dc": {
-          "title": "#OnePageWonder by @iDoMeteor"
-        },
-        "geo": {
-          "placename": "Marquette",
-          "position": "46.5;-87.4",
-          "region": "US-MI"
-        },
-        "icbm": "46.5, -87.4",
-        "twitter": {
-          "creator": "@iDoMeteor",
-          "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
-          "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
-          "site": "http://opw.idometeor.com",
-          "title": "#OnePageWonder by @iDoMeteor"
-        },
-        "viewport": "width=device-width, initial-scale=1"
+      "numerics": {
+        "menuItemMaxCount": 12,
+        "menuItemMaxLength": 25,
+        "navTitle": 25,
+        "publishLimit": 100
       },
-      "property": {
-        "og": {
-          "description": "#OnePageWonder is a jQuery and Bootstrap mini-CMS built with #MeteorJS for quickly deploying one page scrolling web sites.",
-          "image": "http://opw.idometeor.com/opw/images/onepagewonder-logo.png",
-          "site_name": "#OnePageWonder by @iDoMeteor",
-          "title": "#OnePageWonder by @iDoMeteor",
-          "type": "site",
-          "url": "http://opw.idometeor.com"
-        }
+      "prefix": "opw",
+      "rollbar": {
+        "clientToken": "",
+        "enable": false,
+        "sendLogEvents": false,
+        "serverToken": ""
       },
-      "title": "#OnePageWonder by @iDoMeteor"
-    },
-    "navigation": {
-      "allowDynamicTheme": false,
-      "allowDynamicNavigation": false,
-      "collapse": true,
-      "collapseOffset": 40,
-      "contextClass": "default",
-      "fixed": true,
-      "fluid": true,
-      "fixedScrollIndicator": true,
-      "scrollStyle": "single",
-      "showScrollIndicator": true,
-      "style": "Horizontal"
-    },
-    "numerics": {
-      "menuItemMaxLength": 25,
-      "navTitle": 25,
-      "publishLimit": 100
-    },
-    "prefix": "opw",
-    "rollbar": {
-      "clientToken": "",
-      "enable": false,
-      "sendLogEvents": false,
-      "serverToken": ""
-    },
-    "title": "#OnePageWonder by @iDoMeteor",
-    "social": {
-      "enable": true,
-      "github": "http://github.com/iDoMeteor/onepagewonder",
-      "twitter": "http://twitter.com/iDoMeteor"
-    },
-    "strings": {
-      "adminName": "Administrator",
-      "adminUsername": "admin",
-      "authenticationButtonCreateAccount": "Create Admin User",
-      "authenticationButtonLogin": "Authenticate",
-      "authenticationCancelled": "Authentication cancelled",
-      "authenticationHeading": "Authenticate Yourself",
-      "authenticationLoginFailure": "Authentication failed.",
-      "authenticationLighboxTitle": "Login",
-      "authenticationLoginSuccess": "Git'er done!",
-      "authenticationLogoutFailure": "You could not be logged out.",
-      "authenticationLogoutSuccess": "Thank you, drive thru.",
-      "authenticationTagline": "Present your credentials for inspection.",
-      "cancelLabel": "Cancel",
-      "closeLabel": "Close",
-      "editorConfigurationLabel": "Configuration",
-      "editorDashboardLabel": "Dashboard",
-      "editorLighboxTitle": "System Editor",
-      "editorLogsLabel": "Logs",
-      "editorNewSectionLabel": "<i class=\"fa fa-plus\"></i>",
-      "editorSectionsLabel": "Sections",
-      "emailLabel": "Email Address",
-      "loadingText": "Loading..",
-      "passwordLabel": "Password",
-      "siteStatsLabel": "Site Statistics",
-      "submitLabel": "Submit",
-      "userIpLabel": "Your IP",
-      "newUserWelcome": "Thanks for installing #OnePageWonder by @iDoMeteor!"
-    },
-    "toggles": {
-      "logSectionViews": true,
-      "notifyAdminOnLoginSuccess": true,
-      "notifyAdminOnLoginFailure": true
-    },
-    "wonderBar": {
-      "helpTitle": "#OnePageWonder WonderBar Help"
+      "title": "#OnePageWonder by @iDoMeteor",
+      "social": {
+        "enable": true,
+        "github": "http://github.com/iDoMeteor/onepagewonder",
+        "twitter": "http://twitter.com/iDoMeteor"
+      },
+      "strings": {
+        "adminName": "Administrator",
+        "adminUsername": "admin",
+        "authenticationButtonCreateAccount": "Create Admin User",
+        "authenticationButtonLogin": "Authenticate",
+        "authenticationCancelled": "Authentication cancelled",
+        "authenticationHeading": "Authenticate Yourself",
+        "authenticationLoginFailure": "Authentication failed.",
+        "authenticationLighboxTitle": "Login",
+        "authenticationLoginSuccess": "Git'er done!",
+        "authenticationLogoutFailure": "You could not be logged out.",
+        "authenticationLogoutSuccess": "Thank you, drive thru.",
+        "authenticationTagline": "Present your credentials for inspection.",
+        "cancelLabel": "Cancel",
+        "closeLabel": "Close",
+        "editorConfigurationLabel": "Configuration",
+        "editorDashboardLabel": "Dashboard",
+        "editorLighboxTitle": "System Editor",
+        "editorLogsLabel": "Logs",
+        "editorNewSectionLabel": "<i class=\"fa fa-plus\"></i>",
+        "editorSectionsLabel": "Sections",
+        "emailLabel": "Email Address",
+        "loadingText": "Loading..",
+        "passwordLabel": "Password",
+        "siteStatsLabel": "Site Statistics",
+        "submitLabel": "Submit",
+        "userIpLabel": "Your IP",
+        "newUserWelcome": "Thanks for installing #OnePageWonder by @iDoMeteor!"
+      },
+      "toggles": {
+        "logSectionViews": true,
+        "notifyAdminOnLoginSuccess": true,
+        "notifyAdminOnLoginFailure": true
+      },
+      "wonderBar": {
+        "helpTitle": "#OnePageWonder WonderBar Help"
+      }
     }
   }
 }
