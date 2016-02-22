@@ -112,6 +112,7 @@ if (Meteor.isServer) {
     },
 
   });
+
   opwContacts.deny({
 
     // Anyone can insert if properly formatted and unique
@@ -175,6 +176,7 @@ if (Meteor.isServer) {
     },
 
   });
+
   opwLog.deny({
     // Anyone can insert if properly formatted and unique
     insert: function (uid, doc) {
@@ -184,12 +186,19 @@ if (Meteor.isServer) {
     remove: function () {
       return true;
     },
-    // Allow if logged in
-    update: function () {
-      return (Meteor.userId()) ? false : true;
+    // Allow if logged in or consolidating
+    update: function (uid, doc) {
+      if (Meteor.userId) {
+        return false;
+      } else if (doc.consolidated) {
+        // TODO: Validate better
+        return false;
+      }
+      return true;
     },
 
   });
+
   opwRows.deny({
 
     // Only if logged in

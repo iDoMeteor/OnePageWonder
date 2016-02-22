@@ -1,17 +1,25 @@
-/******************************************************************************
+/*******************************************************************************
  *
- * Contact form event handlers
+ * Section events
  *
- *****************************************************************************/
+ * This lives here because it is integral to the contact features and nothing
+ * else.
+ *
+ * The template which defines the inline contact form is also used by the
+ * detailed contact form, where it is subject to the event chain as any other
+ * Meteor template.  However, when being used as a single inline contact form,
+ * the template is rendered into a string and injected with jQuery.  Doing so
+ * prevents the actual form code from being inserted into the database and
+ * then duplicated when coming back out.
+ *
+ ******************************************************************************/
 
-Template.opwContactForm.events({
+Template.opwSection.events({
 
     // Validate and potentially submit contact form
-    'click .opw-contact-submit, keyup .opw-contact-input': function (event, template) {
+    'click .opw-contact-submit, keyup .opw-contact-user': function (event, template) {
 
         // Locals
-
-
         var label = $(template.find('form'))
                       .closest('.opw-contact')
                       .attr('id')
@@ -21,9 +29,10 @@ Template.opwContactForm.events({
             (OPW.pressedEnter(event))
             || ('click' == event.type)
         ) ? true : false;
-        var user     = $(template.find('.opw-contact-input')).val();
+        var user     = $(template.find('.opw-contact-user')).val();
         user         = user.trim();
 
+        // Block submission or allow keystroke to pass through
         if (submit) event.preventDefault();
 
         // Reset if empty
@@ -154,10 +163,10 @@ Template.opwModal.events({
 
         // Locals
         // #opw-contact-modal
-        var label   = $('#opw-contact-modal').find('#opw-contact-label').val();
-        var message = $('#opw-contact-modal').find('#opw-contact-message').val();
+        var label   = $('#opw-contact-modal').find('.opw-contact-label').val();
+        var message = $('#opw-contact-modal').find('.opw-contact-message').val();
         var obj     = {};
-        var user    = $('#opw-contact-modal').find('#opw-contact-user').val();
+        var user    = $('#opw-contact-modal').find('.opw-contact-user').val();
         var valid   = false;
 
         // Formulate
@@ -195,10 +204,10 @@ Template.opwModal.events({
 Template.opwContactModalForm.events({
 
     // Validate email/twitter field as they type
-    'keyup #opw-contact-user': function (event, template) {
+    'keyup .opw-contact-user': function (event, template) {
 
         // Locals
-        var val     = $(template.find('#opw-contact-user')).val();
+        var val     = $(template.find('.opw-contact-user')).val();
         val         = val.trim();
 
         // Reset if empty
@@ -225,10 +234,10 @@ Template.opwContactModalForm.events({
     },
 
     // Validate message field as they type
-    'keyup #opw-contact-message': function (event, template) {
+    'keyup .opw-contact-message': function (event, template) {
 
         // Locals
-        var val     = $(template.find('#opw-contact-message')).val();
+        var val     = $(template.find('.opw-contact-message')).val();
         val         = val.trim();
 
         // Reset if empty
@@ -245,10 +254,10 @@ Template.opwContactModalForm.events({
     },
 
     // Validate phone or subject field as they type
-    'keyup #opw-contact-label': function (event, template) {
+    'keyup .opw-contact-label': function (event, template) {
 
         // Locals
-        var val     = $(template.find('#opw-contact-label')).val();
+        var val     = $(template.find('.opw-contact-label')).val();
         val         = val.trim();
 
         // Reset if empty or more than 40 characters in length

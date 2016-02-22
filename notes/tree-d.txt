@@ -6,30 +6,27 @@
 │   │           ├── unit
 │   │           ├── vendor
 │   │           └── visual
-│   ├── idm-connection-log.js
-│   │   └── lib
-│   └── idm-google-analytics
+│   └── idm-connection-log
 │       ├── client
-│       │   └── lib
-│       └── lib
+│       ├── lib
+│       └── server
+├── imports
+│   ├── bootstrap-less
+│   │   └── mixins
+│   └── bootstrap-themes
 ├── notes
 ├── opw
 │   ├── client
 │   ├── lib
 │   │   └── init
-│   ├── plugs
 │   └── server
-├── packages
-│   ├── bootstrap-less
-│   │   └── mixins
-│   └── bootstrap-themes
 ├── private
 ├── public
-│   ├── fonts
 │   ├── images
 │   │   ├── carousel
 │   │   └── logos
 │   └── opw
+│       ├── fonts
 │       └── images
 ├── scripts
 └── _site-specific
@@ -38,4 +35,4 @@
         ├── hooks
         └── templates
 
-38 directories
+35 directories

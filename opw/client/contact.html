@@ -22,7 +22,7 @@
 
 <template name="opwContactLog">
 
-    {{! TODO: Add read/unread feature }}
+    {{! TODO: Mark all as read feature }}
 
     <table class="table table-condensed table-striped table-hover">
         <thead>
@@ -97,8 +97,7 @@
 <template name="opwContactEmailOrTwitter">
 
     <label
-        class="sr-only"
-        for="opw-contact-user">
+        class="sr-only">
         Twitter or Email
     </label>
     <div class="input-group">
@@ -110,8 +109,7 @@
         </div>
         <input
             type="text"
-            id="opw-contact-user"
-            class="form-control opw-contact-input"
+            class="form-control opw-contact-user"
             placeholder="@Twitter or e@mail.com required">
     </div>
 
@@ -122,8 +120,7 @@
 <template name="opwContactMessage">
 
     <label
-        class="sr-only"
-        for="opw-contact-message">
+        class="sr-only">
         Message
     </label>
     <div class="input-group">
@@ -134,8 +131,7 @@
                 text-muted"></i>
         </div>
         <textarea
-            id="opw-contact-message"
-            class="form-control"
+            class="form-control opw-contact-message"
             placeholder="Thanks for your time, enter your message here!"
             ></textarea>
     </div>
@@ -148,8 +144,7 @@
 
 
     <label
-        class="sr-only"
-        for="opw-contact-label">
+        class="sr-only">
         Subject, Telephone or VoIP Number
     </label>
     <div class="input-group">
@@ -161,8 +156,7 @@
         </div>
         <input
             type="text"
-            id="opw-contact-label"
-            class="form-control"
+            class="form-control opw-contact-label"
             placeholder="Phone # or subject if desired">
     </div>
 

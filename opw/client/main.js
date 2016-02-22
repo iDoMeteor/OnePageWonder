@@ -105,6 +105,22 @@ Template.opwAuthenticate.events ({
         OPW.loginWithPassword(email, password);
     },
 
+    // Attempts to create first user if return is pressed in password field
+    'keypress #opw-auth-create': function (event) {
+        var options      = {};
+        options.email    = $('#opw-auth-email').val();
+        options.name     = OPW.getString('adminName');
+        options.password = $('#opw-auth-password').val();
+        options.username = OPW.getString('adminUsername');
+        var key      = event.which; // TODO: Alter API (notes there)
+        if (!OPW.pressedEnter(event)) {
+            return;
+        }
+        event.preventDefault();
+        OPW.createUser(options);
+
+    },
+
     // Attempts login if return is pressed in password field
     'keypress #opw-auth-password': function (event) {
         var email    = $('#opw-auth-email').val();
@@ -493,16 +509,3 @@ Template.opwSocialIcons.helpers ({
     },
 
 });
-
-/*******************************************************************************
- *
- * Global Code
- *
- * Runs when main.js is loaded
- *
- ******************************************************************************/
-
-// Hook into Astronomer global, added just for me! :D
-if (OPW.getNestedConfig('astronomer', 'enable')) {
-    window.AstronomerConfig = OPW.getConfig('astronomer');
-}

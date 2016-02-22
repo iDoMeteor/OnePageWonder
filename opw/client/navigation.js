@@ -9,17 +9,21 @@ Template.opwNavigation.events({
     // This hooks BSSS and sets session vars for the scroll indicator
     // One might put other possible activation hooks here
     'activate.bs.scrollspy .nav li': function () {
-        if (
-            OPW.getNestedConfig('navigation', 'showScrollIndicator')
-            && OPW.getRows().length // Probably could be more efficient here
-        ) {
-            state = OPW.scrollIndicatorUpdate();
-        }
-        // Log section view using slug
-        // Note: Doing this here provides the most reasonable assumption that a
-        //        user has actually viewed the content, and not just that it has
-        //        been rendered by Blaze.
-        OPW.logSectionView(state.active);
+      var state = {};
+      if (
+          OPW.getNestedConfig('navigation', 'showScrollIndicator')
+          && OPW.getRows().length // Probably could be more efficient here
+      ) {
+          state = OPW.scrollIndicatorUpdate();
+      }
+      if (!state.active) {
+        state = {active: 'top'};
+      }
+      // Log section view using slug
+      // Note: Doing this here provides the most reasonable assumption that a
+      //        user has actually viewed the content, and not just that it has
+      //        been rendered by Blaze.
+      OPW.logSectionView(state.active);
     },
 
     // Detailed contact

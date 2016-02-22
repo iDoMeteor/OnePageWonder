@@ -24,6 +24,7 @@ console.log ('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading API');
  * request, please read the coding style section of the README.md. :>
  *
  * TODO:
+ *      FIX DOCUMENTAION & XXXs
  *      Consider hooking into Meteor.settings...may simplify some things
  *          especially w/DDPCL & GA
  *      Versioning (not retrieving but storing) is all but written, really
@@ -211,6 +212,8 @@ OPW = {
    *      TODO:
    *          Should only reject duplicate users if they have an unread
    *          message already enqueued.
+   *          If submitting detailed request and they have existing inline
+   *          request, consolidate in to one request.
    *
    * ************************************************************************/
 
@@ -449,7 +452,7 @@ OPW = {
    * @Method          flagInvalid
    * @Param           n/a
    * @Returns         undefined
-   * @Location        Client, Server
+    @Location        Client, Server
    *
    * @Description
    *
@@ -1009,6 +1012,11 @@ OPW = {
       OPW.log({
         message: 'Invalid nested config format',
         type: 'error',
+        data: {
+          k1: k1,
+          k2: k2,
+          k3: k3,
+        },
       });
     }
 
@@ -1017,18 +1025,33 @@ OPW = {
       OPW.log({
         message: 'Invalid nested config format',
         type: 'error',
+        data: {
+          k1: k1,
+          k2: k2,
+          k3: k3,
+        },
       });
     }
     if (k2 && !opw[k1].hasOwnProperty(k2)) {
       OPW.log({
         message: 'Invalid nested config format',
         type: 'error',
+        data: {
+          k1: k1,
+          k2: k2,
+          k3: k3,
+        },
       });
     }
     if (k3 && !opw[k1][k2].hasOwnProperty(k3)) {
       OPW.log({
         message: 'Invalid nested config format',
         type: 'error',
+        data: {
+          k1: k1,
+          k2: k2,
+          k3: k3,
+        },
       });
     }
 
@@ -1521,6 +1544,55 @@ OPW = {
 
   /***************************************************************************
    *
+   * @Summary         Converts a CSS ID to string
+   * @Method          idToString
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * Used mostly for changing inline contact form IDs to log labels
+   *
+   * ************************************************************************/
+
+  idToString: function(id) {
+
+    // Validate
+    if (!OPW.isString(id)) {
+      OPW.log({
+        message: 'Invalid attempt to convert ID to string',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Locals
+    var arr = [];
+    var str = '';
+
+    // Split & cap first letters or OPW
+    _.each(id.split('-'), function (v) {
+      if ('idm' == v) {
+        arr.push('iDM');
+      } else if ('opw' == v) {
+        arr.push('OPW');
+      } else {
+        arr.push(
+          v.charAt(0).toUpperCase()
+          + v.substr(1)
+        );
+      }
+    });
+
+    // Join into string & return
+    return arr.join(' ');
+
+  },
+
+
+  /***************************************************************************
+   *
    * @Summary         Initializes the #OnePageWonder database on first run
    * @Method          init
    * @Param           n/a
@@ -1535,7 +1607,9 @@ OPW = {
    *
    * TODO:
    *      Value of content should become a blaze render function that
-   *        returns the contents of the help template
+   *        returns the contents of the help template... does not
+   *        work, Template is not defined and I haven't figured out
+   *        how to solve that w/o any stupid hacks yet.
    *      May want to refactor this into initHomeRow and also process
    *        the configuration defaults here, if there are no configuration
    *        singletons.
@@ -1544,6 +1618,7 @@ OPW = {
 
   init: function() {
 
+    // var content = Blaze.toHTML(Template.opwDefaultContent);
     var selector = {
       removed: {$ne: true},
       stale: {$ne: true},
@@ -1619,6 +1694,9 @@ OPW = {
     contact.stamp   = new Date();
     contact.source  = OPW.getUserIp();
 
+    // Mods
+    contact.label = OPW.idToString(contact.label);
+
     // Debug
     OPW.log({
       message: 'Source IP requesting contact: ' + contact.source,
@@ -1670,10 +1748,61 @@ OPW = {
           $(context.find('.opw-contact-input')).focus();
         }
 
+      } else if (result.consolidate) {
+
+        Meteor.call('opwLogConsolidateContactRequest', result.id, contact,
+          function opwUpdateContactCb(error, affected) {
+
+            if (affected) {
+
+              // Success
+              if (contact.message) {
+                $('#opw-detailed-contact-modal').modal('hide');
+              } else {
+                // Remove contact form
+                target.children().remove();
+                // Render thank you
+                UI.render(Template.opwContactThankYou, target.get(0));
+              }
+
+              // Provide feedback & log
+              OPW.log({
+                message: OPW.getNestedConfig('contact', 'thankYouAlert'),
+                type: 'success',
+                sendEvent: true,
+                notifyUser: true,
+                data: contact
+              });
+
+            } else {
+
+              // Technical failure
+              OPW.log({
+                message: 'Could not consolidate your requests,'
+                  + ' please try again.',
+                type: 'error',
+                sendEvent: true,
+                notifyAdmin: true,
+                notifyUser: true,
+                data: {
+                  contact: contact,
+                  error: error,
+                  affected: affected,
+                },
+              });
+
+            }
+
+          return;
+
+          }
+       );
+
+
       } else {
 
         // Contact is unique, attempt to insert
-        opwContacts.insert(contact, function opwInsertContactCallback(error, id) {
+        opwContacts.insert(contact, function opwInsertContactCb(error, id) {
 
           if (id) {
 
@@ -2438,7 +2567,7 @@ OPW = {
     // Label
     if (!OPW.isString(submission.label)) return false;
 
-    // Contact
+    // User
     if (
         (OPW.isValidEmail(submission.user))
         || (OPW.isValidTweeter(submission.user))
@@ -2826,10 +2955,12 @@ OPW = {
    *
    *            Options (ordered here in relative priority for use)
    *                  message
+   *                    Text string possibly sent to user, console and/or db
    *                  type
    *                      * No type will ever alter notifyUser or data
    *                      critical
    *                      danger
+   *                      deprecated
    *                      error
    *                      event
    *                      failure
@@ -2838,56 +2969,77 @@ OPW = {
    *                      success
    *                      warning
    *                  sendEvent
+   *                    For native GA support (temporarily missing)
    *                  eventTag
+   *                    For native GA support (temporarily missing)
    *                  auth
+   *                    Adds to auth log & adds notifyAdmin flag based on config
    *                  security
+   *                    Adds to security log & adds notifyAdmin flag
    *                  notifyUser
+   *                    Pops a BS alert with appropriate BG color
    *                  notifyAdmin
+   *                    Adds to admin log & sends email
    *                  data
+   *            All types set an appropriate alertType (BS alert context), so
+   *              that if notifyUser flag is passed it will be handled properly.
    *
    *  TODO:
    *          Not all messages need to be stringified,
    *          Fix when putting in data object check
    *          Doc what each type does
-   *          Check config for client side console log setting and act
-   *            appropriately
+   *          Refactor the if statements for each log type into a method using
+   *            config arrays for:
+   *              logToBothConsoles
+   *              logToClientConsoleOnly
+   *              logToServerConsoleOnly
+   *              logToLog
    *
    * ************************************************************************/
 
   log: function(options) {
 
-    var chop        = 'info'; // Default type
-    var debug       = OPW.getConfig('debug');
+    var chop        = 'debug'; // Default type if not passed
+    var debug       = OPW.getNestedConfig('log', 'debug');
     var wood        = {};
     var log         = {};
     // Process message for console & set BS alert context
     var logJam = {
 
       critical: function(obj) {
-        console.log('OPW CRITICAL ERROR: '
-                    + JSON.stringify(obj, null, 2)
-                   );
+        // Something bad happened, admin should be notified
+        message = 'OPW CRITICAL ERROR: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
-        obj.sendEvent   = true;
         return obj;
       },
 
       danger: function(obj) {
-        console.log('OPW DANGER: '
-                    + JSON.stringify(obj, null, 2)
-                   );
+        // Most likely a user mistake, no need to modify flags
+        message = 'OPW DANGER: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'danger';
-        obj.sendEvent   = true;
+        return obj;
+      },
+
+      deprecated: function(obj) {
+        // Non-critical error, such as failure to insert valid object
+        message = 'OPW DEPRECATED LOG CALL: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType   = 'danger';
         return obj;
       },
 
       debug: function(obj) {
-        if (debug) {
-          console.log('OPW DEBUG: '
-                      + JSON.stringify(obj, null, 2)
-                     );
-        }
+        // Never saved or sent to admin/user, only console if debug enabled
+        message = 'OPW DEBUG: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType   = 'info';
         obj.notifyAdmin = false;
         obj.notifyUser  = false;
         obj.sendEvent   = false;
@@ -2895,107 +3047,101 @@ OPW = {
       },
 
       deployed: function(obj) {
-        if (debug) {
-          console.log('OPW DANGER: '
-                      + JSON.stringify(obj, null, 2)
-                     );
-        }
         // TODO: Send rollbar deployment
-        obj.alertType   = 'danger';
+        message = 'OPW DEPLOYMENT: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType   = 'success';
         obj.sendEvent   = true;
         return obj;
       },
 
       error: function(obj) {
-        console.log('OPW ERROR: '
-                    + JSON.stringify(obj, null, 2)
-                   );
+        // Non-critical error, such as failure to insert valid object
+        message = 'OPW ERROR: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
-        obj.sendEvent   = true;
         return obj;
       },
 
       event: function(obj) {
+        // A standard action worthy of sending to GA
         // TODO: Probably should give event specific options
-        if (debug) {
-          console.log('OPW EVENT: '
-                      + JSON.stringify(obj, null, 2)
-                     );
-        }
+        message = 'OPW EVENT: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'info';
         obj.sendEvent   = true;
         return obj;
       },
 
       failure: function(obj) {
-        console.log('OPW FAILURE: '
-                    + JSON.stringify(obj, null, 2)
-                   );
+        // Something bad happened, probably programmer error :>
+        message = 'OPW FAILURE: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
-        obj.sendEvent   = true;
         return obj;
       },
 
       info: function(obj) {
-        console.log('OPW INFO: '
-                    + JSON.stringify(obj, null, 2)
-                   );
-        obj.alertType   = obj.type;
+        // Info probably being passed to user, nothing to get excited about
+        message = 'OPW INFO: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType   = 'info';
         return obj;
       },
 
       pageview: function(obj) {
-        // TODO: Probably should give event specific options
-        if (debug) {
-          console.log('OPW PAGEVIEW: '
-                      + JSON.stringify(obj, null, 2)
-                     );
-        }
+        // For logging page/section views to GA
+        // TODO: Probably should give specific options
+        message = 'OPW PAGEVIEW: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'info';
         obj.sendEvent   = true;
         return obj;
       },
 
       security: function(obj) {
-        console.log('OPW SECURITY ISSUE: '
-                    + JSON.stringify(obj, null, 2)
-                   );
+        // Security related issue, notify admin!
+        message = 'OPW SECURITY: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
         obj.alertType   = 'danger';
         obj.notifyAdmin = true;
         obj.security    = true;
-        obj.sendEvent   = true;
         return obj;
       },
 
       success: function(obj) {
-        console.log('OPW SUCCESS: '
-                    + JSON.stringify(obj, null, 2)
-                   );
-        obj.alertType   = obj.type;
+        // It's all good! \o/
+        message = 'OPW SUCCESS: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType = 'success';
         return obj;
       },
 
       warning: function(obj) {
-        console.log('OPW WARNING: '
-                    + JSON.stringify(obj, null, 2)
-                   );
-        obj.alertType   = obj.type;
+        // Probably warning user, maybe a non-critical program error
+        message = 'OPW WARNING: '
+          + JSON.stringify(obj, null, 2);
+        OPW.logToLogOrNot(message);
+        obj.alertType = 'danger';
         return obj;
       },
 
     };
 
-    var useGAEvent = false;
-    /*
-    * This is currently broken because the false value returned
-    * in the enable key breaks the trixter ternary in getNestedConfig
     var useGAEvent    = (
         OPW.getNestedConfig('google', 'enable')
         && OPW.getNestedConfig('google', 'sendLogEvents')
     ) ? true : false;
-    */
     var useRollbarEvent    = (
         OPW.getNestedConfig('rollbar', 'enable')
         && OPW.getNestedConfig('rollbar', 'sendLogEvents')
@@ -3026,15 +3172,17 @@ OPW = {
       wood.type           = (
                               (type = options.type)
                               && ('function' == typeof (logJam[type]))
-                          ) ? type : 'info';
+                          ) ? type : 'critical';
       chop                = wood.type;
 
     } else if (OPW.isString(options)) {
-      // Deprecated form but we'll take it
+      // Deprecated form, take it but complain about it
       wood.message = options;
-      wood.type    = 'info';
+      wood.type    = 'deprecated';
     } else {
-      console.log('#OPW ERROR Invalid call to logger');
+      // Options passed were not an object or string, abort
+      message = '#OPW ERROR Invalid call to logger';
+      OPW.logToLogOrNot(message);
       return false;
     }
 
@@ -3042,7 +3190,10 @@ OPW = {
     log = logJam[chop](wood);
 
     // Log to database
-    if ('debug' != log.type) {
+    if (
+      ('debug' != log.type)
+      && (OPW.getNestedConfig('log', 'logLogs'))
+    ) {
       opwLog.insert(log);
     }
 
@@ -3059,7 +3210,6 @@ OPW = {
       // Rollbar
       // if (useRollbar)
 
-
     }
 
     // Notify user if desired
@@ -3068,6 +3218,43 @@ OPW = {
     }
 
     return;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         logToLogOrNot
+   * @Method          navigationAdded
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *      XXX
+   *
+   * ************************************************************************/
+
+  logToLogOrNot: function(message) {
+
+    if (OPW.getNestedConfig('log', 'debug')) {
+      console.log(message);
+      return;
+    }
+
+    if (
+      Meteor.isClient
+      && OPW.getNestedConfig('log', 'clientSideConsoleLogs')
+     ){
+      console.log(message);
+      return;
+    }
+
+    if (Meteor.isServer) {
+      console.log(message);
+      return;
+    }
 
   },
 

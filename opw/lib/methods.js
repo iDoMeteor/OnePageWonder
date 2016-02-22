@@ -30,53 +30,74 @@ Meteor.methods({
     // Check.. I hate it. :D
     check (contact, Object);
 
-    // If message is set, dupe must have message
+    // Locals
+    var id = null;
+    var ipRequests = null;
+    var maxPerIp = OPW.getNestedConfig('numerics', 'maxContactRequestsPerIp');
+
+    // Validate IP & check for dupe
+    if (OPW.isValidIp(contact.source)) {
+      if (maxPerIp <= opwContacts.find({
+        source: contact.source,
+        read: {$ne: true},
+      }).count()) {
+        return {
+          isDuplicate: true,
+          message: 'Too many unread contact requests from this IP already exist'
+          + ', please try again later or from a different location',
+        };
+      }
+    } else {
+      return {
+        message: 'Invalid IP when checking for contact duplicates',
+        error: true,
+      };
+    }
+
+    // Detailed contact submission, check for dupe or consolidation
     if (contact.message && OPW.isString(contact.message)) {
-      if (
-        (opwContacts.find({
+
+      // Check for detailed contact dupe
+      if (opwContacts.find({
         message: {$exists: true},
-      source: contact.source
-      }).count())
-        || (opwContacts.find({
-          message: {$exists: true},
-          user: contact.user
-        }).count())
-      ) {
+        read: {$ne: true},
+        user: contact.user,
+      }).count()) {
         return {
           isDuplicate: true,
           message: 'A message request already exists for this user.',
         };
       }
-    }
 
-    // Validate IP & check for dupe
-    if (OPW.isValidIp(contact.source)) {
-      if (opwContacts.find({source: contact.source}).count()) {
+      // Check for unread inline request and return id if exists
+      doc = opwContacts.findOne({
+        read: {$ne: true},
+        user: contact.user,
+      });
+      if (doc && doc._id) {
         return {
-          isDuplicate: true,
-          message: 'A contact request of this type from this IP'
-          + ' already exists.',
+          consolidate: true,
+          id: doc._id,
         };
       }
-    } else {
-      return {
-        error: true,
-        message: 'Invalid IP when checking for contact duplicates.',
-      };
+
     }
 
-    // Validate string & check for dupe
+    // Appears to be inline request, check for user dupe
     if (OPW.isValidEmailOrTwitter(contact.user)) {
-      if (opwContacts.find({user: contact.user}).count()) {
+      if (opwContacts.find({
+        user: contact.user,
+        read: {$ne: true},
+      }).count()) {
         return {
           isDuplicate: true,
-          message: 'A contact request of this user already exists.',
+          message: 'Contact request of this type for this user already exists.',
         };
       }
     } else {
       return {
-        error: true,
         message: 'Invalid contact when checking for duplicates',
+        error: true,
       };
     }
 
@@ -86,6 +107,60 @@ Meteor.methods({
     };
 
   },
+
+
+  /**************************************************************************
+   *
+   * @Summary         XXX
+   * @Method          opwLogSectionView
+   * @param {String} id ID of row to update
+   * @Returns         XXX
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   *
+   * ************************************************************************/
+
+  opwLogConsolidateContactRequest: function (id, contact, cb) {
+
+    // Check
+    check (id, String);
+    check (contact, Object);
+    check (cb, Match.Optional(Function));
+
+    // Validate
+    if (!OPW.isCollectionId(id)) {
+      OPW.log({
+        message: 'Invalid ID while trying to update contact.',
+        type: 'error',
+      });
+      return false;
+    }
+    if (
+      OPW.isObject(contact)
+      && contact.label
+      && !OPW.isString(contact.label)
+    ) {
+      OPW.log({
+        message: 'Invalid label encountered trying to insert contact.',
+        type: 'error',
+        data: submission,
+      });
+      return false;
+    }
+
+    // Detailed contact should be joined with existing inline contact
+    return opwContacts.update(id, {
+      $set: {
+        consolidated: true,
+        label: contact.label,
+        message: contact.message,
+      },
+    });
+
+  },
+
 
   /**************************************************************************
    *

@@ -457,3 +457,94 @@
     </div>
 
 </template>
+
+
+
+<template name="opwDefaultContent">
+
+  <div class="col-sm-12">
+    <h1>Thanks for trying #OnePageWonder by @iDoMeteor!</h1>
+    <h2>What you need to know to get going:</h2>
+    <h3>The <a href="http://demo.idometeor.com">demo</a> resets every hour a few minutes after the hour begins.</h3>
+  </div>
+
+  <div class="col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-2 col-lg-3 col-lg-offset-3">
+    <dl>
+      <dt>Admin User</dt>
+      <dd>Only one user may be registered and the username is admin, but you may use any email address.</dd>
+      <dt>Adding Content (refered to as 'rows' or 'sections')</dt>
+      <dd>When logged in, the contact icon changes to a gear.  Click it to launch the editor, then click the + button next to 'Sections'.</dd>
+      <dt>Editing Content</dt>
+      <dd>Click the 'Sections' button in the editor.</dd>
+      <dt>Re-order navigation</dt>
+      <dd>Drag items in the section list using the green handle.</dd>
+      <dt>Remove Content</dt>
+      <dd>Click the trash can in the section list to soft remove rows.  You cannot remove the top row.</dd>
+      <dt>Edit Configuration</dt>
+      <dd>Currently, the configuration editor is not complete. However, rather than digging deep into the code to change the defaults, you can simply copy settings-default.json to settings-dev.json and change whatever you want.  You may remove that which you do not change, but you will need to validate your JSON after doing so.</dd>
+      <dt>Single Field Inline Contact Form</dt>
+      <dd>Add any tag with class="opw-contact" to add the contact field
+      (I recommend span).  If you give it a CSS ID as well, that
+      will be used as the subject in the contact log.</dd>
+      <dt>Content Tips</dt>
+      <dd>The content you input will be wrapped a section tag with
+      class 'row' and ID will be the sluggified form of the related
+      navigation item.<br />Therefore, your content should be wrapped
+      in a div tags with Bootstrap column classes.  There are a few
+      quick starts in the columns sub-menu of the Wonderbar.</dd>
+      <dt>The #WonderBar</dt>
+      <dd>The #WonderBar is the toolbar above the content area when editing
+      rows.  Each of the buttons takes you to a sub-menu, except for the envelope
+      and question mark.  The envelope inserts the inline contact span tag.  The
+      question mark brings up a help section that I have not yet written.  Within
+      the sub-menus, you will find buttons that insert code snippets.  Currently,
+      they append the element code to the bottom of the content in the textarea, so
+      you will have to copy and paste it where you want it for now.</dd>
+    </dl>
+    <p>The rest is up to you!  I will greatly appreciate any comments, critiques, suggestions or bug reports.</p>
+    <h4 class="text-right">Enjoy, @iDoMeteor</h4>
+  </div>
+
+  <div class="col-sm-5 col-md-4 col-lg-3 ">
+    <h2>For more information:</h2>
+    <ul>
+      <li><a href="http://opw.idometeor.com" title="Visit OPW.iDoMeteor.com">
+        #OnePageWonder Official Site
+      </a>
+      </li>
+      <li><a href="http://github.com/idometeor/onepagewonder" title="Visit OnePageWonder project page on Github">
+        #OnePageWonder on Github
+      </a>
+      </li>
+      <li><a href="https://www.youtube.com/playlist?list=PLz5iYsoODTu6kzFGCfB4a1JXw1ZpJXLqg" title="Watch #OnePageWonder videos on YouTube">
+        #OnePageWonder on YouTube
+      </a>
+      </li>
+      <li><a href="https://github.com/iDoMeteor/OnePageWonder/issues/new" title="#OnePageWonder Bug Reports">
+        #OnePageWonder Bug Reports
+      </a>
+      </li>
+      <li><a href="http://forums.meteor.com/XXX" title="Discuss #OnePageWonder on Meteor Forums">
+        Discuss #OnePageWonder on Meteor Forums
+      </a>
+      </li>
+      <li><a href="http://twitter.com/idometeor" title="Visit @iDoMeteor on Twitter">
+        @iDoMeteor on Twitter
+      </a>
+      </li>
+      <li><a href="http://idometeor.com" title="Visit iDoMeteor.com">
+        @iDoMeteor Web Site
+      </a>
+      </li>
+      <li><a href="http://meteorpress.org" title="Visit MeteorPress.org">
+        #MeteorPress by @iDoMeteor (Coming Soon)
+      </a>
+      </li>
+      <li><a href="http://demo.meteorpress.org" title="Try #MeteorPress demo">
+        #MeteorPress Demo (not fully functional)
+      </a>
+      </li>
+    </ul>
+  </div>
+
+</template>

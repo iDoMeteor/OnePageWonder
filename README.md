@@ -9,7 +9,8 @@
 [Live Demo (w/iDoMeteor.com content)](http://demo2.idometeor.com) which resets just after the bottom of every hour.
 [Live Site (not polished yet)](http://idometeor.com)
 
-I will soon knock back the demo resets to once or twice per day.
+I will soon knock back the demo resets to once or twice per day, depending on
+traffic.
 
 # Haiku:
 
@@ -41,17 +42,23 @@ Zipper
 http://install.idometeor.com/onepagewonder.zip
 http://install.idometeor.com/onepagewonder-with-data.zip
 
+If you download a compressed archive, simply inflate it, change into it's
+directory and run meteor.
+
 # Roadmap
 
 v1.0.0-PR.2
 * CSV Log Downloads
+* Clear separation between logic & presentation templates
 * Dashboard with live stats
-* Log paging
+* Explicit data contexts for all templates & etc
+* Log viewer paging
 * Configuration editor (config in database)
 * Rollbar support
 * Vertical nagivation toggle
 
 v1.0.0-PR.3
+* Bootstrap 3/4 toggle
 * ES6 / Meteor 1.3 test branch
 * Materialize support
 * Optimizations (OpLog, caching, throttling)

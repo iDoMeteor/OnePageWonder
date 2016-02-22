@@ -1,14 +1,13 @@
 {
   "public":  {
+    "astronomer": {
+      "appId": "",
+      "disableMethodTracking": false,
+      "disableRouteTracking": false,
+      "disableUserTracking": false
+    },
     "opw":  {
-      "acao": "localhost:*, https://ddp*.meteor.com, *.idometeor.com",
-      "astronomer": {
-        "appId": "vd8pnoqTEkWzt6bnh",
-        "disableMethodTracking": false,
-        "disableRouteTracking": false,
-        "disableUserTracking": false,
-        "enable": true
-      },
+      "acao": "localhost:*, https://ddp*.meteor.com",
       "bootstrap": {
         "alert": {
           "duration": 7000,
@@ -20,10 +19,10 @@
         "btnString": "Confirm Request!",
         "btnStringDetailed": "Send!",
         "detailedFormInvalidSubmission": "Your submission requires more information, please try again.",
-        "from": "idometeor@gmail.com",
+        "from": "OnePageWonder@iDoMeteor.com",
         "lightboxLogTitle": "Contact Log",
         "lightboxTitle": "Direct Communication Form",
-        "recips": "idometeor@gmail.com",
+        "recips": "OnePageWonder@iDoMeteor.com",
         "showDetailed": true,
         "showDetailedIcon": "fa-pencil",
         "showDetailedText": "Write Us",
@@ -32,17 +31,9 @@
       },
       "debug": false,
       "log": {
-        "clientSideConsoleLogs": true,
-        "debug": true,
-        "outputTypes": [
-          "critical",
-          "danger",
-          "error",
-          "failure",
-          "info",
-          "security",
-          "warning"
-        ]
+        "clientSideConsoleLogs": false,
+        "debug": false,
+        "logLogs": true
       },
       "footer": {
         "fixed": true,
@@ -50,19 +41,19 @@
         "fluid": true
       },
       "google": {
-        "account": "UA-23671882-12",
+        "account": "",
         "cookie": {
           "auto": true,
           "domain": null,
           "expires": null,
           "name": null
         },
-        "debug": true,
+        "debug": false,
         "debugTrace": false,
-        "enable": true,
+        "enable": false,
         "sendLogEvents": true,
-        "trackInPage": true,
-        "trackInterests": true
+        "trackInPage": false,
+        "trackInterests": false
       },
       "logoAbs": "http://opw.idometeor.com/logo.png",
       "logoRel": "/logo.png",
@@ -77,12 +68,8 @@
         "fluid": true,
         "style": "bootstrap"
       },
-      "limit": {
-        "navTitle": 25,
-        "publish": 100
-      },
       "linter": {
-        "requireLogin": false
+        "requireLogin": true
       },
       "meta": {
         "http-equiv": {

@@ -45,53 +45,19 @@
 │   │       │       └── tooltip.html
 │   │       ├── tooltip.js
 │   │       └── transition.js
-│   ├── idm-connection-log.js
-│   │   └── lib
-│   │       └── idm-connection-log.js
-│   └── idm-google-analytics
+│   └── idm-connection-log
 │       ├── client
-│       │   ├── idm-ga.js
-│       │   └── lib
-│       │       └── real-google-analytics.js
-│       └── lib
-├── iDoMeteor-Coding-Guidelines.md
-├── jsdoc.conf
-├── notes
-│   └── tree.txt
-├── opw
-│   ├── client
-│   │   ├── contact.html
-│   │   ├── contact.js
-│   │   ├── editor.html
-│   │   ├── editor.js
-│   │   ├── exports.js
-│   │   ├── main.js
-│   │   ├── navigation.html
-│   │   ├── navigation.js
-│   │   ├── opw.css
-│   │   ├── opw.html
-│   │   ├── opw.less
-│   │   ├── scroller.html
-│   │   ├── scroller.js
-│   │   ├── wonderbar.html
-│   │   └── wonderbar.js
-│   ├── lib
-│   │   ├── api.js
-│   │   ├── collections.js
-│   │   ├── exports.js
-│   │   ├── init
-│   │   │   └── config.js
-│   │   ├── injections.js
-│   │   ├── methods.js
-│   │   └── routes.js
-│   ├── plugs
-│   └── server
-│       ├── browser-policy.js
-│       └── main.js
-├── packages
+│       │   ├── main.js
+│       │   └── methods.js
+│       ├── lib
+│       │   └── idm-connection-log.js
+│       └── server
+│           └── methods.js
+├── imports
 │   ├── bootstrap-less
 │   │   ├── alerts.less
 │   │   ├── badges.less
+│   │   ├── bootstrap.import.less
 │   │   ├── bootstrap.less
 │   │   ├── breadcrumbs.less
 │   │   ├── button-groups.less
@@ -165,6 +131,7 @@
 │       ├── cerulean.less
 │       ├── cosmo.less
 │       ├── cyborg.less
+│       ├── flatly.import.less
 │       ├── flatly.less
 │       ├── idometeor.less
 │       ├── journal.less
@@ -180,16 +147,44 @@
 │       ├── superhero.less
 │       ├── united.less
 │       └── yeti.less
+├── jsdoc.conf
+├── LICENSE-MIT
+├── notes
+│   ├── row-templates.html.txt
+│   ├── sortable-template-code.html.txt
+│   ├── tree-d.txt
+│   └── tree.txt
+├── opw
+│   ├── client
+│   │   ├── contact.html
+│   │   ├── contact.js
+│   │   ├── editor.html
+│   │   ├── editor.js
+│   │   ├── main.js
+│   │   ├── navigation.html
+│   │   ├── navigation.js
+│   │   ├── opw.css
+│   │   ├── opw.html
+│   │   ├── opw.less
+│   │   ├── scroller.html
+│   │   ├── scroller.js
+│   │   ├── wonderbar.html
+│   │   └── wonderbar.js
+│   ├── lib
+│   │   ├── api.js
+│   │   ├── collections.js
+│   │   ├── exports.js
+│   │   ├── init
+│   │   │   └── config.js
+│   │   ├── injections.js
+│   │   ├── methods.js
+│   │   └── routes.js
+│   └── server
+│       ├── browser-policy.js
+│       └── main.js
 ├── private
-│   └── row-templates.html
 ├── public
 │   ├── favicon.png
-│   ├── fonts
-│   │   ├── glyphicons-halflings-regular.eot
-│   │   ├── glyphicons-halflings-regular.svg
-│   │   ├── glyphicons-halflings-regular.ttf
-│   │   ├── glyphicons-halflings-regular.woff
-│   │   └── glyphicons-halflings-regular.woff2
 │   ├── googleaa5498bf72c338c1.html
 │   ├── googleae2312f27ad7fc5e.html
 │   ├── images
@@ -226,6 +221,12 @@
 │   │   └── lumberjack-white.png
 │   ├── logo.png
 │   └── opw
+│       ├── fonts
+│       │   ├── glyphicons-halflings-regular.eot
+│       │   ├── glyphicons-halflings-regular.svg
+│       │   ├── glyphicons-halflings-regular.ttf
+│       │   ├── glyphicons-halflings-regular.woff
+│       │   └── glyphicons-halflings-regular.woff2
 │       └── images
 │           ├── meteor-glyph.png
 │           ├── meteor.png
@@ -243,6 +244,9 @@
 ├── scripts
 │   ├── install-opw.sh
 │   └── opw-send-local-db-to-meteor.sh
+├── settings-default.json
+├── settings-dev.json
+├── settings-production.json
 └── _site-specific
     └── client
         ├── css
@@ -252,4 +256,4 @@
         │   └── sections.js
         └── templates
 
-38 directories, 214 files
+35 directories, 221 files
