@@ -65,7 +65,7 @@ opw = {
   // Footer configuration
   footer: {
 
-    // One of 'fixed', 'none', or 'static'
+    // Determines CSS ID, fixed or static
     fixed: true,
     // Over-rides intelligence if false
     show: true,

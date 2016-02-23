@@ -172,7 +172,7 @@ OPW = {
 
   bootLint: function() {
 
-    if (opw.linter.requireLogin && !Meteor.userId()) {
+    if (OPW.getNestedConfig('linter', 'requireLogin') && !Meteor.userId()) {
       OPW.log({
         message: 'You must be logged in to run the linters.',
         type: 'error',
@@ -1469,8 +1469,8 @@ OPW = {
     }
 
     // Do it
-    return (opw.strings[key])
-        ? opw.strings[key]
+    return (OPW.getNestedConfig('strings', key))
+        ? OPW.getNestedConfig('strings', key)
         : (
             OPW.log({
               message: 'Attempting to get invalid string',
@@ -2019,10 +2019,10 @@ OPW = {
     // Locals
     var style = (
         opw
-        && OPW.isObject(opw.navigation)
-        && OPW.isString(opw.navigation.style)
+        && OPW.isObject(OPW.getConfig('navigation'))
+        && OPW.isString(OPW.getNestedConfig('navigation', 'style'))
     ) ? (
-        'instantiateNavigation' + opw.navigation.style
+        'instantiateNavigation' + OPW.getNestedConfig('navigation', 'style')
     ) : (
         OPW.log({
           message: 'Invalid navigation style detected, falling back to horizontal standard.',
@@ -2333,7 +2333,7 @@ OPW = {
   isStaticFooterShowing: function() {
     return (
         (OPW.getNestedConfig('footer', 'show'))
-        && ('static' == OPW.getNestedConfig('footer', 'style'))
+        && (!OPW.getNestedConfig('footer', 'fixed'))
     ) ? true : false;
   },
 
@@ -3439,7 +3439,7 @@ OPW = {
                 ? OPW.getNestedConfig('contact', 'recips')
                 : Meteor.users.findOne({}, {fields: {email: 1}}).email;
     var from    = to;
-    var subject = opw.title || 'Contact';
+    var subject = OPW.getConfig('title') + 'Contact';
     var mail    = {};
     var message = (OPW.isString(log.message)) ? log.message : (
       OPW.log({
@@ -3612,10 +3612,10 @@ OPW = {
       return false;
     }
     if (!OPW.isString(type)) {
-      type = opw.bootstrap.alert.type;
+      type = OPW.getNestedConfig('bootstrap', 'alert', 'type');
     }
     if (!OPW.isNumber(duration)) {
-      duration = opw.bootstrap.alert.duration;
+      duration = OPW.getNestedConfig('bootstrap', 'alert', 'duration');
     }
     var data = {
       content: content,
