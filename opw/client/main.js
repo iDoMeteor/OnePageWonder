@@ -534,7 +534,7 @@ Template.opwSocialIcons.helpers ({
 // Hook up Astronomer global (added just for me, thx Ry! :D) if not already set!
 if (Meteor.settings.public && !Meteor.settings.public.astronomer &&
     OPW.getConfig('astronomer') &&
-    OPW.getNestedConfig('astronomer', 'enable')) {
+    OPW.getNestedConfig('astronomer', 'appId')) {
     window.AstronomerConfig = OPW.getConfig('astronomer');
 }
 
