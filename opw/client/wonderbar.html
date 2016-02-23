@@ -222,33 +222,63 @@
     id="opw-wonderbar-anchor"
     title="Named anchor tag"
     class="opw-wonderbar-btn btn btn-primary">
-    <i class="fa fa-anchor" title="Insert heading"></i>
+    <i class="fa fa-anchor" title="Insert named anchor"></i>
   </button>
   <button
     id="opw-wonderbar-bold"
     title="Bold"
     class="opw-wonderbar-btn btn btn-primary">
-    <i class="fa fa-bold" title="Insert heading"></i>
+    <i class="fa fa-bold" title="Insert bold text"></i>
   </button>
   <button
     id="opw-wonderbar-italic"
     title="Italic"
     class="opw-wonderbar-btn btn btn-primary">
-    <i class="fa fa-italic" title="Insert heading"></i>
+    <i class="fa fa-italic" title="Insert italic text"></i>
   </button>
   <button
     id="opw-wonderbar-link"
     title="Link"
     class="opw-wonderbar-btn btn btn-primary">
-    <i class="fa fa-link" title="Insert heading"></i>
+    <i class="fa fa-link" title="Insert URL"></i>
   </button>
   <button
     id="opw-wonderbar-strikethrough"
     title="Strikethrough text"
     class="opw-wonderbar-btn btn btn-primary">
-    <i class="fa fa-strikethrough" title="Insert heading"></i>
+    <i class="fa fa-strikethrough" title="Insert strikethrough text"></i>
   </button>
 
+</template>
+
+
+
+<template name="opwElementAnchor">
+<a name="XXX">YYY</a>
+</template>
+
+
+
+<template name="opwElementBold">
+<strong>XXX</strong>
+</template>
+
+
+
+<template name="opwElementItalic">
+<em>XXX</em>
+</template>
+
+
+
+<template name="opwElementLink">
+<a title="XXX" href="YYY">XXX</a>
+</template>
+
+
+
+<template name="opwElementStrikethrough">
+<del>XXX</del>
 </template>
 
 
@@ -275,6 +305,51 @@
     <i class="fa fa-list-ul" title="Insert unordered list"></i>
   </button>
 
+</template>
+
+
+
+<template name="opwElementDl">
+<dl>
+  <dt>
+    XXX
+  </dt>
+  <dd>
+    YYY
+  </dd>
+  <dt>
+    XXX
+  </dt>
+  <dd>
+    YYY
+  </dd>
+</dl>
+</template>
+
+
+
+<template name="opwElementOl">
+<ol>
+  <li>
+    XXX
+  </li>
+  <li>
+    XXX
+  </li>
+</ol>
+</template>
+
+
+
+<template name="opwElementUl">
+<ul>
+  <li>
+    XXX
+  </li>
+  <li>
+    XXX
+  </li>
+</ul>
 </template>
 
 
@@ -377,6 +452,14 @@
   autocomplete="off">
   YYY
 </button>
+</template>
+
+
+
+<template name="opwElementCode">
+<code>
+  XXX
+</code>
 </template>
 
 

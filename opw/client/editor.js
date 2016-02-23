@@ -764,8 +764,8 @@ Template.opwModalEditor.events({
       if (result) {
         // If success
         OPW.log ({
-          message: 'Saved row.',
-          type: 'Success',
+          message: 'Saved row',
+          type: 'success',
           notifyUser: true,
           data: obj,
         });

@@ -422,7 +422,7 @@ OPW = {
       (affected) ? (
           OPW.log({
             message: 'Expired previous row.',
-            type: 'Success',
+            type: 'success',
           })
       ) : (
           OPW.log({
@@ -3853,9 +3853,9 @@ OPW = {
 
       (affected) ? (
           OPW.log({
-            message: 'Removed row.',
+            message: 'Removed row',
             notifyUser: true,
-            type: 'Success',
+            type: 'success',
             data: {
               affected: affected,
               error: error,
