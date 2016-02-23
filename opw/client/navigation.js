@@ -254,7 +254,7 @@ Template.opwNavigation.onRendered(function () {
 Template.opwNavigationMobile.helpers({
 
     opwSiteLogoNavigation: function () {
-        return opw.logoNavigationRel;
+        return OPW.getNestedConfig('images', 'navigation');
     },
 
     opwSiteTitle: function () {

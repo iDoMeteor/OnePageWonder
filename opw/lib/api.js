@@ -25,13 +25,8 @@ console.log ('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading API');
  *
  * TODO:
  *      FIX DOCUMENTAION & XXXs
- *      Consider hooking into Meteor.settings...may simplify some things
- *          especially w/DDPCL & GA
- *      Versioning (not retrieving but storing) is all but written, really
- *          just need to change the updates to inserts.
+ *      Version history browser & restore
  *      Add userActive, isLoggedIn, isAnonymousUser
- *      Read Meteor source code and see how they separate/extend Meteor object
- *      to segregate client/server/both methods and integrate as appropriate.
  *      Before considered 'production quality', all the queries should be
  *          optimized, there's a lot of select * going on atm :)
  *
@@ -570,7 +565,7 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *      This will add & remove 'bg-invalid' class to/from an element.
    *
    * ************************************************************************/
 
@@ -606,15 +601,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Gets unread admin notifications
    * @Method          getAdminNotificationLog
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -643,15 +634,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Gets unread authentication history
    * @Method          getAuthenticationHistory
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -699,7 +686,6 @@ OPW = {
    *
    * ************************************************************************/
 
-  // Get *all* active rows (not stale or removed)
   getAllActiveRows: function(limit, fetch) {
 
     // Locals
@@ -737,7 +723,6 @@ OPW = {
    *
    * ************************************************************************/
 
-  // Get *all* rows, subject to possible limit
   getAllRows: function(limit, fetch) {
 
     // Check perms
@@ -863,10 +848,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   getContacts: function(fetch) {
@@ -908,7 +889,6 @@ OPW = {
    *
    * ************************************************************************/
 
-  // Retrieve the currently active data for the home row
   getHomeRow: function(fetch) {
 
     // Locals
@@ -940,13 +920,11 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
+   *    Gets the ID of the active document matching the slug provided,
+   *      it is used when performing updates from the client (prevents
+   *      the need to publish it)
    * ************************************************************************/
 
-  // Gets the ID of the active document matching the slug provided,
-  //  it is used when performing updates from the client (prevents
-  //  the need to publish it)
   getIdFromSlug: function(slug) {
 
     if (!OPW.isString(slug)) {
@@ -1255,15 +1233,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Gets log entries, regardless of read status
    * @Method          getRawLog
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -1297,13 +1271,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // This will get any row by ID, if it exists
   getRowById: function(id, fetch) {
 
     // Validate
@@ -1335,19 +1304,14 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Gets the value of a row's order field by document ID
    * @Method          getRowOrderById
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // This will get any row by ID, if it exists
   getRowOrderById: function(id) {
 
     // Validate
@@ -1423,15 +1387,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Gets unread security related entries from the log
    * @Method          getSecurityLog
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -1530,10 +1490,6 @@ OPW = {
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -1859,7 +1815,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Inserts a new row, generally from the editor
    * @Method          insertRow
    * @Param           n/a
    * @Returns         undefined
@@ -1977,14 +1933,8 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
-   *  TODO:
-   *    Insert at cursor location rather than appending
-   *
    * ************************************************************************/
 
-  // Determins which button was activated & inserts appropriate template
   insertWonderBarElement: function(id) {
 
     // Validate
@@ -2062,10 +2012,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   instantiateNavigation: function() {
@@ -2110,10 +2056,9 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
-   *      TODO:
-   *              Still feel like collapse offset should be read dynamically
+   *  TODO:
+   *     Still feel like collapse offset should be read from the DOM rather
+   *     than from the config
    *
    * ************************************************************************/
 
@@ -2121,7 +2066,7 @@ OPW = {
 
     // Collapse navbar header when not at top
     $(window).scroll(function () {
-      if (opw.navigation.collapseOffset < $('#opw-primary-nav').offset().top) {
+      if (OPW.getNestedConfig('navigation', 'collapseOffset') < $('#opw-primary-nav').offset().top) {
         $('.navbar-fixed-top').addClass('top-nav-collapse');
         $('body').addClass('opw-body-less-padding');
       } else {
@@ -2143,9 +2088,7 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
-   *      TODO
+   *  TODO
    *
    * ************************************************************************/
 
@@ -2163,8 +2106,6 @@ OPW = {
    * @Location        Client, Server
    *
    * @Description
-   *
-   *      XXX
    *
    *      TODO
    *
@@ -2202,16 +2143,14 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
    *      TODO
    *              Fix classes for side menu
    *
    * ************************************************************************/
 
-  // Determine navigation style and set it up
   instantiateNavigationStacked: function() {
 
+    return;
 
   },
 
@@ -2254,13 +2193,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Checks the contact log for the client IP
   ipIsInContacts: function(ip) {
 
     ip = ip || Meteor.userIp;
@@ -2285,13 +2219,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject for type of function
   isBoolean: function(value) {
     return ('boolean' == typeof (value))
         ? true
@@ -2307,13 +2236,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject to match a Meteor/Mongo collection _id string
   isCollectionId: function(value) {
     return (
       (/^\x{24}$/.test(value))
@@ -2332,13 +2256,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject for type of string
   isDate: function(value) {
     return ('date' == typeof (value))
         ? true
@@ -2354,13 +2273,9 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
-  // Tests a subject for type of function
   isFunction: function(value) {
     return ('function' == typeof (value))
         ? true
@@ -2370,19 +2285,14 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Checks if parameter is a string of one or more digits
+   * @Summary         Checks if param is a string of digits, possibly negative
    * @Method          isNumber
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject for [0-9]
   isNumber: function(value) {
     return (
       ('number' == typeof (value))
@@ -2401,13 +2311,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject for type of object (could be array or something else)
   isObject: function(value) {
     return ('object' == typeof (value))
         ? true
@@ -2417,22 +2322,18 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Determines if the footer is in static or scrolls off
    * @Method          isStaticFooterShowing
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   isStaticFooterShowing: function() {
     return (
-        (opw.footer.show)
-        && ('static' == opw.footer.style)
+        (OPW.getNestedConfig('footer', 'show'))
+        && ('static' == OPW.getNestedConfig('footer', 'style'))
     ) ? true : false;
   },
 
@@ -2445,13 +2346,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject for type of string
   isString: function(value) {
     return ('string' == typeof (value))
         ? true
@@ -2461,15 +2357,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks if Blaze thinks the parameter is a template
    * @Method          isTemplate
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -2480,15 +2372,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks if the parameter is a template instance
    * @Method          isTemplateInstance
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -2504,10 +2392,6 @@ OPW = {
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   * XXX
    *
    * ************************************************************************/
 
@@ -2525,10 +2409,6 @@ OPW = {
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -2685,10 +2565,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   isValidContactSubmission: function(submission) {
@@ -2727,14 +2603,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject to make sure it is a string (could do more,
-  // but not much danger here, thanks to Meteor & BP, etc)
   isValidContent: function(value) {
     return (
         ('string' == typeof (value))
@@ -2751,15 +2621,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tests a subject to make sure it is a valid email address that
-  // can be parsed by a standard mail server, which is rather forgiving.
-  // Allows for intranet addresses (ie; admin@server).
   isValidEmail: function(value) {
     if (!OPW.isString(value)) return false;
     value = value.trim();
@@ -2805,10 +2668,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   isValidIp: function(value) {
@@ -2826,10 +2685,6 @@ OPW = {
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -2884,10 +2739,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   isValidMailObject: function(value) {
@@ -2919,8 +2770,8 @@ OPW = {
     return (
         (OPW.isValidEmail(whitelist.to))
         && (OPW.isValidEmail(whitelist.from))
-        && (OPW.isValidString(whitelist.subject))
-        && (OPW.isValidString(whitelist.text))
+        && (OPW.isString(whitelist.subject))
+        && (OPW.isString(whitelist.text))
     ) ? (
         true
     ) : (
@@ -2937,15 +2788,13 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Lazily (for me) checks the format of a row object
    * @Method          isValidRowObject
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
    * @Description
-   *
-   *      XXX
    *
    *  TODO:
    *      Remove some of the optionals and make them required once migrated
@@ -2986,11 +2835,10 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *   Tests subject for slug validity (alphanumeric + _ or -)
    *
    * ************************************************************************/
 
-  // Tests subject for slug validity (alphanumeric + _ or -)
   isValidSlug: function(value) {
     if (!OPW.isString(value)) return false;
     if (!value.trim().length) return false;
@@ -3003,45 +2851,19 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         Checks if parameter is of type String
-   * @Method          isValidString
-   * @Param           n/a
-   * @Returns         undefined
-   * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   * ************************************************************************/
-
-  // Tests a subject for type of string
-  isValidString: function(value) {
-    // Alias
-    return OPW.isString(value);
-  },
-
-
-  /***************************************************************************
-   *
-   * @Summary         Checks if parameter is navigation title
+   * @Summary         Checks if parameter is valid navigation title
    * @Method          isValidTitle
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Checks that subject is a string with a reasonable limit
   isValidTitle: function(value) {
     return (
         ('string' == typeof (value))
-        && (0 < value.length) // TODO: Make dynamic
-        && (25 > value.length) // TODO: Make dynamic
+        && (0 < value.length)
+        && (OPW.getNestedConfig('numerics', 'menuItemMaxLength') > value.length)
     ) ? true : false;
   },
 
@@ -3054,13 +2876,8 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Tweet tweet tweetildeedildeet, is it valid?
   isValidTweeter: function(value) {
     if (!OPW.isString(value)) return false;
     value = value.trim();
@@ -3365,15 +3182,17 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         logToLogOrNot
-   * @Method          navigationAdded
+   * @Summary         Decides whether or not to console.log from the logger
+   * @Method          logToLogOrNot
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
    * @Description
    *
-   *      XXX
+   *    If debug is set, it will always log.
+   *    If on the client, it checks config for clientSideConsoleLogs value.
+   *    If on server, it will log.
    *
    * ************************************************************************/
 
@@ -3408,10 +3227,6 @@ OPW = {
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
   logAdminNotification: function(data) {
@@ -3434,7 +3249,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Increments a section's view count when passed a slug
    * @Method          logSectionView
    * @Param           n/a
    * @Returns         undefined
@@ -3470,7 +3285,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Attempts to log a user in
    * @Method          loginWithPassword
    * @Param           n/a
    * @Returns         undefined
@@ -3531,15 +3346,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Not used yet
    * @Method          navigationAdded
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -3551,15 +3362,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Not used yet
    * @Method          navigationChanged
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -3571,15 +3378,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Not used yet
    * @Method          navigationRemoved
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -3591,7 +3394,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Checks for the existence of rows, yoda style
    * @Method          noRowsExist
    * @Param           n/a
    * @Returns         undefined
@@ -3599,11 +3402,10 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
+   *      Only tries to check for non-home rows
    *
    * ************************************************************************/
 
-  // Only tries to check for non-home rows
   noRowsExist: function() {
     return (!OPW.getRows().length) ? true : false;
   },
@@ -3611,15 +3413,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Logs to the admin notification log & sends an email
    * @Method          notifyAdmin
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -3691,7 +3489,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Makes sure active non-home rows are sequentially ordered
    * @Method          packRowOrders
    * @Param           {string}
    * @Returns         undefined
@@ -3699,7 +3497,7 @@ OPW = {
    *
    * @Description
    *
-   * This must when when removing rows and doesn't hurt to run any ol'time.
+   * This must run when removing rows and doesn't hurt to run any ol'time.
    *
    * ************************************************************************/
 
@@ -3726,10 +3524,6 @@ OPW = {
    * @Param           {string}
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   * XXX
    *
    * ************************************************************************/
 
@@ -3790,15 +3584,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Pops a user alert
    * @Method          popAlert
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -3847,18 +3637,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Pops a Bootstrap modal window
    * @Method          popModal
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client
-   *
-   * @Description
-   *
-   *      XXX
-   *
-   *      TODO:
-   *        Possibly allow an optional data object to be passed in
    *
    * ************************************************************************/
 
@@ -3901,7 +3684,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Opens the editor modal
    * @Method          popModalEditor
    * @Param           n/a
    * @Returns         undefined
@@ -3909,10 +3692,8 @@ OPW = {
    *
    * @Description
    *
-   *      XXX
-   *
-   *      TODO:
-   *        Possibly allow an optional data object to be passed in
+   *   TODO:
+   *      Consolidate with popModal
    *
    * ************************************************************************/
 
@@ -4013,10 +3794,6 @@ OPW = {
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -4155,7 +3932,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Determines page state for the scroll indicator
    * @Method          scrollIndicatorUpdate
    * @Param           n/a
    * @Returns         undefined
@@ -4257,7 +4034,7 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Automagically scroll to a given href
    * @Method          scrollToHref
    * @Param           n/a
    * @Returns         undefined
@@ -4306,15 +4083,11 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Coming in PR.3 or 1.0.0 final, it will rox0r!!
    * @Method          sm
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
-   *      XXX
    *
    * ************************************************************************/
 
@@ -4590,21 +4363,16 @@ OPW = {
 
   /***************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Shows the #OnePageWonder version
    * @Method          version
    * @Param           n/a
    * @Returns         undefined
    * @Location        Client, Server
    *
-   * @Description
-   *
-   *      XXX
-   *
    * ************************************************************************/
 
-  // Return current #OnePageWonder version
   version: function() {
-    return "v1.0.0-RC.2";
+    return "v1.0.0-PR.1";
   },
 
 

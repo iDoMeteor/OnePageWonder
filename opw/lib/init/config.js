@@ -94,10 +94,12 @@ opw = {
   },
 
   // Images
-  logoAbs: 'http://opw.idometeor.com/logo.png',
-  logoRel: '/logo.png',
-  logoNavigationAbs: 'http://opw.idometeor.com/opw/images/onepagewonder-logo-24.png',
-  logoNavigationRel: '/opw/images/onepagewonder-logo-24.png',
+  images: {
+    auth: '/opw/images/onepagewonder-logo.png',
+    logo: '/logo.png',
+    navigation: '/opw/images/onepagewonder-logo-24.png',
+    stats: '/opw/images/onepagewonder-logo-24-dark.png',
+  },
 
   // Kadira Keys
   kadira: {

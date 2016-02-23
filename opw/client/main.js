@@ -181,6 +181,10 @@ Template.opwAuthenticate.helpers({
         return OPW.countUsers();
     },
 
+    opwAuthImage: function () {
+      return OPW.getNestedConfig('images', 'auth');
+    },
+
     opwUserIpLabel: function () {
         return OPW.getString('userIpLabel');
     },
@@ -249,6 +253,10 @@ Template.opwFooter.events ({
  ******************************************************************************/
 
 Template.opwFooter.helpers ({
+
+    opwStatsImage: function () {
+      return OPW.getNestedConfig('images', 'stats');
+    },
 
     opwFixedFooter: function () {
         return (opw.footer.fixed);
