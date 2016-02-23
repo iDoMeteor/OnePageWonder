@@ -4,9 +4,9 @@
 
  #OnePageWonder is a super fast yet robust mini-CMS for building one page scrolling web sites, it comes with a bunch of fancy tools like Meteor, jQuery, Bootstrap, Google Analytics and more!
 
-[#OnePageWonder YouTube playlist](https://www.youtube.com/playlist?list=PLz5iYsoODTu6kzFGCfB4a1JXw1ZpJXLqg)
-[Live Demo (fresh install)](http://demo.idometeor.com) which resets just after the top of every hour.
-[Live Site (not polished yet)](http://idometeor.com)
+* [#OnePageWonder YouTube playlist](https://www.youtube.com/playlist?list=PLz5iYsoODTu6kzFGCfB4a1JXw1ZpJXLqg)
+* [Live Demo (fresh install)](http://demo.idometeor.com) which resets just after the top of every hour.
+* [Live Site (not polished yet)](http://idometeor.com)
 
 I will soon knock back the demo resets to once or twice per day, depending on traffic.
 
