@@ -17,16 +17,16 @@ console.log('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading head injections
  *      styles of code and have it all just work together, w00t! :D
  *
  *      This is light.. on error checking, set your config properly :p
- *      
+ *
  * ***************************************************************************/
-    
-// Inject the meta data object
-if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
 
-    var meta            = opw.meta;
+// Inject the meta data object
+if (Meteor.isServer && !Package.appcache && Inject && OPW.getConfig('meta')) {
+
+    var meta            = OPW.getConfig('meta');
     var metaFunctions   = {
         'charset': function (key, value) {
-            Inject.rawHead ('opwIM-' + key, '<meta charset="' + value + '" />\n');
+            Inject.rawHead ('opwIM-' + key, '<meta charset="' + value + '" />');
         },
         'http-equiv': function (key, value) {
             metaFunctions.injectMetas(key, value);
@@ -34,18 +34,18 @@ if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
         injectNames: function (key, value, prefix) {
             prefix = prefix || '';
             _.each(value,  function (v, k) {
-                Inject.rawHead ('opwIM-' + key + '-' 
-                                + prefix + k, 
+                Inject.rawHead ('opwIM-' + key + '-'
+                                + prefix + k,
                                 '<meta name="' + prefix + k + '" '
-                                + 'content="' + v + '" />\n');
+                                + 'content="' + v + '" />');
             });
         },
         injectMetas: function (key, value, prefix) {
             prefix = prefix || '';
             _.each(value,  function (v, k) {
-                Inject.rawHead ('opwIM-' + key + '-' + k, 
+                Inject.rawHead ('opwIM-' + key + '-' + k,
                                 '<meta ' + key + '="' + prefix + k + '" '
-                                + 'content="' + v + '" />\n');
+                                + 'content="' + v + '" />');
             });
         },
         injectProperties: function (key, value) {
@@ -53,7 +53,7 @@ if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
                 _.each(v,  function (y, x) {
                     Inject.rawHead ('opwIM-' + key + '-' + k + '-' + x,
                                     '<meta ' + key + '="' + k + ':' + x + '" '
-                                    + 'content="' + y + '" />\n');
+                                    + 'content="' + y + '" />');
                 });
             });
         },
@@ -61,12 +61,12 @@ if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
             metaFunctions.injectMetas(key, value);
         },
         'link': function (key, value) {
-            Inject.rawHead ('opwIM-' + key, 
-                            '<link rel="icon" href="' 
+            Inject.rawHead ('opwIM-' + key,
+                            '<link rel="icon" href="'
                             + value.favicon
-                            + '" />\n'
-                            + '<link rel="shortcut icon" href="' 
-                            + value.favicon + '" />\n');
+                            + '" />'
+                            + '<link rel="shortcut icon" href="'
+                            + value.favicon + '" />');
         },
         'name': function (k, v) {
             var nameFunctions = {
@@ -77,17 +77,17 @@ if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
                         metaFunctions.injectNames(key, value, 'geo.');
                     },
                     icbm: function (key, value) {
-                        Inject.rawHead ('opwIM-' + key + '-' + k, 
+                        Inject.rawHead ('opwIM-' + key + '-' + k,
                                         '<meta name="' + key + '" '
-                                        + 'content="' + value + '" />\n');
+                                        + 'content="' + value + '" />');
                     },
                     twitter: function (key, value) {
                         metaFunctions.injectNames(key, value, 'twitter:');
                     },
                     viewport: function (key, value) {
-                        Inject.rawHead ('opwIM-' + key + '-' + k, 
+                        Inject.rawHead ('opwIM-' + key + '-' + k,
                                         '<meta name="' + key + '" '
-                                        + 'content="' + value + '" />\n');
+                                        + 'content="' + value + '" />');
                     },
             }
             _.each(v, function (value, key) {
@@ -98,7 +98,7 @@ if (Meteor.isServer && !Package.appcache && Inject && opw && opw.meta) {
             metaFunctions.injectProperties(key, value);
         },
         'title': function (key, value) {
-            Inject.rawHead ('opwIM-' + key, '<title>' + value + '</title>\n');
+            Inject.rawHead ('opwIM-' + key, '<title>' + value + '</title>');
         },
 
     }

@@ -1,9 +1,9 @@
 console.log ('#OnePageWonder v1.0.0-RC.2 by @iDoMeteor :: Loading Collections');
-opwAdminNotificationLog = new Meteor.Collection(opw.prefix + '-admin-notification-log');
-opwContacts             = new Meteor.Collection(opw.prefix + '-contacts');
-opwLog                  = new Meteor.Collection(opw.prefix + '-log');
-opwRows                 = new Meteor.Collection(opw.prefix + '-rows');
-opwSingletons           = new Meteor.Collection(opw.prefix + '-singletons');
+opwAdminNotificationLog = new Meteor.Collection(OPW.getConfig('prefix') + '-admin-notification-log');
+opwContacts             = new Meteor.Collection(OPW.getConfig('prefix') + '-contacts');
+opwLog                  = new Meteor.Collection(OPW.getConfig('prefix') + '-log');
+opwRows                 = new Meteor.Collection(OPW.getConfig('prefix') + '-rows');
+opwSingletons           = new Meteor.Collection(OPW.getConfig('prefix') + '-singletons');
 
 if (Meteor.isServer) {
 

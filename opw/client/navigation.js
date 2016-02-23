@@ -258,7 +258,7 @@ Template.opwNavigationMobile.helpers({
     },
 
     opwSiteTitle: function () {
-        return opw.title;
+        return OPW.getConfig('title');
     },
 
 });

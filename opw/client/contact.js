@@ -300,7 +300,7 @@ Template.opwContactModalForm.helpers({
 Template.opwContactThankYou.helpers({
 
     opwContactThankYouText: function () {
-        return opw.contact.thankYouText;
+        return OPW.getNestedConfig('contact', 'thankYouText');
     },
 
 });

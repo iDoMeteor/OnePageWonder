@@ -259,15 +259,16 @@ Template.opwFooter.helpers ({
     },
 
     opwFixedFooter: function () {
-        return (opw.footer.fixed);
+        return (OPW.getNestedConfig('footer', 'fixed'));
     },
 
     opwFixedScrollIndicator: function () {
-        return (opw.navigation.fixedScrollIndicator);
+        return (OPW.getNestedConfig('navigation',
+                                    'fixedScrollIndicator'));
     },
 
     opwShowSocialIcons: function () {
-        return opw.social.enable;
+        return (OPW.getNestedConfig('social', 'enable'));
     },
 
 });
@@ -323,19 +324,23 @@ Template.opwLayout.events ({
 Template.opwLayout.helpers({
 
     opwFixedScrollIndicator: function () {
-        return (opw.toggles.fixedScrollIndicator) ? true : false;
+      return (OPW.getNestedConfig('toggles',
+                                  'fixedScrollIndicator'))
+                                    ? true : false;
     },
 
     opwIfFooterIsFluid: function () {
-        return (opw.footer.fluid) ? '-fluid' : '';
+        return (OPW.getNestedConfig('footer', 'fluid'))
+          ? '-fluid' : '';
     },
 
     opwIfSectionsAreFluid: function () {
-        return (opw.layout.fluid) ? '-fluid' : '';
+        return (OPW.getNestedConfig('layout', 'fluid'))
+          ? '-fluid' : '';
     },
 
     opwShowFooter: function () {
-        return (opw.footer.show);
+        return (OPW.getNestedConfig('footer', 'show'));
     },
 
 });
@@ -437,7 +442,7 @@ Template.opwRoot.onRendered(function () {
 Template.opwSection.helpers({
 
     opwSectionalIndicator: function () {
-        return (!opw.footer.fixedScrollIndicator);
+      return !OPW.getNestedConfig('footer', 'fixedScrollIndicator');
     },
 
 });

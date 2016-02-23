@@ -111,14 +111,11 @@ Meteor.methods({
 
   /**************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Adds detailed contact info to previous inline contact
    * @Method          opwLogSectionView
    * @param {String} id ID of row to update
-   * @Returns         XXX
+   * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
    *
    * ************************************************************************/
 
@@ -164,14 +161,11 @@ Meteor.methods({
 
   /**************************************************************************
    *
-   * @Summary         XXX
+   * @Summary         Increments a sections view count by ID
    * @Method          opwLogSectionView
    * @param {String} id ID of row to update
-   * @Returns         XXX
+   * @Returns         undefined
    * @Location        Client, Server
-   *
-   * @Description
-   *
    *
    * ************************************************************************/
 
@@ -205,7 +199,7 @@ Meteor.methods({
    * @param {String[]} ids - array of document ids
    * @param {String} sortField - the name of the order field, usually "order"
    * @param {Number} incDec - pass 1 or -1
-   * @Returns         XXX
+   * @Returns         undefined
    * @Location        Client, Server
    *
    * @Description
@@ -436,7 +430,7 @@ Meteor.methods({
    * @Summary         Update Row Sort Orders
    * @Method          opwUpdateSortOrders
    * @param {Object}  mail A valid mail object
-   * @Returns         XXX
+   * @Returns         undefined
    * @Location        Client, Server
    *
    * @Description
