@@ -6,11 +6,9 @@
 
 [#OnePageWonder YouTube playlist](https://www.youtube.com/playlist?list=PLz5iYsoODTu6kzFGCfB4a1JXw1ZpJXLqg)
 [Live Demo (fresh install)](http://demo.idometeor.com) which resets just after the top of every hour.
-[Live Demo (w/iDoMeteor.com content)](http://demo2.idometeor.com) which resets just after the bottom of every hour.
 [Live Site (not polished yet)](http://idometeor.com)
 
-I will soon knock back the demo resets to once or twice per day, depending on
-traffic.
+I will soon knock back the demo resets to once or twice per day, depending on traffic.
 
 # Haiku:
 
@@ -29,21 +27,21 @@ Worky pretty goody! :D
 # Installation
 
 Git It
-* $ git clone git@github.com:iDoMeteor/OnePageWonder.git
-* $ cd OnePageWonder && meteor
-* Browse to http://localhost:3000
-    (unless launched with --port xxxx or deployed remotely)
+> $ git clone git@github.com:iDoMeteor/OnePageWonder.git
+> $ cd OnePageWonder && meteor
 
 Tarball
-wget http://install.idometeor.com/onepagewonder.tar.gz
-wget http://install.idometeor.com/onepagewonder-with-data.tar.gz
+* wget http://install.idometeor.com/onepagewonder.tar.gz
+* wget http://install.idometeor.com/onepagewonder-with-data.tar.gz
 
 Zipper
-http://install.idometeor.com/onepagewonder.zip
-http://install.idometeor.com/onepagewonder-with-data.zip
+* http://install.idometeor.com/onepagewonder.zip
+* http://install.idometeor.com/onepagewonder-with-data.zip
 
-If you download a compressed archive, simply inflate it, change into it's
-directory and run meteor.
+Then
+* If you download a compressed archive, simply inflate it, change into it's directory and run meteor.
+* Browse to http://localhost:3000 (unless launched with --port xxxx or deployed remotely)
+
 
 # Roadmap
 
@@ -84,21 +82,15 @@ You can get a concise view by looking at the [tree-d.txt (directories only)](htt
 
 # Documentation
 
-The [Github wiki](https://github.com/iDoMeteor/OnePageWonder/wiki) is probably a good enough place for me to start producing
-documentation, feel free to add sections you want filled out.
+The [Github wiki](https://github.com/iDoMeteor/OnePageWonder/wiki) is probably a good enough place for me to start producing documentation, feel free to add sections you want filled out.
 
 ## User Guide
-This will explain the basics of installation, usage and aesthetics.  Things like
-how to properly layout your HTML, using the #WonderBar, changing the
-Bootstrap/Bootswatch theme and adding custom CSS, images and other media
-assets.
+This will explain the basics of installation, usage and aesthetics.  Things like how to properly layout your HTML, using the #WonderBar, changing the Bootstrap/Bootswatch theme and adding custom CSS, images and other media assets.
 
 ## Developer Guide
-After I get a solid rough draft of the user guide down, I will demonstrate
-various ways you can extend/hack up #OnePageWonder and make it do things *you*
-want it do to, rather than just doing the kinds of things *I* want to do! :>
+After I get a solid rough draft of the user guide down, I will demonstrate various ways you can extend/hack up #OnePageWonder and make it do things *you* want it do to, rather than just doing the kinds of things *I* want to do! :>
 
-The source code is very well documented and fairly JSDoc compatible, so feel free to dig in.  You can also view the JSDocs for the API (the global OPW object) file and Meteor.methods *here*.
+The source code is very well documented and fairly JSDoc compatible, so feel free to dig in.  You can also view the JSDocs for the API (the global OPW object) file and Meteor.methods [here](http://docs.idometeor.com) or by opening private/docs/index.html within the OPW source directory.
 
 # Feedback:
 
@@ -117,7 +109,7 @@ Because it is as ubiquotous amongst web companies as bash is to Linux.  I want l
 
 # Y Blaze?!  Y not Angular, React, HippyCrack, Unicorn Sauce, etc?
 
-I like core Meteor.  I want it to be extendable without increasing the learning curve exponentially.  There is no good reason to change render engines just because they are trendy.
+I like core Meteor.  I want it to be extendable without increasing the learning curve exponentially.  There is no good reason to change render engines just because they are trendy. React makes sense for Facebook, not for a little ol' web site.
 
 # Y Meteor Accounts?!
 
@@ -131,23 +123,23 @@ Before throwing 50k-100k hits at it, it probably needs to have all the queries o
 
 # Example Content
 
-XXX
+If you want to try the system out with some actual content in it, the images & CSS from http://iDoMeteor.com are included, regardless of how you get #OnePageWonder.  Right click on a content row there, and find the section tags for the content (pretty straightforward, eh?).  Right click on the section tag itself and hit 'copy inner HTML', then paste it into a new section in your install and hit save.  Boom, it's like magic!
+
+Now you can edit & sort content as you please.  This is how I loaded up the tarball & zip files w/content.
 
 # Caveats:
 
 * I did not intend to release this until 1.0.0 attained feature completion and stability, but I'm super excited about it and couldn't wait any longer! This is the first 'public release' or 'pre-release' and is meant to provide me with some feedback so that 1.0.0 can be production quality.
-* I use emoticons & give myself sass in the comments @ 4am.
 * Password reset: From Meteor shell, Meteor.users.remove({})
-* It goes way bad: try meteor reset (I've never had to, but you might :>)
+* If it goes way bad: try meteor reset (I've never had to, but you might :>)
 
 # Screen Shots
 
-XXX
-Send me yours!
+For now, check my [Twitter](http://twitter.com/iDoMeteor) and send me yours!
 
 # Security & Accountability
 
-I believe in designing a secure system from the start with full accountability and analytics, both of my projects aim to capture every click, IP address and page load (or DDP connection) right from install.  It's not quite there yet, but it will be soon.
+I believe in designing a secure system from the start with full accountability and analytics, both of my projects aim to capture every click, IP address and page load (or DDP connection) right from install.  It's not quite perfect yet, but it will be soon.
 
 # Lastly:
 
@@ -158,4 +150,5 @@ This has taken me months of self-funded development. If you use it for commercia
 Thanks for checking it out!
 
 [@iDoMeteor](http://twitter.com/iDoMeteor)
+
 [iDoMeteor.com](http://iDoMeteor.com)
