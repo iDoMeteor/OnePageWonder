@@ -16,6 +16,11 @@ opw = {
   // Serialized origin list
   acao: 'localhost:*, https://ddp*.meteor.com',
 
+  // Astronomer keys for local testing
+  astronomer: {
+    appId: 'ERd8iMfhRqakRdkcD',
+  },
+
   // Bootstrap config
   bootstrap: {
 
@@ -47,10 +52,7 @@ opw = {
 
   },
 
-  // Verbose console messages
-  debug: true,
-
-  // TODO: Possibly remove above debug property
+  // Logging configuration
   log: {
     // Whether to send OPW.log() messages to client
     clientSideConsoleLogs: true,
@@ -392,6 +394,7 @@ opwDefaultContent += "        #MeteorPress Demo (not fully functional)";
 opwDefaultContent += "      <\/a>";
 opwDefaultContent += "      <\/li>";
 opwDefaultContent += "    <\/ul>";
+opwDefaultContent += "    <span id=\"opw-contact-default\" class=\"opw-contact\"><\/span>";
 opwDefaultContent += "  <\/div>";
 opwDefaultContent += "";
 

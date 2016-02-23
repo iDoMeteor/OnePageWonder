@@ -180,12 +180,21 @@ Template.opwEditorLogAuthentication.onCreated(function () {
 
 Template.opwEditorLogAdmin.events({
 
-    'click tbody': function (event) {
-      var id = $(event.currentTarget).attr('data-id');
-      opwAdminNotificationLog.update({_id: id}, {$set: {
-        read: true,
-      }});
-    },
+  'click .opw-detail-toggle': function (event) {
+
+    event.preventDefault();
+    $(event.target).closest('tr').next().toggleClass('hidden');
+
+  },
+
+  'click .opw-log-viewed': function (event) {
+    event.preventDefault();
+    var id = $(event.target).attr('data-id')
+           || $(event.currentTarget).attr('data-id');
+    opwAdminNotificationLog.update({_id: id}, {$set: {
+      read: true,
+    }});
+  },
 
 });
 
@@ -198,12 +207,39 @@ Template.opwEditorLogAdmin.events({
 
 Template.opwEditorLogAuthentication.events({
 
-    'click tbody': function (event) {
-      var id = $(event.currentTarget).attr('data-id');
-      opwLog.update({_id: id}, {$set: {
-        read: true,
-      }});
-    },
+  'click .opw-detail-toggle': function (event) {
+
+    event.preventDefault();
+    $(event.target).closest('tr').next().toggleClass('hidden');
+
+  },
+
+  'click .opw-log-viewed': function (event) {
+    event.preventDefault();
+    var id = $(event.target).attr('data-id')
+           || $(event.currentTarget).attr('data-id');
+    opwLog.update({_id: id}, {$set: {
+      read: true,
+    }});
+  },
+
+});
+
+
+/******************************************************************************
+ *
+ * Contact raw log helpers
+ *
+ *****************************************************************************/
+
+Template.opwEditorLogRaw.events({
+
+  'click .opw-detail-toggle': function (event) {
+
+    event.preventDefault();
+    $(event.target).closest('tr').next().toggleClass('hidden');
+
+  },
 
 });
 
@@ -216,12 +252,21 @@ Template.opwEditorLogAuthentication.events({
 
 Template.opwEditorLogSecurity.events({
 
-    'click tbody': function (event) {
-      var id = $(event.currentTarget).attr('data-id');
-      opwLog.update({_id: id}, {$set: {
-        read: true,
-      }});
-    },
+  'click .opw-detail-toggle': function (event) {
+
+    event.preventDefault();
+    $(event.target).closest('tr').next().toggleClass('hidden');
+
+  },
+
+  'click .opw-log-viewed': function (event) {
+    event.preventDefault();
+    var id = $(event.target).attr('data-id')
+           || $(event.currentTarget).attr('data-id');
+    opwLog.update({_id: id}, {$set: {
+      read: true,
+    }});
+  },
 
 });
 
@@ -235,6 +280,7 @@ Template.opwEditorLogSecurity.events({
 Template.opwEditorLogContact.events({
 
     'click tbody': function (event) {
+      event.preventDefault();
       var id = $(event.currentTarget).attr('data-id');
       opwContacts.update({_id: id}, {$set: {
         read: true,

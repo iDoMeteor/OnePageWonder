@@ -29,7 +29,6 @@
         "thankYouAlert": "We have received your request and will respond at our earliest opportunity!",
         "thankYouText": "Thank you! We won't abuse your trust! :>"
       },
-      "debug": false,
       "log": {
         "clientSideConsoleLogs": false,
         "debug": false,

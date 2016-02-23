@@ -106,35 +106,28 @@ Tweet it to @iDoMeteor with #OnePageWonder. Customized sites w/screenshots ftw!
 
 Please provide general feedback to me via Twitter public mention, for bug reports use Github Issues with the console logs from both the server & client if possible, your browser & os of your client & server, and detailed description of problem.  Preferably in a such a way that will allow me to reproduce it.
 
-
 # Community
 
 Post on Meteor Forums, use #OnePageWonder hashtag on Twitter or chat w/me @
 http://chat.idometeor.com!
 
+# Y Bootstrap!?
+
+Because it is as ubiquotous amongst web companies as bash is to Linux.  I want lots of people to use it, not just cutting edge hipsters! :p
+
+# Y Blaze?!  Y not Angular, React, HippyCrack, Unicorn Sauce, etc?
+
+I like core Meteor.  I want it to be extendable without increasing the learning curve exponentially.  There is no good reason to change render engines just because they are trendy.
+
+# Y Meteor Accounts?!
+
+Same as above.  It's core Meteor.  I can rely on it.  I won't be sitting around one day doing nothing special and suddendly have useraccounts\* or some ish breaking on me for no good reason.  It totally F'd one of my buddies once and I do not intend to have that happen to me.
+
 # Production Quality?
 
 Dunno!  I haven't tried it, but I'm a go for it kinda guy, so... go for it!
 
-Before throwing 50k-100k hits at it, it probably needs to have all the queries optimized, some memoization & throttling, and Oplog integration.  So much Meteoring to do and only one poor old me. :D
-
-# Details
-
-* Edit ./opw/lib/init/config.js if you wish to jump start your project
-* Put anything site/project specific in ./\_site-specific to prevent it being over-written in the future.
-* Hit the login button.  If there are no users, it will show the account creation button.  If you have already created your one and only user, simply log in.
-* There is always a home row
-* The scroll indicator only appears if there is more than the home row
-* All the Bootswatch themes are included, edit ./opw/client/opw.less to change the active theme.  They are in packages/bootstrap-themes/.
-* Upgrading from this version.. database is stable, files fairly, but any changes you make to them you will need to merge yourself (or just make a new site and leave that one alone cuz it's running so good! :D)
-* For now, if you wish to deploy to Meteor.com *and* take your local data with you, you will have to do that manually, but I have a script doing it for me now that will be included soon.
-* I left my images & etc from the [iDoMeteor](http://iDoMeteor.com) site so u can copy and paste from there to test if you like.
-* To quickly prototype a site from another Boostrap site, you can simply copy the inner HTML of a section's container into a row and edit it.  I tend to write my own and use the Wonderbar, IMO it takes just as long to figure out and customize someone else's.
-* Click the gear to access configuration and the section editor.
-* It opens on a drag-to-sort list of sections (if more than one).
-* The buttons at the top take you to the section editor, system configuration & back again.  And maybe the log viewers & stuff soonishly.
-* Use the Wonderbar (it's seriously amazing) to insert 90% of the components available in a full BS install, headings, images, etc.
-* PROFIT
+Before throwing 50k-100k hits at it, it probably needs to have all the queries optimized, some memoization & throttling, Oplog integration and more configurable limits.  So much Meteoring to do and only one poor old me. :D
 
 # Example Content
 

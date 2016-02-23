@@ -509,3 +509,30 @@ Template.opwSocialIcons.helpers ({
     },
 
 });
+
+/*******************************************************************************
+ *
+ * Global Code
+ *
+ * Runs when main.js is loaded
+ *
+ ******************************************************************************/
+
+// Hook up Astronomer global (added just for me, thx Ry! :D) if not already set!
+if (Meteor.settings.public && !Meteor.settings.public.astronomer &&
+    OPW.getConfig('astronomer') &&
+    OPW.getNestedConfig('astronomer', 'enable')) {
+    window.AstronomerConfig = OPW.getConfig('astronomer');
+}
+
+// Register global Spacebars helper to stringify an object
+Template.registerHelper('json', function(value) {
+  try {
+    value = JSON.stringify(value, null, 2);
+    value = value.replace(/\n/g, '<br />');
+    return value;
+
+  } catch (error) {
+    return value;
+  }
+});

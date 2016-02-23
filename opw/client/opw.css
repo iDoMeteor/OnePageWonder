@@ -66,6 +66,10 @@ section:last-of-type {
     min-height: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
 .inline {
     display: inline;
 }

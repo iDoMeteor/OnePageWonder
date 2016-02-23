@@ -178,7 +178,6 @@ Meteor.methods({
   opwLogSectionView: function (id) {
 
     check(id, String);
-    this.unblock();
 
     // Validate
     if (!OPW.isCollectionId(id)) {
@@ -428,6 +427,42 @@ Meteor.methods({
         );  // End ternary
 
     });  // End multi update callback
+
+  },
+
+
+  /**************************************************************************
+   *
+   * @Summary         Update Row Sort Orders
+   * @Method          opwUpdateSortOrders
+   * @param {Object}  mail A valid mail object
+   * @Returns         XXX
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * ************************************************************************/
+
+  opwSendMail: function (mail) {
+
+    // Check
+    check (mail, {
+      from: String,
+      text: String,
+      subject: String,
+      to: String,
+    });
+
+    // Don't jive on client
+    if (Meteor.isClient) return;
+
+    // Validate
+    if (OPW.isValidEmailObject(mail)) {
+      // Send it
+      Email.send(mail);
+    }
+
+    return;
 
   },
 

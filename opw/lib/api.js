@@ -1664,6 +1664,8 @@ OPW = {
    *      the template instance.  User feedback and related DOM handling are
    *      handled intelligently below, allowing for some flexibility.
    *
+   * TODO: Send email/admin notification!
+   *
    * ************************************************************************/
 
   insertContact: function(submission, template) {
@@ -1700,7 +1702,7 @@ OPW = {
     // Debug
     OPW.log({
       message: 'Source IP requesting contact: ' + contact.source,
-      type: 'error',
+      type: 'debug',
       data: submission,
     });
 
@@ -2010,11 +2012,41 @@ OPW = {
     });
 
     // Some action
-    var append = '\n'
+    // TODO: Allow things like bolding in place, but for now
+    // we are just going to insert at cursor position or after
+    // a selected bit of text on a new line.
+    var target = $('#opw-editor-textarea');
+    var start = target.prop('selectionStart');
+    var end = target.prop('selectionEnd');
+    var selection = (start == end) ? false : true;
+    var insert = '\n'
         + Blaze.toHTML(Template[template])
         + '\n';
-    var target = $('#opw-editor-textarea');
-    var value = target.val() + append;
+    var before = '';
+    var after = '';
+    var value = '';
+
+    // Debug
+    OPW.log({
+      message: 'Attempting to insert #WonderBar element',
+      type: 'debug',
+      data: {
+        start: start,
+        end: end,
+        selection: selection,
+      },
+    });
+
+    // Append to empty area or insert at cursor on new lines
+    if (!start && !selection) {
+      // There is nothing in the textarea
+      value = target.val() + insert;
+    } else {
+      // Put it after the cursor or selectione end
+      before = target.val().substr(0, end);
+      after = target.val().substr(end);
+      value = before + insert + after;
+    }
 
     // Update textarea value
     target.val(value);
@@ -2531,6 +2563,115 @@ OPW = {
         || (OPW.isValidTweeter(obj.user))
     ) return true;
 
+    return false;
+
+  },
+
+
+  /***************************************************************************
+   *
+   * @Summary         Checks if parameter is a valid document for insertion
+   * @Method          isValidEmailObject
+   * @Param           n/a
+   * @Returns         undefined
+   * @Location        Client, Server
+   *
+   * @Description
+   *
+   * ************************************************************************/
+
+  isValidEmailObject: function(obj) {
+
+    var recips = [];
+    var whitelist = [
+        'from',
+        'message',
+        'subject',
+        'to',
+    ];
+
+    if (!OPW.isObject(obj)) {
+      OPW.log({
+        message: 'Invalid attempt to test email object',
+        type: 'error',
+        data: obj,
+      });
+      return false;
+    }
+
+    if (_.omit(obj, whitelist).length) {
+      OPW.log({
+        message: 'Too many keys in mail object',
+        type: 'error',
+        data: obj,
+      });
+      return false;
+    }
+
+    // Recips
+    if (!OPW.isString(obj.to)) {
+      OPW.log({
+        message: 'Invalid recipient format checking mail object',
+        type: 'error',
+        data: obj,
+      });
+      return false;
+    }
+    if (obj.to.indexOf(',')) {
+      // Multiple recipients
+      recips = obj.to.split(',');
+      _.each(recips, function (value) {
+        value = value.trim();
+        if (!OPW.isValidEmail(obj.to)) {
+          OPW.log({
+            message: 'Invalid recipients encountered checking mail object',
+            type: 'error',
+            data: obj,
+          });
+          return false;
+        }
+      });
+    } else {
+      // Single recipient
+      if (!OPW.isValidEmail(obj.to)) {
+        OPW.log({
+          message: 'Invalid recipient encountered checking mail object',
+          type: 'error',
+          data: obj,
+        });
+        return false;
+      }
+    }
+
+    // Sender
+    if (!OPW.isValidEmail(obj.from)) {
+      OPW.log({
+        message: 'Invalid sender encountered checking mail object',
+        type: 'error',
+        data: obj,
+      });
+      return false;
+    }
+
+    // Subject
+    if (!OPW.isString(obj.subject)) {
+      OPW.log({
+        message: 'Invalid subject encountered checking mail object',
+        type: 'error',
+        data: obj,
+      });
+      return false;
+    }
+
+    // Message
+    // Last one, passes if successful
+    if (OPW.isString(obj.text)) return true;
+
+    OPW.log({
+      message: 'Unknown error encountered checking mail object',
+      type: 'error',
+      data: obj,
+    });
     return false;
 
   },
@@ -3356,6 +3497,7 @@ OPW = {
             sendEvent: true,
             eventTag: 'Login Failure',
             auth: true,
+            security: true,
             type: 'danger',
             data: {
               email: email,
@@ -3483,18 +3625,6 @@ OPW = {
 
   notifyAdmin: function(log, callback) {
 
-    /**
-     * Not sure this is necessary, and if it is.. then
-     * I think we could remove the else statement? Will
-     * have to try and see how it goes when it's working :)
-     *
-    if (Meteor.isServer) {
-      this.unblock();
-    } else {
-      return (OPW.isFunction(callback)) ? callback(false) : null;
-    }
-    */
-
     // Validate
     if (!OPW.isObject(log)) {
       message = 'Invalid attempt to notify admin';
@@ -3529,7 +3659,7 @@ OPW = {
         type: 'error',
         data: log,
       });
-      OPW.returnCall(callback, message);
+      if ('function' == typeof(callback)) callback(message);
       return;
     }
 
@@ -3545,12 +3675,16 @@ OPW = {
     OPW.logAdminNotification(log);
 
     // Send it
-    // TODO: Methodize & throttle this for client side messages
+    // TODO: Throttle these
     if (Meteor.isServer) {
       Email.send(mail);
+    } else {
+      // Call server side method
+      Meteor.call('opwSendMail', mail);
     }
 
-    OPW.returnCall(callback, undefined,  true);
+    if ('function' == typeof(callback)) callback(message);
+    return;
 
   },
 
