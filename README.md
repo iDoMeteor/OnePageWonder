@@ -27,18 +27,22 @@ Worky pretty goody! :D
 # Installation
 
 Git It
-> $ git clone git@github.com:iDoMeteor/OnePageWonder.git
-> $ cd OnePageWonder && meteor
+
+    $ git clone git@github.com:iDoMeteor/OnePageWonder.git
+    $ cd OnePageWonder && meteor
 
 Tarball
+
 * wget http://install.idometeor.com/onepagewonder.tar.gz
 * wget http://install.idometeor.com/onepagewonder-with-data.tar.gz
 
 Zipper
+
 * http://install.idometeor.com/onepagewonder.zip
 * http://install.idometeor.com/onepagewonder-with-data.zip
 
 Then
+
 * If you download a compressed archive, simply inflate it, change into it's directory and run meteor.
 * Browse to http://localhost:3000 (unless launched with --port xxxx or deployed remotely)
 
