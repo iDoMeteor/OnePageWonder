@@ -317,6 +317,9 @@ opwDefaultContent += "  <div class=\"col-sm-12\">";
 opwDefaultContent += "    <h1>Thanks for trying #OnePageWonder by @iDoMeteor!<\/h1>";
 opwDefaultContent += "    <h2>What you need to know to get going:<\/h2>";
 opwDefaultContent += "    <h3>The <a href=\"http:\/\/demo.idometeor.com\">demo<\/a> resets every hour a few minutes after the hour begins.<\/h3>";
+opwDefaultContent += "    <div class=\"text-center\">";
+opwDefaultContent += "      <span id=\"opw-contact-default\" class=\"opw-contact\"><\/span>";
+opwDefaultContent += "    <\/div>";
 opwDefaultContent += "  <\/div>";
 opwDefaultContent += "";
 opwDefaultContent += "  <div class=\"col-sm-5 col-sm-offset-1 col-md-4 col-md-offset-2 col-lg-3 col-lg-offset-3\">";
@@ -396,7 +399,6 @@ opwDefaultContent += "        #MeteorPress Demo (not fully functional)";
 opwDefaultContent += "      <\/a>";
 opwDefaultContent += "      <\/li>";
 opwDefaultContent += "    <\/ul>";
-opwDefaultContent += "    <span id=\"opw-contact-default\" class=\"opw-contact\"><\/span>";
 opwDefaultContent += "  <\/div>";
 opwDefaultContent += "";
 
