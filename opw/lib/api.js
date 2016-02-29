@@ -959,6 +959,7 @@ OPW = {
   *  Re-factor string to boolean conversion
   *
    */
+
   getNestedConfig: function(k1, k2, k3) {
 
     // Set up for return value
@@ -996,6 +997,7 @@ OPW = {
           k3: k3,
         },
       });
+      return;
     }
 
     // Check passed keys exist in defaults
@@ -1009,6 +1011,7 @@ OPW = {
           k3: k3,
         },
       });
+      return;
     }
     if (k2 && !opw[k1].hasOwnProperty(k2)) {
       OPW.log({
@@ -1020,6 +1023,7 @@ OPW = {
           k3: k3,
         },
       });
+      return;
     }
     if (k3 && !opw[k1][k2].hasOwnProperty(k3)) {
       OPW.log({
@@ -1031,6 +1035,7 @@ OPW = {
           k3: k3,
         },
       });
+      return;
     }
 
     // All passed keys are valid, now pick our favorite version & return it
@@ -1144,6 +1149,7 @@ OPW = {
   *  Database settings
   *
    */
+
   getNestedConfigOld: function(k1, k2, k3) {
 
     // Validate
