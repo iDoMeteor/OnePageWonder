@@ -12,8 +12,5 @@ settings.json
 settings-dev.json
 settings-production.json
 settings-localhost.json
-settings-idometeor.com.json
-settings-opw.idometeor.com.json
-settings-demo.idometeor.com.json
 smart.lock
 todo.txt
