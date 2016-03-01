@@ -33,6 +33,7 @@ Meteor Package Install
 
     $ meteor create OnePageWonder
     $ cd OnePageWonder
+    $ rm app* # Or don't :D
     $ meteor add idometeor:onepagewonder
     $ cp settings-default.json settings.json
     $ meteor --settings settings.json
